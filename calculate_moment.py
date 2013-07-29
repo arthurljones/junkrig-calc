@@ -1,4 +1,4 @@
-import math, numpy
+import math, numpy, time
 from PIL import Image
 
 def MakeImage(side, pixels_per_unit):
@@ -96,6 +96,8 @@ def StraightMoment(outside, thickness, pixels_per_unit):
 	image.save("moment_straight.png", dpi=(pixels_per_unit, pixels_per_unit))
 	return moment * 4
 
-args = (10, 1.5, 200)
-print "diagonal moment: {}".format(DiagonalMoment(*args))
+args = (10, 1.5, 100)
+#print "diagonal moment: {}".format(DiagonalMoment(*args))
+start = time.clock()
 print "straight moment: {}".format(StraightMoment(*args))
+print "time: {}".format(time.clock() - start)
