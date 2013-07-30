@@ -1,29 +1,24 @@
+import sys
+print(sys.version)
+
 from math import *
 import time
 import numpy as np
 from PIL import Image
 
-def MakeImage(side, pixels_per_unit):
-	image = Image.new("RGBA", (int(side * pixels_per_unit * 2) + 10, int(side * pixels_per_unit * 2) + 10), 0x00000000)
+def MakeImage(side):
+	image = Image.new("RGBA", (int(side), int(side)), 0x00000000)
 	pixels = image.load()
 
 	return (image, pixels)
 
-def PlotPixels(image, pixels, x, y, pixels_per_unit):
-	x_offset = x * pixels_per_unit
-	y_offset = y * pixels_per_unit
-	center = image.size[0] / 2
-
-	for x_sign in [-1, 1]:
-		for y_sign in [-1, 1]:
-			x_actual = int(center + x_offset * x_sign)
-			y_actual = int(center + y_offset * y_sign)
-			pixels[x_actual, y_actual] = pixels[x_actual, y_actual][1] + 0xAA000000
-			pixels[y_actual, x_actual] = pixels[y_actual, x_actual][1] + 0xAA000000
-
 def Moment(outside, thickness, angle, pixels_per_unit):
 	sin_t = sin(radians(angle))
 	cos_t = cos(radians(angle))
+
+	outside = float(outside)
+	thickness = float(thickness)
+	angle = float(angle)
 
 	cos_45 = 0.70710678118
 	step_size = 1.0/pixels_per_unit
@@ -39,19 +34,26 @@ def Moment(outside, thickness, angle, pixels_per_unit):
 	moment = 0
 	points = []
 
+	image, pixels = MakeImage(bounds * 2 * pixels_per_unit)
+
+	max_y = 0
+
 	for x in np.arange(-bounds, bounds, step_size):
 		for y in np.arange(-bounds, bounds, step_size):
 
 			tx = x*cos_t - y*sin_t
 			ty = x*sin_t + y*cos_t
 
+			color = 0xAA000000
 			if tx < 0 and ty < 0:
 				tx, ty = -tx, -ty
-				ty = -ty
+				color = 0xAAFF0000
 			elif tx < 0:
 				tx, ty = ty, -tx
+				color = 0xAA00FF00
 			elif ty < 0:
 				tx, ty = -ty, tx
+				color = 0xAA0000FF
 
 			point_inside = False
 			if tx < d_i:
@@ -64,20 +66,35 @@ def Moment(outside, thickness, angle, pixels_per_unit):
 				point_inside = dx*dx + dy*dy <= r_squared
 
 			if point_inside:
+				pixels[(x + bounds) * pixels_per_unit, (y + bounds) * pixels_per_unit] = color
+
+				adjusted_y = y + step_size
+				if adjusted_y > max_y:
+					max_y = adjusted_y
+
 				moment += y * y
 
 	moment /= pixels_per_unit * pixels_per_unit
+	image.transpose(Image.FLIP_TOP_BOTTOM).save("mast_x_section_%02d_deg.png" % angle, dpi=(pixels_per_unit, pixels_per_unit))
 
-	return moment
+	return [moment, max_y, moment / max_y]
 
 def StraightMoment(outside, thickness, pixels_per_unit):
 	return Moment(outside, thickness, 0, pixels_per_unit)
 
-outside = 10
+#outside = 10
 thickness = 1.5
-ppu = 30
+ppu = 10
 
 #print "diagonal moment: {}".format(DiagonalMoment(*args))
 start = time.clock()
-for angle in range(0, 91, 5):
-	print angle, Moment(outside, thickness, angle, ppu)
+diameters = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12]
+ratios = []
+for outside in diameters:
+	results = []
+	for angle in [0, 45]:#range(0, 91, 5):
+		results.append([angle] + Moment(outside, thickness, angle, ppu))
+	print np.around(results, 2)
+	ratios.append(results[1][-1] / results[0][-1])
+
+print np.polyfit(diameters, ratios, 6)
