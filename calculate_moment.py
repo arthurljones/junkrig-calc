@@ -82,19 +82,12 @@ def Moment(outside, thickness, angle, pixels_per_unit):
 def StraightMoment(outside, thickness, pixels_per_unit):
 	return Moment(outside, thickness, 0, pixels_per_unit)
 
-#outside = 10
-thickness = 1.5
+outside = 10
+thickness = 0.75
 ppu = 10
 
-#print "diagonal moment: {}".format(DiagonalMoment(*args))
-start = time.clock()
-diameters = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12]
-ratios = []
-for outside in diameters:
-	results = []
-	for angle in [0, 45]:#range(0, 91, 5):
-		results.append([angle] + Moment(outside, thickness, angle, ppu))
-	print np.around(results, 2)
-	ratios.append(results[1][-1] / results[0][-1])
+results = []
+for angle in range(0, 91, 5):
+	results.append([angle] + Moment(outside, thickness, angle, ppu))
+print np.around(results, 2)
 
-print np.polyfit(diameters, ratios, 6)
