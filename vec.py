@@ -18,6 +18,10 @@ class Vec(np.ndarray):
         return self / self.mag
 
     @property
+    def angle(self):
+        return atan2(self.y, self.x)
+
+    @property
     def x(self):
         return self[0]
 

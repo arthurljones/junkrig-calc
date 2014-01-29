@@ -21,7 +21,7 @@ class DrawContext:
         self.transform_stack[0] = value
 
     def push_matrix(self):
-        self.transform_stack.insert(0, np.copy(self.transform))
+        self.transform_stack.insert(0, self.matrix.clone())
 
     def pop_matrix(self):
         self.transform_stack.pop(0)

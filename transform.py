@@ -27,3 +27,6 @@ class Transform(np.ndarray):
 
     def transform_many(self, arr):
         return [self.transform(v) for v in arr]
+
+    def clone(self):
+        return np.copy(self)

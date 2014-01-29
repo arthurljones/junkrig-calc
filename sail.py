@@ -64,6 +64,18 @@ class Sail:
 
         print self.area, self.center
 
+    def make_image_and_context(pixels_per_inch, margin = 100):
+        pixels_per_foot = pixels_per_inch * 12
+        margin = 100
+        size = (self.bounds.scaled(pixels_per_foot).size + Vec(margin * 2, margin * 2)).tup_int
+        translation = (size[0] - margin, size[1] - margin, 0)
+        rotation = radians(180)
+        scale = pixels_per_foot
+
+        image = Image.new("RGBA", size, 0xFFFFFFFF)
+        context = DrawContext(lines_image)
+        context.matrix = context.matrix.translated(translation).rotated(rotation).scaled(scale)
+
     def draw_sail(self, pixels_per_inch, filename):
         pixels_per_foot = pixels_per_inch * 12
         size = (self.bounds.scaled(pixels_per_foot).size + Vec(20, 20)).tup_int
@@ -76,7 +88,7 @@ class Sail:
         color = 0xFF000000
 
         for panel in self.panels:
-            panel.draw(context, color) 
+            panel.draw(context, color)
 
         mast_line_center = Vec(self.mast_from_tack, self.sling_point.y)
         offset = Vec(0, 1)
@@ -89,8 +101,87 @@ class Sail:
 
         context.draw_point(Vec(0, 0), color, 10)
 
-        image.show()
         image.save(filename, dpi=(pixels_per_inch, pixels_per_inch))
+
+    def draw_measurements(self, pixels_per_inch, lines_filename, numbers_filename):
+        pixels_per_foot = pixels_per_inch * 12
+        margin = 100
+        size = (self.bounds.scaled(pixels_per_foot).size + Vec(margin * 2, margin * 2)).tup_int
+        translation = (size[0] - margin, size[1] - margin, 0)
+        rotation = radians(180)
+        scale = pixels_per_foot
+
+        lines_image = Image.new("RGBA", size, 0xFFFFFFFF)
+        lines_context = DrawContext(lines_image)
+        lines_context.matrix = lines_context.matrix.translated(translation).rotated(rotation).scaled(scale)
+
+        numbers_image = Image.new("RGBA", size, 0xFFFFFFFF)
+        numbers_context = DrawContext(numbers_image)
+        numbers_context.matrix = numbers_context.matrix.translated(translation).rotated(rotation).scaled(scale)
+
+        color = 0xFF2222AA
+
+        def feet_and_inches_string(distance):
+            feet = int(floor(distance))
+            inches = (distance % 1) * 12
+            inches = round(inches / 0.25) * 0.25 #Round to quarters
+            inch_fraction = int((inches % 1) * 4)
+            inches = int(inches)
+
+            if feet < 2:
+                inches += feet * 12
+                feet = 0
+
+            text = ""
+            if feet > 0:
+                text += "{}' ".format(feet)
+
+            if inches > 0 or inch_fraction > 0:
+                if inches > 0:
+                    text += "{}".format(inches)
+
+                if inch_fraction == 1:
+                    text += "-1/4"
+                if inch_fraction == 2:
+                    text += "-1/2"
+                if inch_fraction == 3:
+                    text += "-3/4"
+
+                text += "\""
+
+            return text
+
+        def draw_length_line(p1, p2, ratio = 0.5, offset = Vec(0, 0)):
+            delta = p2 - p1
+            distance = delta.mag
+            lines_context.draw_line(p1, p2, color, 2)
+            numbers_context.draw_text(p1 + (delta * ratio) + offset, feet_and_inches_string(distance), color) #.
+
+        b0 = self.battens[0]
+        b1 = self.battens[self.lower_panels]
+        b3 = self.battens[-1]
+
+        numbers_context.draw_line(b0.clew, b0.tack, color, 2) #For alignment
+
+        draw_length_line(b0.clew, b0.tack, 0.5, Vec(0, 1))
+        draw_length_line(b1.clew, b1.tack, 0.5, Vec(0, -0.5))
+
+        draw_length_line(b1.clew, b3.tack, 0.5, Vec(0, 1))
+        draw_length_line(b1.tack, b3.tack, 0.5, Vec(-0.1, 0.5))
+
+        draw_length_line(b0.clew, b1.tack, 0.25)
+        draw_length_line(b0.tack, b1.clew, 0.75, Vec(0, 1))
+
+        draw_length_line(b0.tack, b1.tack, 0.5, Vec(1.5, 0))
+        draw_length_line(b0.clew, b1.clew)
+
+        for i in range(self.lower_panels + 1, len(self.battens)):
+            b2 = self.battens[i]
+            draw_length_line(b1.clew, b2.clew)
+            draw_length_line(b1.tack, b2.clew)
+
+        lines_image.save(lines_filename, dpi=(pixels_per_inch, pixels_per_inch))
+        numbers_image.save(numbers_filename, dpi=(pixels_per_inch, pixels_per_inch))
 
     def draw_sheet_zone(self, d_min_ratio, pixels_per_inch, filename):
         pixels_per_foot = pixels_per_inch * 12
