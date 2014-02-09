@@ -5,7 +5,8 @@ from copy import *
 import itertools
 
 scarf_length = 18
-count_weight = 0.25
+count_weight = 0.20
+max_swaps = 50
 
 def flatten(nested_iterable):
 	return [x for x in itertools.chain.from_iterable(nested_iterable)]
@@ -45,7 +46,6 @@ class PieceSet:
 
 		other.owner = self_owner
 		self.owner = other_owner
-
 
 class Stave:
 	def __init__(self, desired_length):
@@ -122,11 +122,11 @@ class WoodPile(Stave):
 
 class StaveBuilder:
 	def __init__(self, stave_lengths, piece_lengths):
-		print "Stave Builder"
 		self.staves = Stave.init_many(sorted(stave_lengths))
 		self.wood_pile = WoodPile(piece_lengths)
 		self.each_piece_to_smallest_fit()
-		self.swap_to_even_out()
+		self.swap_to_minimize_waste()
+		self.wood_pile.shortest_first()
 
 	@property
 	def stave_count(self):
@@ -148,19 +148,36 @@ class StaveBuilder:
 		stave_count = self.stave_count
 		overflow = self.total_overflow
 		total_pieces = self.stave_pieces_count
+		total_used_length = sum(stave.actual_unscarfed_length for stave in self.staves)
+		scarf_example_length = max(stave.desired_length for stave in self.staves)
 
 		print "{} Pieces, {} Staves:".format(self.total_pieces_count, self.stave_count)
 		for stave in self.staves:
 			print "{}{:+}in:\t{}".format(stave.desired_unscarfed_length, stave.distance_from_desired, stave.pieces_string)
-		print "Total extra length: {}in, Average extra length: {:.1f}in".format(overflow, float(overflow)/stave_count)
-		print "Total pieces used: {}, Average pieces per stave: {:.2f}".format(total_pieces, float(total_pieces)/stave_count)
-		print "{}in / {} Pieces Unused: {}".format(self.wood_pile.actual_unscarfed_length, self.wood_pile.piece_count, self.wood_pile.pieces_string)
+		print "Total extra length: {}in".format(overflow)
+		print "Average extra length: {:.1f}in".format(float(overflow)/stave_count)
+		print "Total pieces used: {}".format(total_pieces)
+		print "Average pieces per stave: {:.1f}".format(float(total_pieces)/stave_count)
+		print "Average pieces per {:.1f}ft: {:.1f}".format(float(scarf_example_length) / 12, scarf_example_length / (float(total_used_length) / total_pieces))
+		print "Unused Length: {}in".format(self.wood_pile.actual_unscarfed_length)
+		print "{} Pieces Unused: {}".format(self.wood_pile.piece_count, self.wood_pile.pieces_string)
 
 	def each_piece_to_smallest_fit(self):
 		self.wood_pile.longest_first()
 	 	self.build_by_delta(lambda piece: 0)
 		self.wood_pile.shortest_first()
 	 	self.build_by_delta(lambda piece: piece.length)
+
+	def swap_to_minimize_waste(self):
+		for iteration in xrange(max_swaps):
+			last_score = self.perform_best_swap()
+			if last_score is not None:
+				print "Iteration {}: {}".format(iteration + 1, last_score)
+			else:
+				print "No more improvement"
+				return
+
+		print "Reached iteration limit"
 
 	def perform_best_swap(self):
 		#Each swap can only have passive pieces on one side and active pieces on the other
@@ -183,11 +200,11 @@ class StaveBuilder:
 					best_swap_score = swap_score
 
 		if best_swap_score < 0:
-			print "Swapping ({}) {} {} with {} {}".format(best_swap_score, best_passive.owner, best_passive.pieces, best_active.owner, best_active.pieces)
+			#print "Swapping ({}) {} {} with {} {}".format(best_swap_score, best_passive.owner, best_passive.pieces, best_active.owner, best_active.pieces)
 			best_passive.swap(best_active)
-			return True
+			return best_swap_score
 		else:
-			return False
+			return None
 
 	def swap_score(self, passive, active):
 		extra = active.owner.distance_from_desired
@@ -198,11 +215,6 @@ class StaveBuilder:
 			count_change = passive.count - active.count
 			return delta * count_weight ** count_change
 
-
-	def swap_to_even_out(self):
-		for iteration in xrange(50):
-			if self.perform_best_swap() == False:
-				break
 
 	def build_by_delta(self, max_delta_func):
 		while len(self.wood_pile.pieces) > 0:
