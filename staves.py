@@ -181,7 +181,36 @@ class StaveBuilder:
 			else:
 				target_stave.push(self.wood_pile.pieces.pop(0))
 
-piece_lengths = [60, 60, 60, 61, 61, 62, 62, 62, 62, 62, 62, 63, 63, 63, 64, 64, 65, 65, 65, 66, 66, 66, 66, 66, 66, 66, 66, 66, 67, 67, 67, 67, 67, 67, 67, 68, 70, 70, 71, 71, 73, 73, 75, 75, 76, 76, 76, 76, 76, 76, 76, 76, 78, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 83, 83, 83, 84, 84, 84, 85, 86, 86, 86, 88, 88, 88, 88, 89, 89, 89, 89, 89, 89, 89, 89, 91, 95, 96, 96, 96, 96, 96, 96, 96, 97, 97, 97, 97, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 102, 103, 104, 116, 117, 118, 120, 121, 123, 124, 124, 128, 129, 132, 133, 133, 133, 133, 133, 133, 134, 134, 135, 136, 136, 138, 145, 145, 145, 145, 153, 156, 156, 158, 161, 162, 174, 174, 176, 176, 177, 187, 192, 192, 192, 192, 192, 192, 192, 214, 220, 240, 240, 240, 240]
+def factor_list(items):
+	length_counts = {}
+	for length in items:
+		if length in length_counts:
+			length_counts[length] += 1
+		else:
+			length_counts[length] = 1
+
+	count_lengths = {}
+	for length, count in length_counts.iteritems():
+		if not count in count_lengths:
+			count_lengths[count] = []
+
+		count_lengths[count].append(length)
+
+	return " +\n".join(["[{}]*{}".format(",".join([str(length) for length in sorted(lengths)]), count) for count, lengths in count_lengths.iteritems()])
+
+piece_lengths = \
+	[68,78,85,91,95,102,103,104,116,117,118,120,121,123,128,129,132,135,138,153,158,161,162,177,187,214,220] * 1 + \
+	[61,64,70,71,73,75,124,134,136,156,174,176] * 2 + \
+	[60,63,65,83,84,86] * 3 + \
+	[88,97,145,240] * 4 + \
+	[62,133] * 6 + \
+	[67,96,192] * 7 + \
+	[76,89] * 8 + \
+	[66] * 9 + \
+	[100] * 10 + \
+	[82] * 11
+
+piece_lengths.sort()
 stave_lengths = [166] * 8 + [291] * 8 + [409] * 24
 
 builder = StaveBuilder(stave_lengths, piece_lengths)
