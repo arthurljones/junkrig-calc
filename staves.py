@@ -5,7 +5,7 @@ from copy import *
 import itertools
 
 scarf_length = 18
-count_weight = 0.5
+count_weight = 0.25
 
 def flatten(nested_iterable):
 	return [x for x in itertools.chain.from_iterable(nested_iterable)]
@@ -46,14 +46,6 @@ class PieceSet:
 		other.owner = self_owner
 		self.owner = other_owner
 
-	def woodpile_swap_score(self, other):
-		self_new_delta = self.owner.swap_delta(self, other)
-		other_new_delta = other.owner.swap_delta(other, self)
-
-		if self_new_delta == None or other_new_delta == None:
-			return None
-		else:
-			return self_new_delta + other_new_delta + (
 
 class Stave:
 	def __init__(self, desired_length):
@@ -61,7 +53,7 @@ class Stave:
 		self.pieces = []
 
 	def __repr__(self):
-		return "{}{:+}in ({}) Stave".format(self.desired_length, self.length_delta, len(self.pieces))
+		return "{}{:+}in ({}) Stave".format(self.desired_length, self.distance_from_desired, len(self.pieces))
 
 	@classmethod
 	def init_many(cls, lengths):
@@ -88,7 +80,7 @@ class Stave:
 		return sum(piece.length for piece in self.pieces)
 
 	@property
-	def length_delta(self):
+	def distance_from_desired(self):
 		return self.actual_length - self.desired_length
 
 	@property
@@ -102,13 +94,6 @@ class Stave:
 				piece2 = self.pieces[index2]
 				sets.append(PieceSet([piece1, piece2], self))
 		return sets
-
-	def swap_delta(self, old, new):
-		delta = new.length - old.length
-		if self.actual_length + delta < self.desired_length:
-			return None
-		else:
-			return delta
 
 class WoodPile(Stave):
 	def __init__(self, piece_lengths):
@@ -132,7 +117,7 @@ class WoodPile(Stave):
 		return -scarf_length
 
 	@property
-	def length_delta(self):
+	def distance_from_desired(self):
 		return 0
 
 class StaveBuilder:
@@ -157,7 +142,7 @@ class StaveBuilder:
 
 	@property
 	def total_overflow(self):
-		return sum(stave.length_delta for stave in self.staves)
+		return sum(stave.distance_from_desired for stave in self.staves)
 
 	def print_data(self):
 		stave_count = self.stave_count
@@ -166,7 +151,7 @@ class StaveBuilder:
 
 		print "{} Pieces, {} Staves:".format(self.total_pieces_count, self.stave_count)
 		for stave in self.staves:
-			print "{}{:+}in:\t{}".format(stave.desired_unscarfed_length, stave.length_delta, stave.pieces_string)
+			print "{}{:+}in:\t{}".format(stave.desired_unscarfed_length, stave.distance_from_desired, stave.pieces_string)
 		print "Total extra length: {}in, Average extra length: {:.1f}in".format(overflow, float(overflow)/stave_count)
 		print "Total pieces used: {}, Average pieces per stave: {:.2f}".format(total_pieces, float(total_pieces)/stave_count)
 		print "{}in / {} Pieces Unused: {}".format(self.wood_pile.actual_unscarfed_length, self.wood_pile.piece_count, self.wood_pile.pieces_string)
@@ -178,31 +163,40 @@ class StaveBuilder:
 	 	self.build_by_delta(lambda piece: piece.length)
 
 	def perform_best_swap(self):
-		active_sets = flatten([stave.swap_sets for stave in self.staves])
-		passive_sets = self.wood_pile.swap_sets
-
 		#Each swap can only have passive pieces on one side and active pieces on the other
 		#Swaps can only happen between the wood pile and a single stave
 
+		active_sets = flatten([stave.swap_sets for stave in self.staves])
+		passive_sets = self.wood_pile.swap_sets
+
 		best_swap_score = 0
-		swap1 = None
-		swap2 = None
+		best_passive = None
+		best_active = None
 
 		for passive in passive_sets:
 			for active in active_sets:
-				swap_score = passive.swap_score(active)
+				swap_score = self.swap_score(passive, active)
 				#print "Swap score: {}".format(swap_score)
 				if swap_score and swap_score < best_swap_score:
-					swap1 = passive
-					swap2 = active
+					best_passive = passive
+					best_active = active
 					best_swap_score = swap_score
 
-		if swap1:
-			print "Swapping ({}) {} {} with {} {}".format(best_swap_score, swap1.owner, swap1.pieces, swap2.owner, swap2.pieces)
-			swap1.swap(swap2)
+		if best_swap_score < 0:
+			print "Swapping ({}) {} {} with {} {}".format(best_swap_score, best_passive.owner, best_passive.pieces, best_active.owner, best_active.pieces)
+			best_passive.swap(best_active)
 			return True
 		else:
 			return False
+
+	def swap_score(self, passive, active):
+		extra = active.owner.distance_from_desired
+		delta = passive.length - active.length
+		if extra + delta < 0:
+			return None
+		else:
+			count_change = passive.count - active.count
+			return delta * count_weight ** count_change
 
 
 	def swap_to_even_out(self):
@@ -216,7 +210,7 @@ class StaveBuilder:
 			best_delta = max_delta_func(piece)
 			target_stave = None
 			for stave in self.staves:
-				delta = stave.length_delta + piece.length
+				delta = stave.distance_from_desired + piece.length
 				if delta < best_delta:
 					best_length = delta
 					target_stave = stave
