@@ -2,8 +2,12 @@ import sys
 
 from math import *
 from copy import *
+import itertools
 
 scarf_length = 18
+
+class Swap:
+	pass#def __init__(self, 
 
 class Piece:
 	def __init__(self, length, owner = None):
@@ -168,20 +172,23 @@ class StaveBuilder:
 				stave.push(unused_pieces.pop(0))
 
 	def perform_best_swap(self):
+		active_pieces = [piece for piece in itertools.chain.from_iterable([stave.pieces for stave in self.staves])]
+		passive_pieces = self.wood_pile.pieces
+
+		#Each swap can only have passive pieces on one side and active pieces on the other
+
 		piece_count = len(self.all_pieces)
 		best_swap_score = 0
 		swap1 = None
 		swap2 = None
 
-		for index1 in xrange(piece_count):
-			piece1 = self.all_pieces[index1]
-			for index2 in xrange(index1, piece_count):
-				piece2 = self.all_pieces[index2]
-				swap_score = piece1.swap_score(piece2)
+		for passive in passive_pieces:
+			for active in active_pieces:
+				swap_score = passive.swap_score(active)
 				#print "Swap score: {}".format(swap_score)
 				if swap_score and swap_score < best_swap_score:
-					swap1 = piece1
-					swap2 = piece2
+					swap1 = passive
+					swap2 = active
 					best_swap_score = swap_score
 
 		if swap1:
