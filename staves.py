@@ -5,7 +5,7 @@ from copy import *
 import itertools
 
 scarf_length = 18
-count_weight = 0.20
+count_weight = scarf_length
 max_swaps = 50
 
 def flatten(nested_iterable):
@@ -213,7 +213,8 @@ class StaveBuilder:
 			return None
 		else:
 			count_change = passive.count - active.count
-			return delta * count_weight ** count_change
+			return delta + count_change * count_weight
+			#eturn delta * count_weight ** count_change
 
 
 	def build_by_delta(self, max_delta_func):
