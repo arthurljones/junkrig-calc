@@ -6,16 +6,16 @@ from copy import *
 scarf_length = 18
 
 class Piece:
-	def __init__(self, length):
+	def __init__(self, length, owner = None):
 		self.length = length - scarf_length
-		self.owner = None
+		self.owner = owner
 
 	def __repr__(self):
 		return "{}in Piece".format(self.length)
 
 	@classmethod
-	def init_many(cls, lengths):
-		return [cls(length) for length in lengths]
+	def init_many(cls, lengths, owner = None):
+		return [cls(length, owner) for length in lengths]
 
 	def index(self):
 		if self.owner != None:
@@ -38,11 +38,11 @@ class Piece:
 		own_owner.pieces[own_index] = other
 		other_owner.pieces[other_index] = self
 
-	def swap_value(self, other):
+	def swap_score(self, other):
 		self_new_delta = self.owner.swap_delta(self, other)
 		other_new_delta = other.owner.swap_delta(other, self)
 
-		if self_new_delta < 0 or other_new_delta < 0:
+		if self_new_delta == None or other_new_delta == None:
 			return None
 		else:
 			return self_new_delta + other_new_delta
@@ -83,8 +83,12 @@ class Stave:
 	def length_delta(self):
 		return self.actual_length - self.desired_length
 
-	def swap_delta(old, new):
-		return length_delta + new.length - old.length
+	def swap_delta(self, old, new):
+		delta = new.length - old.length
+		if self.actual_length + delta < self.desired_length:
+			return None
+		else:
+			return delta
 
 	def similarity(self, other):
 		return 0 #TODO
@@ -96,12 +100,12 @@ class Stave:
 class WoodPile(Stave):
 	def __init__(self, piece_lengths):
 		self.desired_length = 0
-		self.pieces = Piece.init_many(piece_lengths)
+		self.pieces = Piece.init_many(piece_lengths, self)
 
 	def __repr__(self):
 		return "Wood Pile"
 
-	def swap_delta(self):
+	def swap_delta(self, old, new):
 		return 0
 
 	def longest_first(self):
@@ -124,6 +128,7 @@ class StaveBuilder:
 		self.wood_pile = WoodPile(piece_lengths)
 		self.all_pieces = copy(self.wood_pile.pieces)
 		self.each_piece_to_smallest_fit()
+		self.swap_to_even_out()
 
 	@property
 	def stave_count(self):
@@ -162,8 +167,35 @@ class StaveBuilder:
 			while stave.length_delta < 0 and len(unused_pieces) > 0:
 				stave.push(unused_pieces.pop(0))
 
+	def perform_best_swap(self):
+		piece_count = len(self.all_pieces)
+		best_swap_score = 0
+		swap1 = None
+		swap2 = None
+
+		for index1 in xrange(piece_count):
+			piece1 = self.all_pieces[index1]
+			for index2 in xrange(index1, piece_count):
+				piece2 = self.all_pieces[index2]
+				swap_score = piece1.swap_score(piece2)
+				#print "Swap score: {}".format(swap_score)
+				if swap_score and swap_score < best_swap_score:
+					swap1 = piece1
+					swap2 = piece2
+					best_swap_score = swap_score
+
+		if swap1:
+			print "Swapping ({}) {} {} with {} {}".format(best_swap_score, swap1.owner, swap1, swap2.owner, swap2)
+			swap1.swap(swap2)
+			return True
+		else:
+			return False
+
+
 	def swap_to_even_out(self):
-		pass
+		for iteration in xrange(50):
+			if self.perform_best_swap() == False:
+				break
 
 	def build_by_delta(self, max_delta_func):
 		while len(self.wood_pile.pieces) > 0:
