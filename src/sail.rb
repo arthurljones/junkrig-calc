@@ -102,28 +102,22 @@ class Sail
     panels.sum { |panel| panel.center * panel.area } / area
   end
 
-  def draw_sail(svg)
+  def draw_sail(svg, transform)
     color = 0xFF000000
-    panels_group = svg.group
-    panels.each do |panel|
-      panels_group.lines(panel.perimeter)
+    sail_layer = svg.layer(:label => "Sail")
+    panels.each_with_index do |panel, index|
+      sail_layer.lines(panel.perimeter, :id => "Panel #{total_panels - index}", :transform => transform)
     end
 
-    measurements_group = svg.group
-
     mast_line_center = Vector2.new(mast_from_tack, sling_point.y)
-    offset = Vector2.new(0, 1)
-    measurements_group.lines([mast_line_center - offset, mast_line_center + offset])
-    #context.draw_arc(sling_point, 0.25, color)
+    offset = Vector2.new(0, 12)
+    center_layer = sail_layer.layer(:label => "Mast Centerline")
+    center_layer.lines([mast_line_center - offset, mast_line_center + offset], :transform => transform)
+    center_layer.circle(sling_point, :radius => 3, :transform => transform)
+    center_layer.circle(center, :radius => 3, :transform => transform)
+    #context.draw_text(center + Vector2.new(0.4, -0.3), "{} sq ft".format(int(@area)), color)
 
-    return
-    context.draw_arc(center, 0.25, color)
-    context.draw_point(center, color, 3)
-    context.draw_text(center + Vector2.new(0.4, -0.3), "{} sq ft".format(int(@area)), color)
-
-    context.draw_point(Vector2.new(0, 0), color, 10)
-
-    image.save(filename, :dpi=>[pixels_per_inch, pixels_per_inch])
+    #context.draw_point(Vector2.new(0, 0), color, 10)
   end
 
   def draw_measurements(svg)

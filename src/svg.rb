@@ -20,25 +20,57 @@ class SVG
   end
 
   def lines(points, options = {})
+    options = options.dup
     points = points.clone
     start = points.shift
 
     options[:d] = "M #{start} L #{points.join(" ")}"
-    options[:d] << " z" unless options.delete(:closed) == false
 
     child(:path, options)
   end
 
-  def group(options = {})
+  def arc(start, stop, options = {})
+    options = options.dup
+    radius = options.delete(:radius) || 1
+    radius = Vector2.new(radius, radius) if Numeric === radius
+    rotation = options.delete(:rotation) || 0
+    large_arc = options.delete(:large_arc) || 1
+    clockwise = options.delete(:clockwise) || 0
+    options[:d] = "M #{start} A #{radius} #{rotation} #{large_arc ? 1 : 0} #{clockwise ? 1 : 0} #{stop}"
+    child(:path, options)
+  end
 
+  def circle(center, options = {})
+    options = options.dup
+    start_angle = options.delete(:start_angle) || 0
+    stop_angle = options.delete(:stop_angle) || 359
+    radius = options.delete(:radius) || 1
+    sweep = (stop_angle - start_angle).abs
+    start = center + Vector2.from_angle(start_angle * Math::PI / 180, radius)
+    stop = center + Vector2.from_angle(stop_angle * Math::PI / 180, radius)
+    options[:radius] = radius
+    options[:rotation] = 0
+    options[:large_arc] = sweep > 180
+    options[:clockwise] = stop_angle > start_angle
+    options[:closed] = (sweep - 360).abs <= 0.001 if options[:closed].nil?
+    arc(start, stop, options)
+  end
+
+  def group(options = {})
     options[:style] ||= {
       :fill => :none,
       :stroke => "#000000",
-      :stroke_width => 1,
+      :stroke_width => 0.25,
       :display => :inline
     }
 
     child(:g, options)
+  end
+
+  def layer(options = {})
+    options["inkscape:label"] = options.delete(:label) || "Layer"
+    options["inkscape:groupmode"] = "layer"
+    group(options)
   end
 
   def child(name, options = {}, &block)
@@ -64,6 +96,11 @@ private
         "#{operation}(#{value})"
       end
       options[:transform] = transforms.join(" ")
+    end
+
+    closed = options.delete(:closed)
+    if closed != false && options[:d].present?
+      options[:d] << " z"
     end
 
     options

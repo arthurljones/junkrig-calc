@@ -19,13 +19,13 @@ sail = Sail.new(168, 240, 4, 3, Math::PI * 70 / 180)
 bounds = sail.bounds
 width = bounds.size.x
 height = bounds.size.y
-img = SVG.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
-outer_group = img.group(:transform => { :rotate => 180, :translate => -bounds.max })
-sail.draw_sail(outer_group)
+svg = SVG.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
+transform = { :rotate => 180, :translate => -bounds.max }
+sail.draw_sail(svg, transform)
 #sail.draw_measurements(img)
 #sail.draw_sheet_zone(2, img)
 
 File.open("test.svg", "wb") do |file|
-  file.write(img.node.to_xml)
+  file.write(svg.node.to_xml)
   file.close
 end

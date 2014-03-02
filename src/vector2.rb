@@ -43,7 +43,7 @@ class Vector2
     Vector2.new(-x, -y)
   end
 
-  def to_s(unit=nil)
+  def to_s(unit = nil)
     "#{x.round(3)}#{unit} #{y.round(3)}#{unit}"
   end
 
