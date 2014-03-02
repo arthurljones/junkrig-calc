@@ -4,7 +4,7 @@ from math import *
 from copy import *
 import itertools
 
-scarf_length = 18
+scarf_length = 18 #inches
 count_weight = scarf_length
 max_swaps = 50
 
@@ -16,7 +16,7 @@ class Piece:
 		self.length = length - scarf_length
 
 	def __repr__(self):
-		return "{}in Piece".format(self.length)
+		return "{}in".format(self.unscarfed_length)
 
 	@classmethod
 	def init_many(cls, lengths):
@@ -151,6 +151,8 @@ class StaveBuilder:
 		total_used_length = sum(stave.actual_unscarfed_length for stave in self.staves)
 		scarf_example_length = max(stave.desired_length for stave in self.staves)
 
+		pieces_used = sorted([piece for piece in itertools.chain.from_iterable([stave.pieces for stave in self.staves])], key=lambda piece: piece.length)
+
 		print "{} Pieces, {} Staves:".format(self.total_pieces_count, self.stave_count)
 		for stave in self.staves:
 			print "{}{:+}in:\t{}".format(stave.desired_unscarfed_length, stave.distance_from_desired, stave.pieces_string)
@@ -161,6 +163,9 @@ class StaveBuilder:
 		print "Average pieces per {:.1f}ft: {:.1f}".format(float(scarf_example_length) / 12, scarf_example_length / (float(total_used_length) / total_pieces))
 		print "Unused Length: {}in".format(self.wood_pile.actual_unscarfed_length)
 		print "{} Pieces Unused: {}".format(self.wood_pile.piece_count, self.wood_pile.pieces_string)
+		print "{} Pieces Used: {}".format(len(pieces_used), pieces_used)
+
+		print factor_list([piece.unscarfed_length for piece in self.wood_pile.pieces])
 
 	def each_piece_to_smallest_fit(self):
 		self.wood_pile.longest_first()
@@ -248,22 +253,15 @@ def factor_list(items):
 
 		count_lengths[count].append(length)
 
-	return " +\n".join(["[{}]*{}".format(",".join([str(length) for length in sorted(lengths)]), count) for count, lengths in count_lengths.iteritems()])
+	return " + \\\n".join(["[{}]*{}".format(",".join([str(length) for length in sorted(lengths)]), count) for count, lengths in count_lengths.iteritems()])
 
-piece_lengths = \
-	[68,78,85,91,95,102,103,104,116,117,118,120,121,123,128,129,132,135,138,153,158,161,162,177,187,214,220] * 1 + \
-	[61,64,70,71,73,75,124,134,136,156,174,176] * 2 + \
-	[60,63,65,83,84,86] * 3 + \
-	[88,97,145,240] * 4 + \
-	[62,133] * 6 + \
-	[67,96,192] * 7 + \
-	[76,89] * 8 + \
-	[66] * 9 + \
-	[100] * 10 + \
-	[82] * 11
+piece_lengths = [58, 59, 59, 60, 60, 61, 61, 62, 62, 62, 62, 62, 62, 63, 63, 63, 64, 65, 65, 65, 66, 66, 66, 66, 66, 66, 66, 66, 66, 67, 67, 67, 67, 67, 67, 67, 69, 70, 70, 71, 73, 73, 74, 75, 75, 76, 76, 76, 76, 76, 76, 76, 78, 78, 79, 80, 80, 81, 82, 82, 82, 82, 82, 82, 82, 82, 83, 83, 84, 84, 84, 85, 85, 86, 86, 88, 88, 88, 88, 89, 89, 89, 89, 89, 89, 89, 91, 92, 95, 96, 96, 96, 96, 96, 96, 96, 97, 97, 97, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 102, 103, 104, 116, 117, 118, 120, 121, 123, 124, 124, 128, 129, 132, 133, 133, 133, 133, 133, 133, 134, 134, 135, 136, 136, 138, 145, 145, 145, 145, 153, 156, 156, 158, 161, 162, 174, 174, 176, 176, 177, 187, 192, 192, 192, 192, 192, 192, 192, 214, 220, 240, 240, 240, 240] 
 
 piece_lengths.sort()
-stave_lengths = [166] * 8 + [291] * 8 + [409] * 24
+stave_lengths = [397] * 32
+#stave_lengths = [165] * 8 + [288] * 8 + [403] * 24
 
 builder = StaveBuilder(stave_lengths, piece_lengths)
 builder.print_data()
+
+
