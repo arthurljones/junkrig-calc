@@ -19,7 +19,7 @@ sail = Sail.new(168, 240, 4, 3, Math::PI * 70 / 180)
 bounds = sail.bounds
 width = bounds.size.x
 height = bounds.size.y
-img = SVG.new_document#(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
+img = SVG.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
 outer_group = img.group(:transform => { :rotate => 180, :translate => -bounds.max })
 sail.draw_sail(outer_group)
 #sail.draw_measurements(img)
