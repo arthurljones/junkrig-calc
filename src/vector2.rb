@@ -16,7 +16,6 @@ class Vector2
   end
 
   def self.from_angle(rad, mag = 1.0)
-    ap rad
     new(Math::cos(rad) * mag, Math::sin(rad) * mag)
   end
 
@@ -40,8 +39,12 @@ class Vector2
     Vector2.new(-y, x)
   end
 
-  def to_s
-    "#{x} #{y}"
+  def -@
+    Vector2.new(-x, -y)
+  end
+
+  def to_s(unit=nil)
+    "#{x.round(3)}#{unit} #{y.round(3)}#{unit}"
   end
 
   def perpendicular_dot(other)

@@ -39,7 +39,7 @@ class Sail
   end
 
   cached_constant def clew_rise
-    batten_length * sin(tack_angle)
+    batten_length * Math::sin(tack_angle)
   end
 
   cached_constant def head_panel_luff
@@ -59,7 +59,7 @@ class Sail
   end
 
   cached_constant def throat
-    parallelogram_luff + head_panel_luff * head_panel_count
+    Vector2.new(0, parallelogram_luff + head_panel_luff * head_panel_count)
   end
 
   cached_constant def peak
@@ -80,10 +80,10 @@ class Sail
 
   cached_constant def battens
 
-    lower = (0 .. lower_panel_count + 1).collect { |position|
+    lower = (0 ... lower_panel_count + 1).collect { |position|
       Batten.new(batten_length, panel_luff * position, tack_angle)
     }
-    upper = (1 .. head_panel_count + 1).collect { |position|
+    upper = (1 ... head_panel_count + 1).collect { |position|
       Batten.new(batten_length, head_batten_luff_position(position), head_batten_angle(position))
     }
 
@@ -104,22 +104,24 @@ class Sail
 
   def draw_sail(svg)
     color = 0xFF000000
+    panels_group = svg.group
     panels.each do |panel|
-      svg.lines(panel.perimeter)
+      panels_group.lines(panel.perimeter)
     end
 
+    measurements_group = svg.group
+
+    mast_line_center = Vector2.new(mast_from_tack, sling_point.y)
+    offset = Vector2.new(0, 1)
+    measurements_group.lines([mast_line_center - offset, mast_line_center + offset])
+    #context.draw_arc(sling_point, 0.25, color)
+
     return
-
-    mast_line_center = Vec(mast_from_tack, sling_point.y)
-    offset = Vec(0, 1)
-    line(mast_line_center - offset, mast_line_center + offset)#, color, 2)
-    context.draw_arc(sling_point, 0.25, color)
-
     context.draw_arc(center, 0.25, color)
     context.draw_point(center, color, 3)
-    context.draw_text(center + Vec(0.4, -0.3), "{} sq ft".format(int(@area)), color)
+    context.draw_text(center + Vector2.new(0.4, -0.3), "{} sq ft".format(int(@area)), color)
 
-    context.draw_point(Vec(0, 0), color, 10)
+    context.draw_point(Vector2.new(0, 0), color, 10)
 
     image.save(filename, :dpi=>[pixels_per_inch, pixels_per_inch])
   end
@@ -127,7 +129,7 @@ class Sail
   def draw_measurements(svg)
     pixels_per_foot = pixels_per_inch * 12
     margin = 100
-    size = (bounds.scaled(pixels_per_foot).size + Vec(margin * 2, margin * 2)).tup_int
+    size = (bounds.scaled(pixels_per_foot).size + Vector2.new(margin * 2, margin * 2)).tup_int
     translation = [size[0] - margin, size[1] - margin, 0]
     rotation = radians(180)
     scale = pixels_per_foot
@@ -142,7 +144,7 @@ class Sail
 
     color = 0xFF2222AA
 
-    def draw_length_line(p1, p2, ratio = 0.5, offset = Vec(0, 0))
+    def draw_length_line(p1, p2, ratio = 0.5, offset = Vector2.new(0, 0))
       delta = p2 - p1
       distance = delta.mag
       lines_context.draw_line(p1, p2, color, 2)
@@ -155,19 +157,19 @@ class Sail
 
     numbers_context.draw_line(b0.clew, b0.tack, color, 2) #For alignment
 
-    draw_length_line(b0.clew, b0.tack, 0.5, Vec(0, 1))
-    draw_length_line(b1.clew, b1.tack, 0.5, Vec(0, -0.5))
+    draw_length_line(b0.clew, b0.tack, 0.5, Vector2.new(0, 1))
+    draw_length_line(b1.clew, b1.tack, 0.5, Vector2.new(0, -0.5))
 
-    draw_length_line(b1.clew, b3.tack, 0.5, Vec(0, 1))
-    draw_length_line(b1.tack, b3.tack, 0.5, Vec(-0.1, 0.5))
+    draw_length_line(b1.clew, b3.tack, 0.5, Vector2.new(0, 1))
+    draw_length_line(b1.tack, b3.tack, 0.5, Vector2.new(-0.1, 0.5))
 
     draw_length_line(b0.clew, b1.tack, 0.25)
-    draw_length_line(b0.tack, b1.clew, 0.75, Vec(0, 1))
+    draw_length_line(b0.tack, b1.clew, 0.75, Vector2.new(0, 1))
 
-    draw_length_line(b0.tack, b1.tack, 0.5, Vec(1.5, 0))
+    draw_length_line(b0.tack, b1.tack, 0.5, Vector2.new(1.5, 0))
     draw_length_line(b0.clew, b1.clew)
 
-    battens[lower_panel_count + 1 .. battens.size].each do |b2|
+    battens[lower_panel_count + 1 ... battens.size].each do |b2|
       draw_length_line(b1.clew, b2.clew)
       draw_length_line(b1.tack, b2.clew)
     end
@@ -195,20 +197,20 @@ class Sail
     top_points = [top * d_min, top * d_outer]
     bot_points = [bot * d_min, bot * d_outer]
 
-    hull = [top_points[0], top_points[1], bot_points[0], bot_points[1], Vec(0, 0)]
+    hull = [top_points[0], top_points[1], bot_points[0], bot_points[1], Vector2.new(0, 0)]
     bounds = Bounds.from_points(hull).scaled(pixels_per_foot)
 
-    size = (bounds.size + Vec(21, 21)).tup_int
+    size = (bounds.size + Vector2.new(21, 21)).tup_int
     image = Image.new("RGBA", size, 0x00000000)
     context = DrawContext(image)
-    context.matrix = context.matrix.translated((-bounds.min + Vec(10, 10)).tup3).scaled(pixels_per_foot) #[size[0] + 10, size[1] + 10,
+    context.matrix = context.matrix.translated((-bounds.min + Vector2.new(10, 10)).tup3).scaled(pixels_per_foot) #[size[0] + 10, size[1] + 10,
 
     color = 0xFF000000
-    context.draw_arc(Vec(0, 0), d_min, color, start, stop)
-    context.draw_arc(Vec(0, 0), d_outer, color, start, stop)
+    context.draw_arc(Vector2.new(0, 0), d_min, color, start, stop)
+    context.draw_arc(Vector2.new(0, 0), d_outer, color, start, stop)
     context.draw_line(top_points[0], top_points[1], color)
     context.draw_line(bot_points[0], bot_points[1], color)
-    context.draw_point(Vec(0, 0), color, 3)
+    context.draw_point(Vector2.new(0, 0), color, 3)
 
     result = image.transpose(Image.FLIP_TOP_BOTTOM)
     result.save(filename, :dpi=>[pixels_per_inch, pixels_per_inch])

@@ -6,7 +6,9 @@ class Bounds
   end
 
   def self.from_points(points)
-    Bounds(Vector2[points.min(&:x), points.min(&:y)], Vector2[points.max(&:x), points.max(&:y)])
+    x_min, x_max = points.collect(&:x).minmax
+    y_min, y_max = points.collect(&:y).minmax
+    new(Vector2.new(x_min, y_min), Vector2.new(x_max, y_max))
   end
 
   def size
@@ -14,6 +16,6 @@ class Bounds
   end
 
   def scale(scale)
-    Bounds(min * scale, max * scale)
+    Bounds.new(min * scale, max * scale)
   end
 end

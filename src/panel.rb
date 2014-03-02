@@ -15,8 +15,6 @@ class Panel
 
     @area = area_accum * 0.5
     @center = center_accum / (@area * 6)
-
-    puts @area, @center
   end
 
   def perimeter
