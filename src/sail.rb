@@ -103,24 +103,17 @@ class Sail
   end
 
   def draw_sail(svg)
-    sail_layer = svg.layer(:label => "Sail")
-    panels.each_with_index do |panel, index|
-      sail_layer.lines(panel.perimeter, :id => "Panel #{total_panels - index}")
-    end
-
-    mast_line_center = Vector2.new(mast_from_tack, sling_point.y)
+    sq_feet = (area / 144).round(0)
+    mast_center = Vector2.new(mast_from_tack, sling_point.y)
     offset = Vector2.new(0, 12)
-    center_layer = sail_layer.layer(:label => "Mast Centerline")
-    center_layer.lines([mast_line_center - offset, mast_line_center + offset])
 
-    sling_layer = sail_layer.layer(:label => "Sling Point")
-    sling_layer.circle(sling_point, :radius => 3)
-
-    center_of_effort_layer = sail_layer.layer(:label => "Center of Effort")
-    center_of_effort_layer.circle(center, :radius => 3)
-
-    area_layer = sail_layer.layer(:label => "Center of Effort")
-    area_layer.text(center + Vector2.new(0, -12), "#{(area / 144).round(0)} ft²")
+    svg.layer("Sail") do |outer|
+      outer.layer("Panels") { |l| panels.each { |panel| l.lines(panel.perimeter) } }
+      outer.layer("Mast Centerline") { |l| l.lines([mast_center - offset, mast_center + offset]) }
+      outer.layer("Sling Point") { |l| l.circle(sling_point, :radius => 3) }
+      outer.layer("Center of Effort") { |l| l.circle(center, :radius => 3) }
+      outer.layer("Center of Effort") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
+    end
   end
 
   def draw_measurements(svg)

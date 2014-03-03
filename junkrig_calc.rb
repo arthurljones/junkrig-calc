@@ -24,8 +24,6 @@ height = bounds.size.y
 svg = SVG.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
 transform = Transform.new.scale(Vector2.new(-1, -1)).translate(-bounds.max)
 svg.local_transform = transform
-ap transform.matrix
-ap (transform * Vector2.new(1, 1)).vector
 sail.draw_sail(svg)
 #sail.draw_measurements(img)
 #sail.draw_sheet_zone(2, img)

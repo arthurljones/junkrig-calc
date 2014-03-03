@@ -92,7 +92,7 @@ class SVG
     child(:text, value, options)
   end
 
-  def group(options = {})
+  def group(options = {}, &block)
     options[:style] ||= {
       :fill => :none,
       :stroke => "#000000",
@@ -100,13 +100,15 @@ class SVG
       :display => :inline
     }
 
-    child(:g, options)
+    result = child(:g, options)
+    yield result if block_given?
+    result
   end
 
-  def layer(options = {})
-    options["inkscape:label"] = options.delete(:label) || "Layer"
+  def layer(label = "Layer", options = {}, &block)
+    options["inkscape:label"] = label
     options["inkscape:groupmode"] = "layer"
-    group(options)
+    group(options, &block)
   end
 
   def child(name, *args, &block)
