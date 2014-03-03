@@ -110,11 +110,40 @@ class Sail
     svg.layer("Sail") do |outer|
       outer.layer("Panels") { |l| panels.each { |panel| l.lines(panel.perimeter) } }
       outer.layer("Mast Centerline") { |l| l.lines([mast_center - offset, mast_center + offset]) }
-      outer.layer("Sling Point") { |l| l.circle(sling_point, :radius => 3) }
-      outer.layer("Center of Effort") { |l| l.circle(center, :radius => 3) }
+      outer.layer("Sling Point") { |l| l.circle(sling_point, 3) }
+      outer.layer("Center of Effort") { |l| l.circle(center, 3) }
       outer.layer("Center of Effort") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
     end
   end
+
+  def draw_sheet_zone(d_min_ratio, svg)
+    #Assumptions
+    leech_angle = 3*Math::PI/2
+    panel_leech = panel_luff
+
+    start = pi - tack_angle + radians(30)
+    stop = leech_angle - radians(10)
+
+    d_min = d_min_ratio * panel_leech
+    d_outer = (d_min_ratio + 1.5) * panel_leech
+
+    top = Vector2.from_angle(start)
+    bot = Vector2.from_angle(stop)
+
+    top_points = [top * d_min, top * d_outer]
+    bot_points = [bot * d_min, bot * d_outer]
+
+    color = 0xFF000000
+    context.draw_arc(Vector2.new(0, 0), d_min, color, start, stop)
+    context.draw_arc(Vector2.new(0, 0), d_outer, color, start, stop)
+    context.draw_line(top_points[0], top_points[1], color)
+    context.draw_line(bot_points[0], bot_points[1], color)
+    context.draw_point(Vector2.new(0, 0), color, 3)
+
+    result = image.transpose(Image.FLIP_TOP_BOTTOM)
+    result.save(filename, :dpi=>[pixels_per_inch, pixels_per_inch])
+  end
+
 
   def draw_measurements(svg)
     pixels_per_foot = pixels_per_inch * 12
@@ -166,44 +195,6 @@ class Sail
 
     lines_image.save(lines_filename, :dpi=>[pixels_per_inch, pixels_per_inch])
     numbers_image.save(numbers_filename, :dpi=>[pixels_per_inch, pixels_per_inch])
-  end
-
-  def draw_sheet_zone(d_min_ratio, svg)
-    pixels_per_foot = pixels_per_inch * 12
-
-    #Assumptions
-    leech_angle = 3*Math::PI/2
-    panel_leech = panel_luff
-
-    start =  pi - tack_angle + radians(30)
-    stop = leech_angle - radians(10)
-
-    d_min = d_min_ratio * panel_leech
-    d_outer = (d_min_ratio + 1.5) * panel_leech
-
-    top = Vec.from_angle(start)
-    bot = Vec.from_angle(stop)
-
-    top_points = [top * d_min, top * d_outer]
-    bot_points = [bot * d_min, bot * d_outer]
-
-    hull = [top_points[0], top_points[1], bot_points[0], bot_points[1], Vector2.new(0, 0)]
-    bounds = Bounds.from_points(hull).scaled(pixels_per_foot)
-
-    size = (bounds.size + Vector2.new(21, 21)).tup_int
-    image = Image.new("RGBA", size, 0x00000000)
-    context = DrawContext(image)
-    context.matrix = context.matrix.translated((-bounds.min + Vector2.new(10, 10)).tup3).scaled(pixels_per_foot) #[size[0] + 10, size[1] + 10,
-
-    color = 0xFF000000
-    context.draw_arc(Vector2.new(0, 0), d_min, color, start, stop)
-    context.draw_arc(Vector2.new(0, 0), d_outer, color, start, stop)
-    context.draw_line(top_points[0], top_points[1], color)
-    context.draw_line(bot_points[0], bot_points[1], color)
-    context.draw_point(Vector2.new(0, 0), color, 3)
-
-    result = image.transpose(Image.FLIP_TOP_BOTTOM)
-    result.save(filename, :dpi=>[pixels_per_inch, pixels_per_inch])
   end
 
 private

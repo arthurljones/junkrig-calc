@@ -18,8 +18,9 @@ class Vector2
     @vector = Vector.elements(args)
   end
 
-  def self.from_angle(rad, mag = 1.0)
-    new(Math::cos(rad) * mag, Math::sin(rad) * mag)
+  def self.from_angle(angle, mag = 1.0, degrees = false)
+    angle *= Math::PI / 180 if degrees
+    new(Math::cos(angle) * mag, Math::sin(angle) * mag)
   end
 
   def x

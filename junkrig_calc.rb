@@ -10,7 +10,7 @@ require_relative "src/math_proxy"
 require_relative "src/vector2"
 require_relative "src/transform"
 require_relative "src/bounds"
-require_relative "src/svg"
+require_relative "src/svg/node"
 require_relative "src/helpers"
 
 require_relative "src/batten"
@@ -21,7 +21,7 @@ sail = Sail.new(168, 240, 4, 3, Math::PI * 70 / 180)
 bounds = sail.bounds
 width = bounds.size.x
 height = bounds.size.y
-svg = SVG.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
+svg = SVG::Node.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
 transform = Transform.new.scale(Vector2.new(-1, -1)).translate(-bounds.max)
 svg.local_transform = transform
 sail.draw_sail(svg)
