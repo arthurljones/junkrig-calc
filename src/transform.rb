@@ -53,7 +53,7 @@ class Transform
   end
 
   def scale
-    Vector2.new(matrix.minor(0, 0..1).magnitude, matrix.minor(1, 0..1).magnitude)
+    Vector2.new(Vector2.new(matrix.row(0)).magnitude, Vector2.new(matrix.row(1)).magnitude)
   end
 
   def rotation
@@ -67,6 +67,14 @@ class Transform
     else
       super
     end
+  end
+
+  def to_xml
+    matrix.row_vectors.to_json
+  end
+
+  def self.from_xml(str)
+    new(Matrix.rows(JSON.parse(str)))
   end
 
 end

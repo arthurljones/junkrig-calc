@@ -5,6 +5,7 @@ require "awesome_print"
 require "active_support/all"
 require "nokogiri"
 require "matrix"
+require "json"
 
 require_relative "src/math_proxy"
 require_relative "src/vector2"
@@ -18,16 +19,14 @@ require_relative "src/batten"
 require_relative "src/panel"
 require_relative "src/sail"
 
-sail = Sail.new(168, 240, 4, 3, Math::PI * 70 / 180)
+sail = Sail.new(168, 240, 4, 3, Math::PI * 70 / 180, 2)
 bounds = sail.bounds
 width = bounds.size.x
 height = bounds.size.y
 svg = SVG::Node.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
 transform = Transform.new.scaled(Vector2.new(-1, -1)).translated(-bounds.max)
 svg.local_transform = transform
-sail.draw_sail(svg)
-#sail.draw_measurements(img)
-#sail.draw_sheet_zone(2, img)
+sail.draw(svg)
 
 File.open("test.svg", "wb") do |file|
   file.write(svg.node.to_xml)

@@ -35,7 +35,7 @@ module SVG
       add_command(:l, vector)
     end
 
-    def arc(vector, radius, rotation = 0, sweep = 0, clockwise = 1)
+    def arc(vector, radius, rotation = 0, sweep = true, clockwise = true)
       radius = Vector2.new(radius, radius) if Numeric === radius
       radius = scale(radius)
       add_command(:a, radius.x, radius.y, rotation, bool(sweep), bool(clockwise), vector)

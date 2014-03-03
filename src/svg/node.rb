@@ -24,8 +24,8 @@ module SVG
       decode_transform(node[LOCAL_TRANSFORM_ATTRIBUTE])
     end
 
-    def local_transform=(value)
-      node[LOCAL_TRANSFORM_ATTRIBUTE] = Base64.encode64(Marshal.dump(value))
+    def local_transform=(transform)
+      node[LOCAL_TRANSFORM_ATTRIBUTE] = transform.to_xml
     end
 
     def absolute_transform
@@ -129,9 +129,9 @@ module SVG
       options
     end
 
-    def decode_transform(data)
-      return nil if data.nil?
-      Marshal.load(Base64.decode64(data))
+    def decode_transform(str)
+      return nil unless str.present?
+      Transform.from_xml(str)
     end
 
   end

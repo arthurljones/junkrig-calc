@@ -3,7 +3,7 @@ class Sail
   BATTEN_TO_HEAD_PANEL_LUFF = 0.03
   BATTEN_TO_MAST_OFFSET = 0.05
 
-  attr_reader :parallelogram_luff, :batten_length, :lower_panel_count, :head_panel_count, :yard_angle
+  attr_reader :parallelogram_luff, :batten_length, :lower_panel_count, :head_panel_count, :yard_angle, :min_sheet_ratio
 
   def self.cached_constant(method)
     define_method("#{method}_with_cache") { (@_constant_cache ||= {})[method] ||= send("#{method}_without_cache") }
@@ -14,12 +14,13 @@ class Sail
     @_constant_cache = nil
   end
 
-  def initialize(luff, batten_length, lower_panels, head_panels, yard_angle)
+  def initialize(luff, batten_length, lower_panels, head_panels, yard_angle, min_sheet_ratio)
     @parallelogram_luff = luff
     @batten_length = batten_length
     @lower_panel_count = lower_panels
     @head_panel_count = head_panels
     @yard_angle = yard_angle
+    @min_sheet_ratio = min_sheet_ratio
   end
 
   cached_constant def total_panels
@@ -47,7 +48,7 @@ class Sail
   end
 
   cached_constant def tack
-    Vector2.new
+    Vector2.from_angle(tack_angle, batten_length)
   end
 
   cached_constant def clew
@@ -102,46 +103,64 @@ class Sail
     panels.sum { |panel| panel.center * panel.area } / area
   end
 
-  def draw_sail(svg)
+  def draw(svg)
+    svg.layer("Sail") do |outer_layer|
+      draw_sail(outer_layer)
+      draw_sheet_zone(outer_layer)
+      #sail.draw_measurements(outer_layer)
+    end
+  end
+
+private
+
+  def head_batten_angle(position)
+    tack_angle + ((yard_angle - tack_angle) / head_panel_count) * position
+  end
+
+  def head_batten_luff_position(position)
+    parallelogram_luff + head_panel_luff * position
+  end
+
+  def draw_sail(group)
     sq_feet = (area / 144).round(0)
     mast_center = Vector2.new(mast_from_tack, sling_point.y)
     offset = Vector2.new(0, 12)
 
-    svg.layer("Sail") do |outer|
-      outer.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
-      outer.layer("Mast Centerline") { |l| l.line_loop([mast_center - offset, mast_center + offset], :closed => false) }
-      outer.layer("Sling Point") { |l| l.circle(sling_point, 3) }
-      outer.layer("Center of Effort") { |l| l.circle(center, 3) }
-      outer.layer("Center of Effort") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
-    end
+    group.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
+    group.layer("Mast Centerline") { |l| l.line_loop([mast_center - offset, mast_center + offset], :closed => false) }
+    group.layer("Sling Point") { |l| l.circle(sling_point, 3) }
+    group.layer("Center of Effort") { |l| l.circle(center, 3) }
+    group.layer("Center of Effort") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
   end
 
-  def draw_sheet_zone(d_min_ratio, svg)
+  def draw_sheet_zone(group)
+    pi = Math::PI
+
     #Assumptions
-    leech_angle = 3*Math::PI/2
+    leech_angle = 3 * pi / 2 #270 degrees
     panel_leech = panel_luff
 
-    start = pi - tack_angle + radians(30)
-    stop = leech_angle - radians(10)
+    start = pi - tack_angle + pi / 6 #30 degrees
+    stop = leech_angle - pi / 18 #10 degrees
 
-    d_min = d_min_ratio * panel_leech
-    d_outer = (d_min_ratio + 1.5) * panel_leech
+    d_min = min_sheet_ratio * panel_leech
+    d_outer = (min_sheet_ratio + 1.5) * panel_leech
 
     top = Vector2.from_angle(start)
     bot = Vector2.from_angle(stop)
 
-    top_points = [top * d_min, top * d_outer]
-    bot_points = [bot * d_min, bot * d_outer]
+    arc1 = [top * d_min, bot * d_min]
+    arc2 = [bot * d_outer, top * d_outer]
 
-    color = 0xFF000000
-    context.draw_arc(Vector2.new(0, 0), d_min, color, start, stop)
-    context.draw_arc(Vector2.new(0, 0), d_outer, color, start, stop)
-    context.draw_line(top_points[0], top_points[1], color)
-    context.draw_line(bot_points[0], bot_points[1], color)
-    context.draw_point(Vector2.new(0, 0), color, 3)
-
-    result = image.transpose(Image.FLIP_TOP_BOTTOM)
-    result.save(filename, :dpi=>[pixels_per_inch, pixels_per_inch])
+    group.layer("Sheet Zone") do |layer|
+      layer.local_transform = Transform.new.translated(tack).scaled(Vector2.new(-1, 1))
+      layer.build_path(:style => { :fill => "#000000", :fill_opacity => 0.3 }) do |path|
+        path.move(arc1[0])
+        path.arc(arc1[1], d_min, 0, false, false)
+        path.line(arc2[0])
+        path.arc(arc2[1], d_outer, 0, false, true)
+      end
+    end
   end
 
 
@@ -195,15 +214,6 @@ class Sail
 
     lines_image.save(lines_filename, :dpi=>[pixels_per_inch, pixels_per_inch])
     numbers_image.save(numbers_filename, :dpi=>[pixels_per_inch, pixels_per_inch])
-  end
-
-private
-  def head_batten_angle(position)
-    tack_angle + ((yard_angle - tack_angle) / head_panel_count) * position
-  end
-
-  def head_batten_luff_position(position)
-    parallelogram_luff + head_panel_luff * position
   end
 
 end
