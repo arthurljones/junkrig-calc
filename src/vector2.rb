@@ -1,5 +1,8 @@
 class Vector2
+  extend MathProxy
+
   attr_reader :vector
+  math_proxy :vector, Vector
 
   def initialize(*args)
     if args.size == 1
@@ -49,31 +52,6 @@ class Vector2
 
   def perpendicular_dot(other)
     perpendicular.inner_product(other)
-  end
-
-private
-
-  def method_missing(meth, *args, &block)
-    assignment = meth =~ /\A[\*\+\-\/]=\Z/
-    meth = meth[0] if assignment
-
-    if @vector.respond_to?(meth)
-      args.map! { |arg| Vector2 === arg ? arg.vector : arg }
-      result = @vector.send(meth, *args.map{ |arg| Vector2 === arg ? arg.vector : arg }, &block)
-      if assignment
-        @vector = result
-        result = self
-      elsif Vector === result
-        result = Vector2.new(result)
-      end
-      result
-    else
-      super
-    end
-  end
-
-  def respond_to_missing?(meth, include_private = false)
-    @vector.respond_to?(meth, include_private)
   end
 
 end
