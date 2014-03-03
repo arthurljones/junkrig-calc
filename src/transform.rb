@@ -60,6 +60,16 @@ class Transform
     Math::atan2(matrix[1, 2], matrix[1, 1])
   end
 
+  def translation=(value)
+    matrix[2, 0] = value.x
+    matrix[2, 1] = value.y
+    value
+  end
+
+  def with_translation(value)
+    Transform.new(Matrix.columns([matrix.column(0), matrix.column(1), [value.x, value.y, 1]]))
+  end
+
   def *(other)
     if Vector2 === other
       vector = matrix * Vector[other.x, other.y, 1]

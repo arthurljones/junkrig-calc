@@ -3,7 +3,8 @@ module SVG
     def initialize(parent, options = {}, &block)
       @options = options
       @commands = []
-      @transform = parent.absolute_transform
+      @absolute_transform = parent.absolute_transform
+      @relative_transform = @absolute_transform.with_translation(Vector2.new)
       @parent = parent
       @absolute = true
 
@@ -59,13 +60,17 @@ module SVG
 
     private
 
+    def transform(vector)
+      (@absolute ? @absolute_transform : @relative_transform) * vector
+    end
+
     def scale(vector)
-      vector.componentwise_scale(@transform.scale)
+      vector.componentwise_scale(@absolute_transform.scale)
     end
 
     def add_command(letter, *args)
       code = @absolute ? letter.to_s.upcase : letter.to_s.downcase
-      args = args.map{ |arg| Vector2 === arg ? @transform * arg : arg }.join(" ")
+      args = args.map{ |arg| Vector2 === arg ? transform(arg) : arg }.join(" ")
       @commands << "#{code} #{args}"
     end
 

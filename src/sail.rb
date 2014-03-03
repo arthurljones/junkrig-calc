@@ -123,11 +123,17 @@ private
 
   def draw_sail(group)
     sq_feet = (area / 144).round(0)
-    mast_center = Vector2.new(mast_from_tack, sling_point.y)
-    offset = Vector2.new(0, 12)
 
     group.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
-    group.layer("Mast Centerline") { |l| l.line_loop([mast_center - offset, mast_center + offset], :closed => false) }
+    group.layer("Mast Locator") do |l|
+      l.build_path(:closed => false) do |path|
+        path.move(Vector2.new(mast_from_tack, 0))
+        path.relative
+        path.line(Vector2.new(0, 12))
+        path.move(Vector2.new(-6, -12))
+        path.line(Vector2.new(12, 0))
+      end
+    end
     group.layer("Sling Point") { |l| l.circle(sling_point, 3) }
     group.layer("Center of Effort") { |l| l.circle(center, 3) }
     group.layer("Center of Effort") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
