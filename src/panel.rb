@@ -7,7 +7,9 @@ class Panel
 
     area_accum = 0
     center_accum = Vector2.new
-    perimeter.each_cons(2) do |p0, p1|
+    perim = perimeter
+    perim << perim.first #Loop around
+    perim.each_cons(2) do |p0, p1|
       area_component = p0.perpendicular_dot(p1)
       area_accum += area_component
       center_accum += (p0 + p1) * area_component
@@ -18,6 +20,6 @@ class Panel
   end
 
   def perimeter
-    [foot.tack, foot.clew, head.clew, head.tack, foot.tack]
+    [foot.tack, foot.clew, head.clew, head.tack]
   end
 end

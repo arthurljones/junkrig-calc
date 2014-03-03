@@ -11,6 +11,7 @@ require_relative "src/vector2"
 require_relative "src/transform"
 require_relative "src/bounds"
 require_relative "src/svg/node"
+require_relative "src/svg/path_builder"
 require_relative "src/helpers"
 
 require_relative "src/batten"
@@ -22,7 +23,7 @@ bounds = sail.bounds
 width = bounds.size.x
 height = bounds.size.y
 svg = SVG::Node.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
-transform = Transform.new.scale(Vector2.new(-1, -1)).translate(-bounds.max)
+transform = Transform.new.scaled(Vector2.new(-1, -1)).translated(-bounds.max)
 svg.local_transform = transform
 sail.draw_sail(svg)
 #sail.draw_measurements(img)

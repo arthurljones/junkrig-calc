@@ -36,31 +36,20 @@ module SVG
       end
     end
 
-    def lines(points, options = {})
-      options = options.dup
-      transform = absolute_transform
-      points = points.map { |p| transform * p }
-      start = points.shift
-
-      options[:d] = "M #{start} L #{points.join(" ")}"
-
+    def path(commands, options = {})
+      options[:d] = commands
       child(:path, options)
     end
 
-    def arc(start, stop, options = {})
-      options = options.dup
-      transform = absolute_transform
-      start = transform * start
-      stop = transform * stop
-      radius = options.delete(:radius) || 1
-      radius = Vector2.new(radius, radius) if Numeric === radius
-      rotation = options.delete(:rotation) || 0
-      large_arc = options.delete(:large_arc) || 1
-      clockwise = options.delete(:clockwise) || 0
+    def build_path(options = {}, &block)
+      PathBuilder.new(self, options, &block)
+    end
 
-      options[:d] = "M #{start} A #{radius} #{rotation} #{large_arc ? 1 : 0} #{clockwise ? 1 : 0} #{stop}"
-
-      child(:path, options)
+    def line_loop(points, options = {})
+      build_path do |path|
+        path.move(points.pop)
+        points.each { |point| path.line(point) }
+      end
     end
 
     def circle(center, radius, options = {})
@@ -72,23 +61,6 @@ module SVG
       )
 
       child(:circle, options)
-    end
-
-    def circle_segment(center, options = {})
-      options = options.dup
-      start_angle = options.delete(:start_angle) || 0
-      stop_angle = options.delete(:stop_angle) || 359
-      radius = options.delete(:radius) || 1
-      sweep = (stop_angle - start_angle).abs
-      start = center + Vector2.from_angle(start_angle * Math::PI / 180, radius)
-      stop = center + Vector2.from_angle(stop_angle * Math::PI / 180, radius)
-      options[:radius] = radius
-      options[:rotation] = 0
-      options[:large_arc] = sweep > 180
-      options[:clockwise] = stop_angle > start_angle
-      options[:closed] = (sweep - 360).abs <= 0.002 if options[:closed].nil?
-
-      arc(start, stop, options)
     end
 
     def text(anchor, value, options = {})

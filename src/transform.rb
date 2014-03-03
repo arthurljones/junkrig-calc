@@ -36,16 +36,28 @@ class Transform
     @matrix = matrix || Matrix.identity(3)
   end
 
-  def translate(vector)
+  def translated(vector)
     self * Transform.translation(vector)
   end
 
-  def scale(amount)
-    self  * Transform.scale(amount)
+  def scaled(amount)
+    self * Transform.scale(amount)
   end
 
-  def rotate(degrees)
+  def rotated(degrees)
     self * Transform.rotation(degrees)
+  end
+
+  def translation
+    Vector2.new(matrix.column(3))
+  end
+
+  def scale
+    Vector2.new(matrix.minor(0, 0..1).magnitude, matrix.minor(1, 0..1).magnitude)
+  end
+
+  def rotation
+    Math::atan2(matrix[1, 2], matrix[1, 1])
   end
 
   def *(other)

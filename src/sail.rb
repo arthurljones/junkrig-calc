@@ -108,8 +108,8 @@ class Sail
     offset = Vector2.new(0, 12)
 
     svg.layer("Sail") do |outer|
-      outer.layer("Panels") { |l| panels.each { |panel| l.lines(panel.perimeter) } }
-      outer.layer("Mast Centerline") { |l| l.lines([mast_center - offset, mast_center + offset]) }
+      outer.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
+      outer.layer("Mast Centerline") { |l| l.line_loop([mast_center - offset, mast_center + offset], :closed => false) }
       outer.layer("Sling Point") { |l| l.circle(sling_point, 3) }
       outer.layer("Center of Effort") { |l| l.circle(center, 3) }
       outer.layer("Center of Effort") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
