@@ -5,6 +5,9 @@ class Vector2
   math_proxy :vector, Vector
 
   def initialize(*args)
+    options = args.extract_options!
+    options[:units] ||= "in"
+
     if args.size == 1
       args = args.first.first(2)
     end
@@ -15,12 +18,27 @@ class Vector2
       raise "Args must be two numbers, or an array or vector with two values"
     end
 
+    args = args.map do |arg|
+      case arg
+      when Unit
+        arg
+      when String
+        Unit(arg)
+      else
+        Unit("#{arg} #{options[:units]}")
+      end
+    end
+
     @vector = Vector.elements(args)
   end
 
-  def self.from_angle(angle, mag = 1.0, degrees = false)
-    angle *= Math::PI / 180 if degrees
+  def self.from_angle(angle, mag = Unit(1))
+    angle = angle.to("rad")
     new(Math::cos(angle) * mag, Math::sin(angle) * mag)
+  end
+
+  def self.unitless(*args)
+    new(*args).unitless
   end
 
   def x
@@ -57,6 +75,14 @@ class Vector2
 
   def perpendicular_dot(other)
     perpendicular.inner_product(other)
+  end
+
+  def to(unit)
+    Vector2.new(x.to(unit), y.to(unit))
+  end
+
+  def unitless
+    Vector2.new(x.scalar, y.scalar, :units => "")
   end
 
 end

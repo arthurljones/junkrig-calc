@@ -6,7 +6,7 @@ class Panel
     @head = head
 
     area_accum = 0
-    center_accum = Vector2.new
+    center_accum = Vector2.new("0 in", "0 in")
     perim = perimeter
     perim << perim.first #Loop around
     perim.each_cons(2) do |p0, p1|

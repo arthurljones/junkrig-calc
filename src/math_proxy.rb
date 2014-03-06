@@ -1,6 +1,6 @@
 module MathProxy
   private
-  def math_proxy(name, klass)
+  def math_proxy(name, klass, &argument_map)
     own_class = self
 
     define_method("method_missing_with_#{name}") do |meth, *args, &block|
@@ -9,7 +9,8 @@ module MathProxy
       proxy = send(name)
 
       if proxy.respond_to?(meth)
-        args = args.map { |arg| own_class === arg ? arg.send(name) : arg }
+        argument_map ||= -> (arg) { own_class === arg ? arg.send(name) : arg }
+        args = args.map(&argument_map)
         result = proxy.send(meth, *args, &block)
         if assignment
           send("#{name}=", result)

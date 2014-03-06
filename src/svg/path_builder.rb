@@ -1,5 +1,6 @@
 module SVG
   class PathBuilder
+    UNIT_SCALE = "in"
     def initialize(parent, options = {}, &block)
       @options = options
       @commands = []
@@ -38,7 +39,7 @@ module SVG
 
     def arc(vector, radius, rotation = 0, sweep = true, clockwise = true)
       radius = Vector2.new(radius, radius) if Numeric === radius
-      radius = scale(radius)
+      radius = scale(radius.to("in"))
       add_command(:a, radius.x, radius.y, rotation, bool(sweep), bool(clockwise), vector)
     end
 
@@ -58,14 +59,12 @@ module SVG
       add_command(:t, vector)
     end
 
-    private
-
     def transform(vector)
-      (@absolute ? @absolute_transform : @relative_transform) * vector
+      ((@absolute ? @absolute_transform : @relative_transform) * vector).to(UNIT_SCALE).unitless
     end
 
     def scale(vector)
-      vector.componentwise_scale(@absolute_transform.scale)
+      vector.componentwise_scale(@absolute_transform.scale).to(UNIT_SCALE).unitless
     end
 
     def add_command(letter, *args)

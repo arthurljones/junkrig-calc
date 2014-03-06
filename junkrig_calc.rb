@@ -1,34 +1,44 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require "awesome_print"
-require "active_support/all"
-require "nokogiri"
-require "matrix"
-require "json"
+Bundler.require
+Dir.glob("src/**/*.rb").each { |file| require_relative file }
 
-require_relative "src/math_proxy"
-require_relative "src/vector2"
-require_relative "src/transform"
-require_relative "src/bounds"
-require_relative "src/svg/node"
-require_relative "src/svg/path_builder"
-require_relative "src/helpers"
+start = Time.now
 
-require_relative "src/batten"
-require_relative "src/panel"
-require_relative "src/sail"
+sail = Sail.new(
+  parallelogram_luff: Unit(14, "ft"),
+  batten_length: Unit(20, "ft"),
+  lower_panel_count: 4,
+  head_panel_count: 3,
+  yard_angle: Unit(70, "deg"),
+  min_sheet_ratio: 2.0,
+  sheet_area_width: Unit(4, "ft"),
+)
 
-sail = Sail.new(168, 240, 4, 3, Math::PI * 70 / 180, 2)
-bounds = sail.bounds
-width = bounds.size.x
-height = bounds.size.y
-svg = SVG::Node.new_document(:width => "#{width}in", :height => "#{height}in", :viewBox => "0 0 #{width} #{height}")
+bounds = sail.image_bounds
+image_size = bounds.size.to("in")
+svg = SVG::Node.new_document(
+  :width => image_size.x.to_s,
+  :height => image_size.y.to_s,
+  :viewBox => "0 0 #{image_size.x.scalar.round(4)} #{image_size.y.scalar.round(4)}"
+)
 transform = Transform.new.scaled(Vector2.new(-1, -1)).translated(-bounds.max)
 svg.local_transform = transform
 sail.draw(svg)
 
-File.open("test.svg", "wb") do |file|
+filename = ARGV[0] || "sail.svg"
+File.open(filename, "wb") do |file|
   file.write(svg.node.to_xml)
   file.close
 end
+
+stop = Time.now
+
+sail.draw(SVG::Node.new_document)
+
+stop2 = Time.now
+
+puts "Rendered first in #{((stop - start) * 1000).round(2)}ms"
+puts "Rendered second in #{((stop2 - stop) * 1000).round(2)}ms"
+

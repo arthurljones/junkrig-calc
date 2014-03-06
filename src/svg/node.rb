@@ -121,11 +121,6 @@ module SVG
         options[:transform] = transforms.join(" ")
       end
 
-      closed = options.delete(:closed)
-      if closed != false && options[:d].present?
-        options[:d] << " z"
-      end
-
       options
     end
 
@@ -133,6 +128,5 @@ module SVG
       return nil unless str.present?
       Transform.from_xml(str)
     end
-
   end
 end
