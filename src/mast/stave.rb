@@ -2,7 +2,7 @@ module Mast
   class Stave < PieceSet
     MAX_SWAP_SET_SIZE = 2
 
-    attr_reader :desired_unscarfed_length, :desired_length, :swap_sets
+    attr_reader :desired_unscarfed_length, :desired_length
 
     def initialize(desired_length)
       super(Set.new)
@@ -17,19 +17,28 @@ module Mast
 
     def add(new_pieces)
       new_pieces.each do |piece|
-        size_range = 1..MAX_SWAP_SET_SIZE
-        new_swaps = size_range.collect{ |size| pieces.to_a.combination(size).map{ |combo| combo << piece }}.flatten(1)
-        @swap_sets += new_swaps.collect{ |set| SwapSet.new(set, self) }
+        size_range = 1..(MAX_SWAP_SET_SIZE - 1)
+        combinations = size_range.collect{ |size| pieces.to_a.combination(size).to_a}.flatten(1)
+        @swap_sets += combinations.map{ |combo| SwapSet.new(combo << piece, self) }
+        super([piece])
       end
-      #@swap_sets.sort_by!(&:length)
-
-      super(new_pieces)
     end
 
     def remove(old_pieces)
       @swap_sets.delete_if{ |set| set.pieces.intersect?(old_pieces) }
 
       super(old_pieces)
+    end
+
+    def unique_swap_sets
+      used = Set.new
+      result = []
+      @swap_sets.each do |set|
+        key = set.pieces.collect{ |piece| [piece.length, piece.double_scarfed ? 1 : 0] }
+        key.sort!
+        result << set if used.add?(key)
+      end
+      result
     end
 
     def actual_unscarfed_length

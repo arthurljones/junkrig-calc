@@ -19,9 +19,7 @@ module Mast
     end
 
     def <=>(other)
-      result = length <=> other.length
-      result = double_scarfed <=> other.double_scarfed if result == 0
-      result
+      length <=> other.length || (double_scarfed ? 1 : 0) <=> (other.double_scarfed ? 1 : 0)
     end
   end
 end
