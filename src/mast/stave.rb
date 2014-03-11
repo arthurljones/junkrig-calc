@@ -1,6 +1,6 @@
 module Mast
   class Stave < PieceSet
-    MAX_SWAP_SET_SIZE = 2
+    MAX_SWAP_SET_SIZE = 3
 
     attr_reader :desired_unscarfed_length, :desired_length
 
