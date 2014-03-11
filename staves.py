@@ -6,13 +6,14 @@ import itertools
 
 scarf_length = 18 #inches
 count_weight = scarf_length
-max_swaps = 100
+extra_stave_length = 6 #inches
+max_swaps = 65
 
 def flatten(nested_iterable):
 	return [x for x in itertools.chain.from_iterable(nested_iterable)]
 
 class Piece:
-	def __init__(self, length, double_scarfed = False):
+	def __init__(self, length, double_scarfed = false):
 		self.unscarfed_length = length
 		self.length = length - scarf_length
 		self.double_scarfed = double_scarfed
@@ -24,7 +25,7 @@ class Piece:
 		return self.repr_string
 
 	@classmethod
-	def init_many(cls, lengths, double_scarfed = False):
+	def init_many(cls, lengths, double_scarfed = false):
 		return [cls(length, double_scarfed) for length in lengths]
 
 	def transfer(self, old, new):
@@ -36,7 +37,7 @@ class PieceSet:
 		self.pieces = pieces
 		self.owner = owner
 		self.length = sum([piece.length for piece in pieces])
-		self.double_scarfs = sum([piece.double_scarfed for piece in pieces])
+		self.double_scarfed_pieces = sum([piece.double_scarfed for piece in pieces])
 		self.count = len(pieces)
 		self.repr_string = ", ".join([str(piece) for piece in self.pieces])
 
@@ -58,8 +59,8 @@ class PieceSet:
 
 class Stave:
 	def __init__(self, desired_length):
-		self.desired_unscarfed_length = desired_length
-		self.desired_length = desired_length - scarf_length
+		self.desired_unscarfed_length = desired_length + extra_stave_length
+		self.desired_length = self.desired_unscarfed_length - scarf_length
 		self.pieces = []
 		self.recalculate()
 
@@ -93,7 +94,7 @@ class WoodPile(Stave):
 	def __init__(self, piece_lengths, double_scarfed_lengths):
 		self.desired_length = 0
 		self.pieces = Piece.init_many(piece_lengths)
-		self.pieces += Piece.init_many(double_scarfed_lengths, True)
+		self.pieces += Piece.init_many(double_scarfed_lengths, true)
 		self.desired_unscarfed_length = -scarf_length
 
 	def __repr__(self):
@@ -142,17 +143,22 @@ class StaveBuilder:
 		total_pieces = self.stave_pieces_count
 		total_used_length = sum(stave.actual_unscarfed_length for stave in self.staves)
 		scarf_example_length = max(stave.desired_length for stave in self.staves)
+		total_scarfs = total_pieces - stave_count
+		total_scarf_cuts = total_scarfs * 2
+		scarf_cuts_remaining = total_scarf_cuts - total_pieces - sum([stave.double_scarfed_pieces for stave in self.staves])
 
 		pieces_used = sorted([piece for piece in itertools.chain.from_iterable([stave.pieces for stave in self.staves])], key=lambda piece: piece.length)
 
 		print "{} Pieces, {} Staves:".format(self.total_pieces_count, self.stave_count)
 		for stave in self.staves:
 			print "{}{:+}in:\t{}".format(stave.desired_unscarfed_length, stave.extra_length, stave.pieces_string)
+		print "Total used length: {}in".format(total_used_length)
 		print "Total extra length: {}in".format(overflow)
 		print "Average extra length: {:.1f}in".format(float(overflow)/stave_count)
 		print "Total pieces used: {}".format(total_pieces)
 		print "Average pieces per stave: {:.1f}".format(float(total_pieces)/stave_count)
 		print "Average pieces per {:.1f}ft: {:.1f}".format(float(scarf_example_length) / 12, scarf_example_length / (float(total_used_length) / total_pieces))
+		print "Scarfs: Total: {}, Total Cuts: {}, Cuts remaining: {}".format(total_scarfs, total_scarf_cuts, scarf_cuts_remaining)
 		print "Unused Length: {}in".format(self.wood_pile.actual_unscarfed_length)
 		print "{} Pieces Unused: {}".format(self.wood_pile.piece_count, self.wood_pile.pieces_string)
 		print "{} Pieces Used: {}".format(len(pieces_used), pieces_used)
@@ -214,7 +220,7 @@ class StaveBuilder:
 	def swap_score(self, passive, active):
 		extra = active.owner.extra_length
 		delta = passive.length - active.length
-		double_scarf_delta = passive.double_scarfs - active.double_scarfs
+		double_scarf_delta = passive.double_scarfed_pieces - active.double_scarfed_pieces
 
 		if double_scarf_delta > active.owner.double_scarf_capacity:
 			return None
@@ -225,7 +231,6 @@ class StaveBuilder:
 		else:
 			count_change = passive.count - active.count
 			return delta + count_change * count_weight
-
 
 	def build_by_delta(self, max_delta_func):
 		while len(self.wood_pile.pieces) > 0:
@@ -266,9 +271,7 @@ def factor_list(items):
 piece_lengths = [50, 57, 57, 57, 58, 58, 59, 60, 60, 60, 60, 60, 60, 61, 61, 61, 62, 62, 62, 62, 62, 62, 62, 63, 64, 64, 64, 64, 64, 65, 65, 65, 66, 66, 66, 66, 66, 66, 66, 66, 67, 67, 68, 68, 69, 69, 70, 70, 70, 71, 73, 73, 73, 74, 75, 75, 75, 75, 75, 75, 75, 76, 76, 76, 76, 78, 78, 79, 79, 79, 79, 80, 80, 81, 81, 81, 81, 81, 82, 83, 83, 83, 84, 85, 86, 86, 86, 86, 87, 87, 88, 88, 88, 89, 89, 89, 89, 89, 89, 91, 91, 91, 93, 95, 95, 96, 96, 96, 96, 97, 97, 97, 97, 99, 99, 99, 100, 100, 100, 100, 101, 103, 109, 115, 116, 116, 117, 118, 118, 119, 120, 122, 123, 128, 128, 128, 134, 135, 136, 137, 138, 141, 142, 150, 151, 154, 155, 157, 157, 158, 160, 161, 162, 178, 192, 192, 214, 241, 241, 241, 241]
 double_scarfed_lengths = [96, 117, 132, 59, 65, 65, 76, 79]
 piece_lengths.sort()
-stave_lengths = [405] * 32
-
-#stave_lengths = [165] * 8 + [288] * 8 + [403] * 24
+stave_lengths = [397] * 28
 
 builder = StaveBuilder(stave_lengths, piece_lengths, double_scarfed_lengths)
 builder.print_data()
