@@ -22,7 +22,7 @@ module Mast
       pieces_used_count = pieces_used.count
       total_pieces = wood_pile.pieces.count + pieces_used_count
       total_used_length = staves.sum(&:actual_unscarfed_length)
-      scarf_example_length = staves.sum(&:desired_length)
+      scarf_example_length = staves.sum(&:desired_length) / stave_count
       total_scarfs = total_pieces - stave_count
       total_scarf_cuts = total_scarfs * 2
       scarf_cuts_remaining = total_scarf_cuts - total_pieces - staves.sum(&:double_scarfed_pieces)

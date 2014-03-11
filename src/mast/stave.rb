@@ -34,7 +34,7 @@ module Mast
       used = Set.new
       result = []
       @swap_sets.each do |set|
-        key = set.pieces.collect{ |piece| [piece.length, piece.double_scarfed ? 1 : 0] }
+        key = [set.length, set.pieces.count, set.double_scarfed_pieces]
         key.sort!
         result << set if used.add?(key)
       end
