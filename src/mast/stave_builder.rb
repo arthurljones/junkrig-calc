@@ -145,7 +145,7 @@ module Mast
 
         if target_stave
           pieces.shift
-          puts "Adding #{piece} to #{target_stave}"
+          #puts "Adding #{piece} to #{target_stave}"
           target_stave.add([piece])
         else
           break
