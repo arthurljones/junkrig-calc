@@ -8,16 +8,16 @@ module Mast
       super(Set.new)
       @desired_unscarfed_length = desired_length
       @desired_length = desired_unscarfed_length - SCARF_LENGTH
-      @swap_sets = Set.new
+      @swap_sets = Set[SwapSet.new([], self)]
     end
 
     def to_s
-      "Stave (#{desired_length}#{"%+i" % extra_length}in #{super})"
+      "Stave (#{desired_unscarfed_length}#{"%+i" % extra_length}in #{super})"
     end
 
     def add(new_pieces)
       new_pieces.each do |piece|
-        size_range = 1..(MAX_SWAP_SET_SIZE - 1)
+        size_range = 0..(MAX_SWAP_SET_SIZE - 1)
         combinations = size_range.collect{ |size| pieces.to_a.combination(size).to_a}.flatten(1)
         @swap_sets += combinations.map{ |combo| SwapSet.new(combo << piece, self) }
         super([piece])

@@ -1,12 +1,12 @@
 module Mast
   class StaveBuilder
     COUNT_WEIGHT = SCARF_LENGTH
+    STARVATION_LIMIT = 4
 
     attr_reader :staves, :wood_pile, :max_swaps
 
     def initialize(stave_lengths, single_scarf_lengths, double_scarf_lengths, max_swaps, extra_stave_length)
-      lengths = stave_lengths.map{|length| length + extra_stave_length}.sort
-      @staves = stave_lengths.collect{ |length| Stave.new(length) }
+      @staves = stave_lengths.map{|length| length + extra_stave_length}.sort.collect{ |length| Stave.new(length) }
       @wood_pile = WoodPile.new
       @max_swaps = max_swaps
 
@@ -61,16 +61,23 @@ module Mast
     end
 
     def swap_to_minimize_waste
+      starvations = 0
       @max_swaps.times do |iteration|
         puts "Iteration #{iteration + 1}:"
         if wood_pile.pieces.count == 0
-          overlong_stave = staves.max_by(&:extra_length)
-          puts overlong_stave
-          shortest_piece = overlong_stave.pieces.min_by(&:length)
-          active = SwapSet.new([shortest_piece], overlong_stave)
-          passive = SwapSet.new([], wood_pile)
-          passive.swap(active)
-          puts "\tWood pile starved - moving shortest piece of most overlong board"
+          if starvations >= STARVATION_LIMIT
+            puts "\tStarvation limit reached"
+            return
+          else
+            starvations += 1
+            overlong_stave = staves.max_by(&:extra_length)
+            shortest_piece = overlong_stave.pieces.min_by(&:length)
+            active = SwapSet.new([shortest_piece], overlong_stave)
+            passive = SwapSet.new([], wood_pile)
+            passive.swap(active)
+            puts "\tWood pile starved - pulling shortest piece of board with most extra length"
+            puts "\t#{overlong_stave} -> #{shortest_piece}"
+          end
         else
           if perform_best_swap == nil
             puts "\tNo more improvement"
@@ -79,7 +86,7 @@ module Mast
         end
       end
 
-      puts "Reached iteration limit"
+      puts "Iteration limit reached"
     end
 
     def perform_best_swap
@@ -121,7 +128,15 @@ module Mast
       if double_scarf_delta > active.owner.double_scarf_capacity
         nil
       elsif extra < 0
-        -(extra + delta)
+        if delta > 0
+          if delta < -extra
+            -delta
+          else
+            extra / delta
+          end
+        else
+          nil
+        end
       elsif extra + delta < 0
         nil
       else
@@ -145,7 +160,6 @@ module Mast
 
         if target_stave
           pieces.shift
-          #puts "Adding #{piece} to #{target_stave}"
           target_stave.add([piece])
         else
           break
