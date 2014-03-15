@@ -19,26 +19,25 @@ module Mast
       stave_count = staves.size
       overflow = staves.sum(&:extra_length)
       pieces_used = staves.collect{|stave| stave.pieces.to_a}.flatten.sort_by(&:length)
-      pieces_used_count = pieces_used.count
-      total_pieces = wood_pile.pieces.count + pieces_used_count
+      total_pieces_used = pieces_used.count
+      total_pieces = wood_pile.pieces.count + total_pieces_used
       total_used_length = staves.sum(&:actual_unscarfed_length)
       scarf_example_length = staves.sum(&:desired_length) / stave_count
-      total_scarfs = total_pieces - stave_count
+      total_scarfs = total_pieces_used - stave_count
       total_scarf_cuts = total_scarfs * 2
-      scarf_cuts_remaining = total_scarf_cuts - total_pieces - staves.sum(&:double_scarfed_pieces)
+      scarf_cuts_remaining = total_scarf_cuts - total_pieces_used - staves.sum(&:double_scarfed_pieces)
 
       puts "#{total_pieces} Pieces, #{stave_count} Staves:"
       staves.each { |stave| puts stave }
+      puts "#{total_pieces_used} Pieces Used: #{pieces_used}"
+      puts "#{wood_pile.pieces.count} Pieces Unused: #{wood_pile.pieces}"
       puts "Total used length: #{total_used_length}in"
       puts "Total extra length: #{overflow}in"
       puts "Average extra length: #{"%.1f" % (overflow / stave_count)}in"
-      puts "Total pieces used: #{total_pieces}"
-      puts "Average pieces per stave: #{"%.1f" % (total_pieces / stave_count)}"
-      puts "Average pieces per #{"%.1f" % (scarf_example_length / 12)}ft: #{"%.1f" % (scarf_example_length / (total_used_length / total_pieces))}"
+      puts "Average pieces per stave: #{"%.1f" % (total_pieces_used / stave_count)}"
+      puts "Average pieces per #{"%.1f" % (scarf_example_length / 12)}ft: #{"%.1f" % (scarf_example_length / (total_used_length / total_pieces_used))}"
       puts "Scarfs: Total: #{total_scarfs}, Total Cuts: #{total_scarf_cuts}, Cuts remaining: #{scarf_cuts_remaining}"
       puts "Unused Length: #{wood_pile.actual_unscarfed_length}in"
-      puts "#{wood_pile.pieces.count} Pieces Unused: #{wood_pile.pieces}"
-      puts "#{pieces_used_count} Pieces Used: #{pieces_used}"
     end
 
     def initial_distribution(single_scarf_lengths, double_scarf_lengths)
