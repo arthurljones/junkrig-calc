@@ -10,9 +10,13 @@ module Mast
       @wood_pile = WoodPile.new
       @max_swaps = max_swaps
 
+      ap "init"
       extras = initial_distribution(single_scarf_lengths, double_scarf_lengths)
+      ap "extras #{extras.size}"
       wood_pile.add(extras)
+      ap "swapping"
       swap_to_minimize_waste
+      ap "done"
     end
 
     def print_data
@@ -145,8 +149,7 @@ module Mast
     end
 
     def distribute_by_shortest_staves(pieces, &worst_case)
-      while pieces.any?
-        piece = pieces.first
+      pieces.delete_if do |piece|
         best_new_extra = worst_case.call(piece)
         target_stave = nil
         staves.each do |stave|
@@ -158,10 +161,10 @@ module Mast
         end
 
         if target_stave
-          pieces.shift
           target_stave.add([piece])
+          true
         else
-          break
+          false
         end
       end
     end

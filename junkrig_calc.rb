@@ -34,13 +34,13 @@ def draw_sail
     file.close
   end
 
-  stop = Time.now
-  puts "Rendered first in #{((stop - start) * 1000).round(2)}ms"
+  #stop = Time.now
+  #puts "Rendered first in #{((stop - start) * 1000).round(2)}ms"
 end
 
 def calculate_mast_pieces
   piece_lengths = [
-    48,
+    #48,
     54, 54, 56, 57, 57, 57, 57, 58, 58, 58, 58, 59, 59,
     60, 60, 60, 60, 60, 60, 60, 61, 61, 61, 62, 62, 62, 62, 63, 64, 65, 66, 66, 67, 67, 67, 67, 67, 68, 68, 68, 69, 69,
     70, 71, 71, 72, 75, 75, 75, 75, 75, 76, 76, 79, 79, 79, 79, 79,
@@ -48,7 +48,8 @@ def calculate_mast_pieces
     91, 93, 95, 95, 95, 96, 96, 96, 96, 97, 97, 97, 98, 99, 99, 99,
     100, 100, 101, 101, 113, 115, 116, 118, 119, 120, 136, 137, 138, 141, 142, 155, 157, 157, 160, 161, 178,
     241,
-    53, 54, 54, 55, 58, 63, 65, 65, 65, 68, 71, 78, 85, 86, 87, 93, 96, 97, 100, 103, 106
+    53, 54, 54, 55, 58, 63, 65, 65, 65, 68,
+    71, 78, 85, 86, 87, 93, 96, 97, 100, 103, 106
   ]
 
 
@@ -57,14 +58,16 @@ def calculate_mast_pieces
     61, 61, 62, 64, 64, 64, 64, 64, 65, 65, 65, 68, 69, 69,
     71, 72, 74, 74, 74, 75, 76, 76, 77, 77, 78, 79, 79, 89, 89, 91, 96,
     112, 115, 117,
-    56,	60,	64,	81,	87
+    56,	60,	64,
+    81,	87
   ]
   
   piece_lengths.sort!
-  stave_lengths = [397] * 28
+  stave_lengths = [245] * 9 + [96] * 30 + [397] * 4 #[240] * 28 #397
 
-  builder = Mast::StaveBuilder.new(stave_lengths, piece_lengths, double_scarfed_lengths, 70, 8)
+  builder = Mast::StaveBuilder.new(stave_lengths, piece_lengths, double_scarfed_lengths, 70, 4)
   builder.print_data
 end
 
 calculate_mast_pieces
+#draw_sail
