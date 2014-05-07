@@ -89,7 +89,7 @@ height = image.size[1]
 
 print "image size: {}x{} in".format(float(width)/pixels_per_inch, float(height)/pixels_per_inch)
 
-#ByX(image, pixels).findCenterOfMass()
-y_center = ByY(image, pixels).findCenterOfMass(pixels_per_inch)
+ByX(image, pixels).findCenterOfMass(10)
 
-ByY(image, pixels).findMoment(y_center, pixels_per_inch)
+#y_center = ByY(image, pixels).findCenterOfMass(pixels_per_inch)
+#ByY(image, pixels).findMoment(y_center, pixels_per_inch)

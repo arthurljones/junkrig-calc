@@ -53,11 +53,11 @@ module SVG
     end
 
     def circle(center, radius, options = {})
-      center = absolute_transform * center
+      center = (absolute_transform * center).to("in").unitless
       options = options.merge(
         :cx => center.x,
         :cy => center.y,
-        :r => radius,
+        :r => radius.to("in").scalar,
       )
 
       child(:circle, options)
@@ -69,7 +69,7 @@ module SVG
         :fill => "#000000",
         :font_size => 10,
       }
-      anchor = absolute_transform * anchor
+      anchor = (absolute_transform * anchor).to("in").unitless
       options[:x] = anchor.x
       options[:y] = anchor.y
 

@@ -1,7 +1,7 @@
 module JunkSail
   class Sail
     BATTEN_STAGGER = 0.01
-    BATTEN_TO_HEAD_PANEL_LUFF = 0.03
+    BATTEN_TO_HEAD_PANEL_LUFF = 9/(25*12)
     BATTEN_TO_MAST_OFFSET = 0.05
 
     attr_reader :parallelogram_luff, :batten_length, :lower_panel_count, :head_panel_count, :yard_angle, :min_sheet_ratio, :sheet_area_width
@@ -50,7 +50,7 @@ module JunkSail
     end
 
     cached_constant def head_panel_luff
-      (batten_length * BATTEN_TO_HEAD_PANEL_LUFF).round
+      (batten_length * BATTEN_TO_HEAD_PANEL_LUFF).to("in").round(0).to("ft")
     end
 
     cached_constant def tack
@@ -77,8 +77,8 @@ module JunkSail
       throat + yard_span / 2
     end
 
-    cached_constant def mast_from_tack
-      sling_point.x - batten_length * BATTEN_TO_MAST_OFFSET
+    cached_constant def sling_point_mast_distance
+      batten_length * BATTEN_TO_MAST_OFFSET
     end
 
     cached_constant def image_bounds
@@ -110,6 +110,7 @@ module JunkSail
     end
 
     cached_constant def area
+      panels.each { |panel| ap "Panel area: #{panel.area}" }
       panels.sum(&:area)
     end
 
@@ -136,21 +137,14 @@ module JunkSail
     end
 
     def draw_sail(group)
-      sq_feet = (area / 144).round(0)
+      square_ft = area.to("ft^2").round(0).scalar
+      ap "Sail Area: #{square_ft}"
 
       group.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
-      group.layer("Mast Locator") do |l|
-        l.build_path(:closed => false) do |path|
-          path.move(Vector2.new(mast_from_tack, 0))
-          path.relative
-          path.line(Vector2.new(0, 12))
-          path.move(Vector2.new(-6, -12))
-          path.line(Vector2.new(12, 0))
-        end
-      end
-      group.layer("Sling Point") { |l| l.circle(sling_point, 3) }
-      group.layer("Center of Effort") { |l| l.circle(center, 3) }
-      group.layer("Area") { |l| l.text(center + Vector2.new(0, -12), "#{sq_feet} ft²") }
+      group.layer("Mast Distance") { |l| l.circle(sling_point, sling_point_mast_distance) }
+      group.layer("Sling Point") { |l| l.circle(sling_point, Unit(3, "in")) }
+      group.layer("Center of Effort") { |l| l.circle(center, Unit(3, "in")) }
+      group.layer("Area") { |l| l.text(center + Vector2.new(0, -12), "#{square_ft} ft²") }
     end
 
     def draw_sheet_zone(group)

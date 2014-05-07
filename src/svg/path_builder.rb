@@ -39,7 +39,7 @@ module SVG
 
     def arc(vector, radius, rotation = 0, sweep = true, clockwise = true)
       radius = Vector2.new(radius, radius) if Numeric === radius
-      radius = scale(radius.to("in"))
+      radius = scale(radius.to("in")).unitless
       add_command(:a, radius.x, radius.y, rotation, bool(sweep), bool(clockwise), vector)
     end
 
