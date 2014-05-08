@@ -51,7 +51,7 @@ def calculate_mast_pieces
   ]
 
   yard_staves = [245] * (8)
-  tabernacle_staves = [143] * 14 + [98*2] * (20/2)
+  tabernacle_staves = [143] * 13 + [98*2] * (18/2)
   stave_lengths = yard_staves + tabernacle_staves
 
   builder = Mast::StaveBuilder.new(stave_lengths, single_scarfed_lengths, double_scarfed_lengths, 70, 4)

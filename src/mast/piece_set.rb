@@ -1,35 +1,68 @@
 module Mast
   class PieceSet
+  protected
+    attr_accessor :pieces, :raw_length, :double_scarfed_pieces, :double_scarf_capacity
 
-    attr_reader :pieces, :length, :double_scarfed_pieces, :double_scarf_capacity
+  public
+    attr_reader :pieces, :double_scarfed_pieces, :double_scarf_capacity
 
-    def initialize(initial_pieces = Set.new)
-      @pieces = Set.new
-      @length = 0
-      @double_scarfed_pieces = 0
-      @double_scarf_capacity = -2
+    def initialize(initial)
+      if PieceSet === initial
+        self.pieces = Set.new(initial.pieces)
+        self.raw_length = initial.raw_length
+        self.double_scarfed_pieces = initial.double_scarfed_pices
+        self.double_scarf_capacity = initial.double_scarfed_capacity
+      else
+        self.pieces = Set.new(initial)
+        self.raw_length = pieces.sum(&:length)
+        self.double_scarfed_pieces = pieces.count(&:double_scarfed)
+        self.double_scarf_capacity = pieces.length - (double_scarfed_pieces + 2)
+      end
+    end
 
-      add(initial_pieces) if initial_pieces.any?
+    def length
+      len = @raw_length
+      len += @double_scarf_capacity * SCARF_LENGTH if @double_scarf_capacity < 0
+      len
     end
 
     def to_s
       "[#{pieces.to_a.join(", ")}]"
     end
 
-    def add(new_pieces)
-      @pieces.merge(new_pieces)
-      @length += new_pieces.sum(&:length)
-      double_scarfed_pieces = new_pieces.count(&:double_scarfed)
-      @double_scarfed_pieces += double_scarfed_pieces
-      @double_scarf_capacity += new_pieces.count - double_scarfed_pieces
+    def +(other)
+      new(self) << other
     end
 
-    def remove(old_pieces)
-      @pieces.subtract(old_pieces)
-      @length -= old_pieces.sum(&:length)
-      double_scarfed_pieces = old_pieces.count(&:double_scarfed)
-      @double_scarfed_pieces -= double_scarfed_pieces
-      @double_scarf_capacity -= old_pieces.count - double_scarfed_pieces
+    def -(other)
+      new(self) >> other
     end
+
+    def <<(other)
+      other = coerce(other)
+      raise "Attempting to add pieces that are present" unless pieces.disjoint?(other.pieces)
+      pieces.merge(other.pieces)
+      self.raw_length += other.raw_length
+      self.double_scarfed_pieces += other.double_scarfed_pieces
+      self.double_scarf_capacity += other.double_scarf_capacity + 2
+      self
+    end
+
+    def >>(other)
+      other = coerce(other)
+      raise "Attempting to add pieces that are present" unless other.pieces.subset?(pieces)
+      pieces.subtract(other.pieces)
+      self.raw_length -= other.raw_length
+      self.double_scarfed_pieces -= other.double_scarfed_pieces
+      self.double_scarf_capacity -= other.double_scarf_capacity + 2
+      self
+    end
+
+  protected
+
+    def coerce(other)
+      PieceSet === other ? other : PieceSet.new(other)
+    end
+
   end
 end

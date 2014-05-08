@@ -6,14 +6,13 @@ module Mast
     attr_reader :staves, :wood_pile, :max_swaps
 
     def initialize(stave_lengths, single_scarf_lengths, double_scarf_lengths, max_swaps, extra_stave_length)
-      @staves = stave_lengths.map{|length| length + extra_stave_length}.sort.collect{ |length| Stave.new(length) }
-      @wood_pile = WoodPile.new
+      @staves = stave_lengths.map{|length| length + extra_stave_length}.sort.collect{ |length| Stave.new(nil, length) }
       @max_swaps = max_swaps
 
       ap "init"
       extras = initial_distribution(single_scarf_lengths, double_scarf_lengths)
       ap "extras #{extras.size}"
-      wood_pile.add(extras)
+      @wood_pile = WoodPile.new(extras)
       ap "swapping"
       swap_to_minimize_waste
       ap "done"
@@ -124,13 +123,17 @@ module Mast
     end
 
     def swap_score(passive, active)
+      active_pieces = active.pieces.count
+      passive_pieces = passive.pieces.count
+      return nil if active_pieces + passive_pieces == 0
       extra = active.owner.extra_length
       delta = passive.length - active.length
-      double_scarf_delta = passive.double_scarfed_pieces - active.double_scarfed_pieces
 
-      if double_scarf_delta > active.owner.double_scarf_capacity
-        nil
-      elsif extra < 0
+      double_scarf_delta = active.double_scarfed_pieces - passive.double_scarfed_pieces
+      double_scarf_extra = double_scarf_delta - active.owner.double_scarf_capacity
+      delta += double_scarf_extra * SCARF_LENGTH if double_scarf_extra > 0
+
+      if extra < 0
         if delta > 0
           if delta < -extra
             -delta
@@ -143,7 +146,7 @@ module Mast
       elsif extra + delta < 0
         nil
       else
-        count_change = passive.pieces.count - active.pieces.count
+        count_change = passive_pieces - active_pieces
         delta + count_change * COUNT_WEIGHT
       end
     end
@@ -154,14 +157,14 @@ module Mast
         target_stave = nil
         staves.each do |stave|
           new_extra = stave.extra_length + piece.length
-          if new_extra < best_new_extra && (stave.double_scarf_capacity > 0 || !piece.double_scarfed)
+          if new_extra < best_new_extra# && (stave.double_scarf_capacity > 0 || !piece.double_scarfed)
             best_new_extra = new_extra
             target_stave = stave
           end
         end
 
         if target_stave
-          target_stave.add([piece])
+          target_stave << [piece]
           true
         else
           false

@@ -1,7 +1,7 @@
 module Mast
   class WoodPile < Stave
-    def initialize
-      super(0)
+    def initialize(initial)
+      super(initial)
       @desired_unscarfed_length = 0
       @desired_length = 0
     end

@@ -8,11 +8,11 @@ module Mast
     end
 
     def swap(other)
-      owner.remove(pieces)
-      other.owner.remove(other.pieces)
+      owner >> pieces
+      other.owner >> other.pieces
 
-      owner.add(other.pieces)
-      other.owner.add(pieces)
+      owner << other.pieces
+      other.owner << pieces
     end
   end
 end
