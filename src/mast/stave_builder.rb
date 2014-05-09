@@ -33,7 +33,7 @@ module Mast
       puts "#{total_pieces} Pieces, #{stave_count} Staves:"
       staves.each { |stave| puts stave }
       puts "#{total_pieces_used} Pieces Used: #{pieces_used}"
-      puts "#{wood_pile.pieces.count} Pieces Unused: #{wood_pile.pieces}"
+      puts "#{wood_pile.count} Pieces Unused: #{wood_pile.pieces}"
       puts "Total used length: #{total_used_length}in"
       puts "Total extra length: #{overflow}in"
       puts "Average extra length: #{"%.1f" % (overflow / stave_count)}in"
@@ -66,7 +66,7 @@ module Mast
       starvations = 0
       @max_swaps.times do |iteration|
         puts "Iteration #{iteration + 1}:"
-        if wood_pile.pieces.count == 0
+        if wood_pile.count == 0
           if starvations >= STARVATION_LIMIT
             puts "\tStarvation limit reached"
             return
@@ -123,15 +123,14 @@ module Mast
     end
 
     def swap_score(passive, active)
-      active_pieces = active.pieces.count
-      passive_pieces = passive.pieces.count
-      return nil if active_pieces + passive_pieces == 0
-      extra = active.owner.extra_length
-      delta = passive.length - active.length
+      return nil if active.count + passive.count == 0
 
-      double_scarf_delta = active.double_scarfed_pieces - passive.double_scarfed_pieces
-      double_scarf_extra = double_scarf_delta - active.owner.double_scarf_capacity
-      delta += double_scarf_extra * SCARF_LENGTH if double_scarf_extra > 0
+      current = active.owner
+      result = active.test_swap(passive)
+
+      extra = current.extra_length
+      delta = result.length - current.length
+      count_delta = result.count - current.count
 
       if extra < 0
         if delta > 0
@@ -146,8 +145,7 @@ module Mast
       elsif extra + delta < 0
         nil
       else
-        count_change = passive_pieces - active_pieces
-        delta + count_change * COUNT_WEIGHT
+        delta + count_delta * COUNT_WEIGHT
       end
     end
 

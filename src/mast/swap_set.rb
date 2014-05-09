@@ -7,12 +7,19 @@ module Mast
       @owner = owner
     end
 
-    def swap(other)
-      owner >> pieces
-      other.owner >> other.pieces
+    def test_swap(other)
+      result = owner.for_results
+      result >> self
+      result << other
+      result
+    end
 
-      owner << other.pieces
-      other.owner << pieces
+    def swap(other)
+      owner >> self
+      other.owner >> other
+
+      owner << other
+      other.owner << self
     end
   end
 end

@@ -2,6 +2,12 @@ module Mast
   class Stave < PieceSet
     MAX_SWAP_SET_SIZE = 2
 
+  protected
+
+    attr_accessor :swap_sets
+
+  public
+
     attr_reader :desired_unscarfed_length, :desired_length
 
     def initialize(initial = nil, desired_length = 0)
@@ -20,26 +26,38 @@ module Mast
     end
 
     def <<(other)
-      other = coerce(other)
-      other.pieces.each do |piece|
-        size_range = 0..(MAX_SWAP_SET_SIZE - 1)
-        combinations = size_range.collect{ |size| pieces.to_a.combination(size).to_a}.flatten(1)
-        @swap_sets += combinations.map{ |combo| SwapSet.new(combo << piece, self) }
-        super([piece])
+      if @swap_sets
+        other = coerce(other)
+        other.pieces.each do |piece|
+          size_range = 0..(MAX_SWAP_SET_SIZE - 1)
+          combinations = size_range.collect{ |size| pieces.to_a.combination(size).to_a}.flatten(1)
+          @swap_sets += combinations.map{ |combo| SwapSet.new(combo << piece, self) }
+          super([piece])
+        end
+      else
+        super
       end
     end
 
     def >>(other)
-      other = coerce(other)
-      @swap_sets.delete_if{ |set| set.pieces.intersect?(other.pieces) }
+      if @swap_sets
+        other = coerce(other)
+        @swap_sets.delete_if{ |set| set.pieces.intersect?(other.pieces) }
+      end
       super(other)
+    end
+
+    def for_results
+      result = super
+      result.swap_sets = nil
+      result
     end
 
     def unique_swap_sets
       used = Set.new
       result = []
       @swap_sets.each do |set|
-        key = [set.length, set.pieces.count, set.double_scarfed_pieces]
+        key = [set.length, set.count, set.double_scarfed_pieces]
         key.sort!
         result << set if used.add?(key)
       end
@@ -47,7 +65,7 @@ module Mast
     end
 
     def actual_unscarfed_length
-      length + SCARF_LENGTH * pieces.count
+      length + SCARF_LENGTH * count
     end
 
     def extra_length
