@@ -132,6 +132,10 @@ module Mast
       delta = result.length - current.length
       count_delta = result.count - current.count
 
+      current_double_extra = [current.double_scarf_extra, 0].max
+      result_double_extra = [result.double_scarf_extra, 0].max
+      double_extra_delta = result_double_extra - current_double_extra
+
       if extra < 0
         if delta > 0
           if delta < -extra
@@ -145,7 +149,7 @@ module Mast
       elsif extra + delta < 0
         nil
       else
-        delta + count_delta * COUNT_WEIGHT
+        delta + count_delta * COUNT_WEIGHT + double_extra_delta * SCARF_LENGTH
       end
     end
 

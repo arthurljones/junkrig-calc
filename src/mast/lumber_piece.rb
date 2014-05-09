@@ -6,7 +6,7 @@ module Mast
 
     def initialize(length, double_scarfed = false)
       @unscarfed_length = length
-      @length = length - SCARF_LENGTH - NOMINAL_DIFFERENCE
+      @length = length - NOMINAL_DIFFERENCE
       @double_scarfed = double_scarfed
       @to_s = "#{unscarfed_length}in"
       @to_s += "-D" if double_scarfed

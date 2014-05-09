@@ -12,20 +12,21 @@ module Mast
         self.count = initial.count
         self.raw_length = initial.raw_length
         self.double_scarfed_pieces = initial.double_scarfed_pices
-        self.double_scarf_capacity = initial.double_scarfed_capacity
       else
         self.pieces = Set.new(initial)
         self.count = pieces.count
         self.raw_length = pieces.sum(&:length)
         self.double_scarfed_pieces = pieces.count(&:double_scarfed)
-        self.double_scarf_capacity = pieces.length - (double_scarfed_pieces + 2)
       end
     end
 
     def length
-      len = @raw_length
-      len += @double_scarf_capacity * SCARF_LENGTH if @double_scarf_capacity < 0
-      len
+      scarf_loss_count = count - 1 + [double_scarf_extra, 0].max
+      raw_length - scarf_loss_count * SCARF_LENGTH
+    end
+
+    def double_scarf_extra
+      double_scarfed_pieces + 2 - count
     end
 
     def to_s
@@ -49,7 +50,6 @@ module Mast
       self.raw_length += other.raw_length
       self.count += other.count
       self.double_scarfed_pieces += other.double_scarfed_pieces
-      self.double_scarf_capacity += other.double_scarf_capacity + 2
       self
     end
 
@@ -62,7 +62,6 @@ module Mast
       self.raw_length -= other.raw_length
       self.count -= other.count
       self.double_scarfed_pieces -= other.double_scarfed_pieces
-      self.double_scarf_capacity -= other.double_scarf_capacity + 2
       self
     end
 
