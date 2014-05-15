@@ -5,8 +5,8 @@ module Mast
 
     attr_reader :staves, :wood_pile, :max_swaps
 
-    def initialize(stave_lengths, single_scarf_lengths, double_scarf_lengths, max_swaps, extra_stave_length)
-      @staves = stave_lengths.map{|length| length + extra_stave_length}.sort.collect{ |length| Stave.new(nil, length) }
+    def initialize(staves, single_scarf_lengths, double_scarf_lengths, max_swaps)
+      @staves = staves
       @max_swaps = max_swaps
 
       ap "init"
@@ -41,6 +41,22 @@ module Mast
       puts "Average pieces per #{"%.1f" % (scarf_example_length / 12)}ft: #{"%.1f" % (scarf_example_length / (total_used_length / total_pieces_used))}"
       puts "Scarfs: Total: #{total_scarfs}, Total Cuts: #{total_scarf_cuts}, Cuts remaining: #{scarf_cuts_remaining}"
       puts "Unused Length: #{wood_pile.actual_unscarfed_length}in"
+
+      if overflow < 0
+        shortage_ft = -overflow / 12
+        useful_ratio = 0.65
+        price_per_ft = 0.6
+        staves_per_board = 3
+        board_length_ft = 16
+        required_ft = shortage_ft / useful_ratio / staves_per_board
+        required_boards = (required_ft / board_length_ft).ceil
+        price = required_boards * board_length_ft * price_per_ft
+
+        puts "Lumber Shortage: #{"%.1f" % shortage_ft}ft"
+        puts "Required lumber with #{((1 - useful_ratio) * 100).to_i}% waste: #{"%.1f" % required_ft}ft"
+        puts "Required #{board_length_ft}ft boards: #{required_boards}"
+        puts "Total lumber cost at $#{"%.2f" % price_per_ft}: $#{"%.2f" % price}"
+      end
     end
 
     def initial_distribution(single_scarf_lengths, double_scarf_lengths)
@@ -73,7 +89,7 @@ module Mast
           else
             starvations += 1
             overlong_stave = staves.max_by(&:extra_length)
-            shortest_piece = overlong_stave.pieces.min_by(&:length)
+            shortest_piece = overlong_stave.pieces.reject(&:locked?).min_by(&:length)
             active = SwapSet.new([shortest_piece], overlong_stave)
             passive = SwapSet.new([], wood_pile)
             passive.swap(active)
@@ -124,6 +140,7 @@ module Mast
 
     def swap_score(passive, active)
       return nil if active.count + passive.count == 0
+      return nil if active.pieces.any?(&:locked?) || passive.pieces.any?(&:locked?)
 
       current = active.owner
       result = active.test_swap(passive)

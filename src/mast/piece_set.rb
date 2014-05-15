@@ -4,14 +4,14 @@ module Mast
     attr_accessor :pieces, :count, :raw_length, :double_scarfed_pieces, :double_scarf_capacity
 
   public
-    attr_reader :pieces, :count, :double_scarfed_pieces, :double_scarf_capacity
+    attr_reader :pieces, :unlocked_pieces, :count, :double_scarfed_pieces, :double_scarf_capacity
 
     def initialize(initial)
       if PieceSet === initial
         self.pieces = Set.new(initial.pieces) if initial.pieces
         self.count = initial.count
         self.raw_length = initial.raw_length
-        self.double_scarfed_pieces = initial.double_scarfed_pices
+        self.double_scarfed_pieces = initial.double_scarfed_pieces
       else
         self.pieces = Set.new(initial)
         self.count = pieces.count
@@ -34,11 +34,11 @@ module Mast
     end
 
     def +(other)
-      new(self) << other
+      self.class.new(self) << other
     end
 
     def -(other)
-      new(self) >> other
+      self.class.new(self) >> other
     end
 
     def <<(other)

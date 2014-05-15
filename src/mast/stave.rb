@@ -4,34 +4,34 @@ module Mast
 
   protected
 
-    attr_accessor :swap_sets
+    attr_accessor :swap_sets, :name
 
   public
 
     attr_reader :desired_unscarfed_length, :desired_length
 
-    def initialize(initial = nil, desired_length = 0)
+    def initialize(initial = nil, desired_length = 0, name = "?")
       super([])
+      @name = name
       @swap_sets = Set[SwapSet.new([], self)]
       @desired_unscarfed_length = desired_length
       @desired_length = desired_unscarfed_length - SCARF_LENGTH
-      if initial
-        initial = PieceSet.new(initial) unless PieceSet === initial
-        self << initial
-      end
+      self << coerce(initial) if initial
     end
 
     def to_s
-      "Stave (#{desired_unscarfed_length}#{"%+i" % extra_length}in #{super})"
+      "Stave #{name} (#{desired_unscarfed_length}#{"%+i" % extra_length}in #{super})"
     end
 
     def <<(other)
       if @swap_sets
         other = coerce(other)
         other.pieces.each do |piece|
-          size_range = 0..(MAX_SWAP_SET_SIZE - 1)
-          combinations = size_range.collect{ |size| pieces.to_a.combination(size).to_a}.flatten(1)
-          @swap_sets += combinations.map{ |combo| SwapSet.new(combo << piece, self) }
+          unless piece.locked?
+            size_range = 0..(MAX_SWAP_SET_SIZE - 1)
+            combinations = size_range.collect{ |size| pieces.to_a.combination(size).to_a}.flatten(1)
+            @swap_sets += combinations.map{ |combo| SwapSet.new(combo << piece, self) }
+          end
           super([piece])
         end
       else

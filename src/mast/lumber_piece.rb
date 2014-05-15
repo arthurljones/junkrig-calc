@@ -17,11 +17,23 @@ module Mast
     end
 
     def to_s
-      @to_s
+      @to_s + (locked? ? "(L)" : '')
     end
 
     def <=>(other)
       length <=> other.length || (double_scarfed ? 1 : 0) <=> (other.double_scarfed ? 1 : 0)
+    end
+
+    def locked?
+      @locked
+    end
+
+    def lock
+      @locked = true
+    end
+
+    def unlock
+      @locked = false
     end
   end
 end
