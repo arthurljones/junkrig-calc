@@ -4,7 +4,6 @@ require 'bundler/setup'
 Bundler.require
 Dir.glob("src/**/*.rb").each { |file| require_relative file }
 
-
 def draw_sail
   sail = JunkSail::Sail.new(
     parallelogram_luff: Unit(14, "ft"),

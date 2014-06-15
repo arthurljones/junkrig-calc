@@ -17,7 +17,7 @@ module Mast
     end
 
     def to_s
-      @to_s + (locked? ? "(L)" : '')
+      @to_s #+ (locked? ? "(L)" : '')
     end
 
     def <=>(other)
