@@ -1,3 +1,5 @@
+require_relative 'piece_set'
+
 module Mast
   class Stave < PieceSet
     MAX_SWAP_SET_SIZE = 2

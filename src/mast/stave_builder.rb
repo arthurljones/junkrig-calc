@@ -1,3 +1,5 @@
+require_relative 'mast'
+
 module Mast
   class StaveBuilder
     COUNT_WEIGHT = SCARF_LENGTH
