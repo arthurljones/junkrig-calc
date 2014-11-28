@@ -66,10 +66,9 @@ RSpec.describe CrossSections::Tube do
       expect(default_tube.extreme_fiber_radius).to eq Unit("0.5 in")
     end
   end
-  
+
   describe "#area" do
     it "returns the area" do
-      pending "implementation"
       expect(default_tube.area).to eq Unit("0.34361169648 in^2")
     end
   end
