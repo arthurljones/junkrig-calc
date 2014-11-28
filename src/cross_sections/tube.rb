@@ -27,11 +27,11 @@ module CrossSections
     end
 
     def area
-      Math.PI * (outer_radius**2 - inner_radius**2)
+      Math::PI * (outer_radius**2 - inner_radius**2)
     end
 
     def second_moment_of_area
-
+      Math::PI/4 * (outer_radius**4 - inner_radius**4)
     end
 
     def extreme_fiber_radius

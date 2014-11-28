@@ -69,22 +69,20 @@ RSpec.describe CrossSections::Tube do
 
   describe "#area" do
     it "returns the area" do
-      expect(default_tube.area).to eq Unit("0.34361169648 in^2")
+      expect(default_tube.area).to be_within("0.00000001 in^2").of "0.34361170 in^2"
     end
   end
 
   describe "#second_moment_of_area" do
     it "returns the second moment of area" do
-      pending "implementation"
-      expect(default_tube.second_moment_of_area).to eq Unit("0.03355582973 in^4")
+      expect(default_tube.second_moment_of_area).to be_within("0.00000001 in^4").of "0.03355583 in^4"
     end
   end
 
 
   describe "#elastic_section_modulus" do
     it "returns the second moment of area" do
-      pending "implementation"
-      expect(default_tube.elastic_section_modulus).to eq Unit("0.06711165947 in^3")
+      expect(default_tube.elastic_section_modulus).to be_within("0.00000001 in^3").of "0.06711166 in^3"
     end
   end
 
