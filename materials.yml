@@ -1,0 +1,64 @@
+- name: Douglass Fir
+  yield_strength: 7230 psi
+  density: 0.0191 lbs/in^3
+  modulus_of_elasticity: 1.886e6 psi
+
+- name: Sitka Spruce
+  yield_strength: 6700 psi
+  density: 0.0134 lbs/in^3
+  modulus_of_elasticity: 11.03 GPa
+
+- name: 6061-T6 Aluminum
+  yield_strength: 40000 psi
+  density: 0.0975 lbs/in^3
+  modulus_of_elasticity: 1.0e7 psi
+
+- name: 6063-T6 Aluminum
+  yield_strength: 31000 psi
+  density: 0.0975 lbs/in^3
+  modulus_of_elasticity: 1.0e7 psi
+
+- name: Mild Steel
+  yield_strength: 36000 psi
+  density: 0.284 lbs/in^3
+  modulus_of_elasticity: 2.9e7 psi
+
+- name: 316 Stainless Steel
+  yield_strength: 29700 psi
+  density: 0.289 lbs/in^3
+  modulus_of_elasticity: 2.8e7 psi
+
+- name: 304 Stainless Steel
+  yield_strength: 31200 psi
+  density: 0.289 lbs/in^3
+  modulus_of_elasticity: 2.8e7 psi
+
+- name: White Ash
+  yield_strength: 7400 psi
+  density: 0.02373 lbs/in^3
+  modulus_of_elasticity: 12.00 GPa
+
+- name: Grade B7 Bolt
+  yield_strength: 105000 psi
+  density: 0.284 lbs/in^3
+  modulus_of_elasticity: 3.0e7 psi
+
+- name: Cold Rolled Steel
+  yield_strength: 54000 psi
+  density: 0.284 lbs/in^3
+  modulus_of_elasticity: 200 GPa
+
+- name: Bamboo
+  yield_strength: 20600 psi
+  density: 0.02387 lbs/in^3
+  modulus_of_elasticity: 2.3e6 psi
+
+- name: Fiberglass
+  yield_strength: 21300 psi
+  density: 0.055 lbs/in^3
+  modulus_of_elasticity: 2.47e6 psi
+
+- name: Unidirection Fiberglass
+  yield_strength: 60000 psi
+  density: 0.055 lbs/in^3
+  modulus_of_elasticity: 6.0e6 psi
