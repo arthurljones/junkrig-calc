@@ -35,10 +35,10 @@ RSpec.describe CrossSections::Tube do
     end
 
     it "disallows invalid values" do
-      pending "implementation of this validation"
-      options = default_options
-      options[:outer_diameter] = "-5 in"
-      expect{CrossSections::Tube.new(options)}.to raise_error
+      expect{CrossSections::Tube.new(default_options.merge(:outer_diameter => "0 in"))}.to raise_error
+      expect{CrossSections::Tube.new(default_options.merge(:outer_diameter => "-5 in"))}.to raise_error
+      expect{CrossSections::Tube.new(default_options.merge(:wall_thickness => "0 in"))}.to raise_error
+      expect{CrossSections::Tube.new(default_options.merge(:wall_thickness => "-5 in"))}.to raise_error
     end
 
   end

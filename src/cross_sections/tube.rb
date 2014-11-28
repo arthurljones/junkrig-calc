@@ -12,6 +12,8 @@ module CrossSections
       :wall_thickness => { :required => :true, :units => "in" },
     ) do |options|
       @outer_radius = options[:outer_diameter] / 2.0
+      raise "outer_diameter must be more than 0" unless outer_diameter > "0 in"
+      raise "wall_thickness must be more than 0" unless wall_thickness > "0 in"
     end
 
     def outer_diameter
