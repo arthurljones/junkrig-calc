@@ -23,9 +23,9 @@ RSpec.describe CrossSections::Tube do
 
     it "converts compatible units" do
       options = default_options
-      options[:outer_diameter] = "25.4 mm"
+      options[:outer_diameter] = "50.8 mm"
       tube = CrossSections::Tube.new(options)
-      expect(tube.outer_diameter).to eq "1 in"
+      expect(tube.outer_diameter).to eq "2 in"
     end
 
     it "disallows mismatched units" do
@@ -61,5 +61,32 @@ RSpec.describe CrossSections::Tube do
     end
   end
 
+  describe "#extreme_fiber_radius" do
+    it "returns the second moment of area" do
+      expect(default_tube.extreme_fiber_radius).to eq Unit("0.5 in")
+    end
+  end
+  
+  describe "#area" do
+    it "returns the area" do
+      pending "implementation"
+      expect(default_tube.area).to eq Unit("0.34361169648 in^2")
+    end
+  end
+
+  describe "#second_moment_of_area" do
+    it "returns the second moment of area" do
+      pending "implementation"
+      expect(default_tube.second_moment_of_area).to eq Unit("0.03355582973 in^4")
+    end
+  end
+
+
+  describe "#elastic_section_modulus" do
+    it "returns the second moment of area" do
+      pending "implementation"
+      expect(default_tube.elastic_section_modulus).to eq Unit("0.06711165947 in^3")
+    end
+  end
 
 end
