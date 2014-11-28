@@ -13,17 +13,19 @@ module OptionsInitializer
 
           if units && value.present?
             begin
-              value = Unit(value).to(units)
+              value = init_opts[attribute] = Unit(value).to(units)
             rescue
               puts "#{attribute} must be convertible to '#{attr_opts[:units]}'"
               raise
             end
           end
 
-          instance_variable_set("@#{attribute}", value)
+          #:write option is default true, so we only skip writing if the variable is specifically false, not just false-like
+          instance_variable_set("@#{attribute}", value) unless options[:write] == false
 
-          block.call(init_opts) if block
         end
+
+        instance_exec(init_opts, &block) if block
       end
     end
   end
