@@ -14,9 +14,9 @@ module OptionsInitializer
           if units && value.present?
             begin
               value = init_opts[attribute] = Unit(value).to(units)
-            rescue
-              puts "#{attribute} must be convertible to '#{attr_opts[:units]}'"
-              raise
+            rescue ArgumentError => e
+              e.message = "#{e.message} (#{attribute})"
+              raise e
             end
           end
 
