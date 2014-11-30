@@ -1,0 +1,117 @@
+.box1 {
+	padding: 3px;
+	border-width: thin;
+	border-style: solid;
+	border-color: #CCCCCC #666666 #666666 #CCCCCC;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+
+
+}
+
+.box2 {
+	font-style: italic;
+	word-spacing: 2pt;
+	padding: 3px;
+	border-width: thin;
+	border-style: solid;
+}
+.bodytext {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+}
+.headline {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+	font-weight: bold;
+
+}
+.linkhead {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+	font-weight: bold;
+
+}
+.link {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+
+}
+.indexnav {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.caption {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: bold;
+	color: #990000;
+}
+.box1 a:link {
+	text-decoration: none;
+}
+.box1 a:visited {
+	text-decoration: none;
+}
+.box1 a:hover {
+	text-decoration: none;
+}
+.small {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+}
+.login {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+
+}
+.constant {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	border-top-color: #CCCCCC;
+	border-right-color: #666666;
+	border-bottom-color: #666666;
+	border-left-color: #CCCCCC;
+
+}
+.box3 {
+	padding: 3px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+
+}
+.05title {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 24px;
+	text-transform: capitalize;
+	color: #006600;
+	text-decoration: underline;
+	font-weight: bold;
+}
+a {
+	text-decoration: none;
+}
+.z-nav {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: bold;
+	text-transform: none;
+	color: #000099;
+
+	
+	}
+.z-nav a:link {
+	color: #000099;
+}
+.z-nav a:visited {
+	color: #000099;
+
+}

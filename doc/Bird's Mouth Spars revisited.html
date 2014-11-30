@@ -1,0 +1,3109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>Bird's Mouth Spars revisited</title>
+
+
+<!-- *************************************************************************** -->
+<!-- ********  Instructions for copying this page to another HTML page  ******** -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Copy all the Javascripts in the HEAD section to the HEAD of your HTML file. -->
+<!-- The <BODY> HTML tag must include this:   <BODY onLoad="restart();"          -->
+<!-- This is required for clearing the calculators with the Reload or Refresh    -->
+<!-- button of your Web browser -->
+<!-- Then copy the whole content found between the <BODY..> and </BODY> tags     -->
+<!-- This files uses a copy ot Duckworks style sheet (navbar.css)                -->
+<!-- *************************************************************************** -->
+
+
+<!-- ************************************************ -->
+<!-- JavaScript Head Section to be copied starts here -->
+<!-- ************************************************ -->
+<script language="JavaScript">
+
+function restart()
+{
+
+//---- List of Status messages to be displayed
+
+st0=" Ready"
+st1=" Done. Thank you!"
+st2=" Error ! Input values must be positive numbers"
+st3=" Error ! I.D.>= O.D. Try a smaller I.D."
+st4=" Error ! I.D.>= O.D. Try a larger K"
+st5=" Error ! I.D.>= O.D. Try a larger H"
+st6=" Error ! the number of sides must be 5 or more"
+st7=" Error ! Input values must be numbers, not letters"
+st8=" Error ! You must enter a value in all inputs boxes"
+st9=" Error ! H is too large. Try a smaller H"
+st10=" Error ! K is too large. Try a smaller K"
+
+//---- End of Status messages List
+
+//---- Initialize variables when reloading page
+
+n=""
+alpha=""
+beta=""
+i=""
+o=""
+l=""
+h=""
+a=""
+k=""
+m=""
+
+/*--------------------------------------------------------
+
+				====Variable definitions====
+
+n is the number of sides
+	working value: 5 or more
+
+alpha is the polygon angle and the first V-notch angle
+	working value: 360 degrees / n
+
+beta is the second V-notch angle
+	working value: 90 degrees - alpha
+
+i is the largest inner diameter
+	working value: positive number, must be smaller than o
+
+o is the outside diameter
+	working value: positive number
+
+l is the stave width
+	working value: positive number
+
+h is the stave thickness
+	working value: positive number
+
+k is the stave thickness ratio (K)
+	working value: positive number, equals h / l
+
+a is the (I.D. / O.D.) ratio (A)
+
+m is the conversion factor ratio (M)
+
+--------------------------------------------------------*/
+
+//---- Write initial values in calculators boxes
+
+st=st0; document.calc1.stat1.value=st;
+document.calc2.stat2.value=st;
+document.calc3.stat3.value=st;
+document.calc4.stat4.value=st;
+document.calc5.stat5.value=st;
+document.calc6.stat6.value=st;
+
+document.calc1.n1.value=n
+document.calc1.angle1.value=alpha
+document.calc1.angle2.value=beta
+
+document.calc2.n2.value=n
+document.calc2.l2.value=l
+document.calc2.h2.value=h
+document.calc2.k2.value=k
+document.calc2.id2.value=i
+document.calc2.od2.value=o
+document.calc2.a2.value=a
+document.calc2.m2.value=m
+
+document.calc3.n3.value=n
+document.calc3.l3.value=l
+document.calc3.h3.value=h
+document.calc3.k3.value=k
+document.calc3.id3.value=i
+document.calc3.od3.value=o
+document.calc3.a3.value=a
+document.calc3.m3.value=m
+
+document.calc4.n4.value=n
+document.calc4.l4.value=l
+document.calc4.h4.value=h
+document.calc4.k4.value=k
+document.calc4.id4.value=i
+document.calc4.od4.value=o
+document.calc4.a4.value=a
+document.calc4.m4.value=m
+
+document.calc5.n5.value=n
+document.calc5.l5.value=l
+document.calc5.h5.value=h
+document.calc5.k5.value=k
+document.calc5.id5.value=i
+document.calc5.od5.value=o
+document.calc5.a5.value=a
+document.calc5.m5.value=m
+
+document.calc6.n6.value=n
+document.calc6.l6.value=l
+document.calc6.h6.value=h
+document.calc6.k6.value=k
+document.calc6.id6.value=i
+document.calc6.od6.value=o
+document.calc6.a6.value=a
+document.calc6.m6.value=m
+
+//---- End of Initialize
+}
+
+</script>
+
+<script language="JavaScript">
+
+function Calculator_1()
+{
+
+//---- Erase ouputs from any previous calculations
+
+alpha=""
+beta=""
+
+document.calc1.angle1.value=alpha
+document.calc1.angle2.value=beta
+
+//---- End Erase
+
+//---- Check for correct input
+
+sides=document.calc1.n1.value
+
+if(!sides){st=st8; document.calc1.stat1.value=st}
+else
+{
+
+if(sides < 0){st=st2; document.calc1.stat1.value=st}
+else
+{
+
+if(isNaN (sides)){st=st7; document.calc1.stat1.value=st}
+else
+{
+
+if(sides < 5){st=st6; document.calc1.stat1.value=st}
+else
+{
+
+//---- End Check correct input
+//---- Compute and display values and status
+
+alpha=360/Math.round(eval(sides))
+beta=90-alpha
+
+//---- Round results to 5 decimal places
+
+alpha=Math.round(alpha*100000)/100000
+beta=Math.round(beta*100000)/100000
+
+document.calc1.angle1.value=alpha
+document.calc1.angle2.value=beta
+st=st1;document.calc1.stat1.value=st}
+
+}}}}
+
+//---- End Compute
+
+</script>
+
+<script language="JavaScript">
+
+function Calculator_2()
+
+{
+
+//---- Erase ouputs from any previous calculations
+
+l=""
+h=""
+k=""
+a=""
+m=""
+
+document.calc2.l2.value=l
+document.calc2.h2.value=h
+document.calc2.a2.value=a
+document.calc2.k2.value=k
+document.calc2.m2.value=m
+
+//---- End Erase
+
+//---- Check for correct input
+
+sides=document.calc2.n2.value
+
+if(!sides){st=st8; document.calc2.stat2.value=st}
+else
+{
+
+if(isNaN (sides)){st=st7; document.calc2.stat2.value=st}
+else
+{
+
+side=Math.round(eval(sides))
+
+if (side < 5) {st=st6; document.calc2.stat2.value=st}
+else
+{
+
+od=document.calc2.od2.value
+id=document.calc2.id2.value
+
+if(!od){st=st8; document.calc2.stat2.value=st}
+else
+{
+
+if(!id){st=st8; document.calc2.stat2.value=st}
+else
+{
+
+if(isNaN (od)){st=st7; document.calc2.stat2.value=st}
+else
+{
+
+if(isNaN (id)){st=st7; document.calc2.stat2.value=st}
+else
+{
+
+o=(Math.round(eval(od)*1000000))/1000000
+i=(Math.round(eval(id)*1000000))/1000000
+
+if (i<=0) {st=st2; document.calc2.stat2.value=st}
+else
+{
+
+if (o<=0) {st=st2; document.calc2.stat2.value=st}
+else
+{
+
+if (i>=o) {st=st3; document.calc2.stat2.value=st}
+else
+{
+
+//---- End Check correct input
+//---- Compute and display values and status
+
+
+
+l=i*Math.sin(Math.PI/side)+0.5*((o-(i*Math.cos(Math.PI/side)))*Math.sin(2*(Math.PI/side)));
+
+h=0.5*(o-(i*Math.cos(Math.PI/side)))
+
+a=i/o
+
+k=h/l
+
+m=o/l
+
+//---- Round results to 5 decimal places
+
+l=Math.round(l*100000)/100000
+h=Math.round(h*100000)/100000
+a=Math.round(a*100000)/100000
+k=Math.round(k*100000)/100000
+m=Math.round(m*100000)/100000
+
+
+document.calc2.l2.value=l
+document.calc2.h2.value=h
+document.calc2.a2.value=a
+document.calc2.k2.value=k
+document.calc2.m2.value=m
+
+st=st1;document.calc2.stat2.value=st
+
+}}}}}}}}}}}
+
+//---- End Compute
+
+</script>
+
+<script language="JavaScript">
+
+function Calculator_3()
+
+{
+
+//---- Erase ouputs from any previous calculations
+
+i=""
+o=""
+k=""
+a=""
+m=""
+
+document.calc3.od3.value=o
+document.calc3.id3.value=i
+document.calc3.a3.value=a
+document.calc3.k3.value=k
+document.calc3.m3.value=m
+
+
+//---- End Erase
+
+//---- Check for correct input
+
+sides=document.calc3.n3.value
+
+if(!sides){st=st8; document.calc3.stat3.value=st}
+else
+{
+
+if(isNaN (sides)){st=st7; document.calc3.stat3.value=st}
+else
+{
+
+side=Math.round(eval(sides))
+
+if (side < 5) {st=st6; document.calc3.stat3.value=st}
+else
+{
+
+ll=document.calc3.l3.value
+hh=document.calc3.h3.value
+
+if(!ll){st=st8; document.calc3.stat3.value=st}
+else
+{
+
+if(!hh){st=st8; document.calc3.stat3.value=st}
+else
+{
+
+
+if(isNaN (ll)){st=st7; document.calc3.stat3.value=st}
+else
+{
+
+if(isNaN (hh)){st=st7; document.calc3.stat3.value=st}
+else
+{
+
+l=(Math.round(eval(ll)*100000))/100000
+h=(Math.round(eval(hh)*100000))/100000
+
+
+if (l<=0) {st=st2; document.calc3.stat3.value=st}
+else
+{
+
+if (h<=0) {st=st2; document.calc3.stat3.value=st}
+else
+{
+
+//---- End Check correct input
+//---- Compute and display values and status
+
+o=((l-(h*(Math.sin(2*(Math.PI/side)))))/(Math.tan(Math.PI/side)))+2*h
+
+i=((l-(h*(Math.sin(2*(Math.PI/side)))))/(Math.sin(Math.PI/side)))
+
+k=h/l
+
+//---- Check for correct results (ID must be smaller than OD)
+
+
+if (o<=i) {st=st5; document.calc3.stat3.value=st}
+else
+{
+
+error1=(Math.sin(2*(Math.PI/side)))
+
+if (k>=(1/error1)) {st=st9; document.calc3.stat3.value=st}
+else
+{
+
+//---- End Check correct reults
+
+a=i/o
+
+m=o/l
+
+//---- Round results to 5 decimal places
+
+o=Math.round(o*100000)/100000
+i=Math.round(i*100000)/100000
+a=Math.round(a*100000)/100000
+k=Math.round(k*100000)/100000
+m=Math.round(m*100000)/100000
+
+document.calc3.od3.value=o
+document.calc3.id3.value=i
+document.calc3.a3.value=a
+document.calc3.k3.value=k
+document.calc3.m3.value=m
+
+st=st1; document.calc3.stat3.value=st
+
+}}}}}}}}}}}}
+
+//---- End Compute
+
+</script>
+
+<script language="JavaScript">
+
+function Calculator_4()
+
+{
+
+//---- Erase ouputs from any previous calculations
+
+l=""
+i=""
+k=""
+a=""
+m=""
+
+document.calc4.l4.value=l
+document.calc4.id4.value=i
+document.calc4.a4.value=a
+document.calc4.k4.value=k
+document.calc4.m4.value=m
+
+//---- End Erase
+
+//---- Check for correct input
+
+sides=document.calc4.n4.value
+
+if(!sides){st=st8; document.calc4.stat4.value=st}
+else
+{
+
+if(isNaN (sides)){st=st7; document.calc4.stat4.value=st}
+else
+{
+
+side=Math.round(eval(sides))
+
+if (side < 5) {st=st6; document.calc4.stat4.value=st}
+else
+{
+
+od=document.calc4.od4.value
+hh=document.calc4.h4.value
+
+if(!od){st=st8; document.calc4.stat4.value=st}
+else
+{
+
+if(!hh){st=st8; document.calc4.stat4.value=st}
+else
+{
+
+if(isNaN (od)){st=st7; document.calc4.stat4.value=st}
+else
+{
+
+if(isNaN (hh)){st=st7; document.calc4.stat4.value=st}
+else
+{
+
+o=(Math.round(eval(od)*1000000))/1000000
+h=(Math.round(eval(hh)*1000000))/1000000
+
+if (o<=0) {st=st2; document.calc4.stat4.value=st}
+else
+{
+
+if (h<=0) {st=st2; document.calc4.stat4.value=st}
+else
+{
+
+//---- End Check correct input
+
+//---- Compute and display values and status
+
+l=(o-(2*h))*(Math.tan(Math.PI/side))+h*(Math.sin(2*(Math.PI/side)))
+
+i=((l-(h*(Math.sin(2*(Math.PI/side)))))/(Math.sin(Math.PI/side)))
+
+//---- Check for correct results (ID must be smaller than OD)
+
+if (i>=o) {st=st5; document.calc4.stat4.value=st}
+else
+{
+
+k=h/l
+
+error1=(Math.sin(2*(Math.PI/side)))
+
+if (k>=(1/error1)) {st=st9; document.calc4.stat4.value=st}
+else
+{
+
+//---- End Check correct reults
+
+a=i/o
+
+m=o/l
+
+//---- Round results to 5 decimal places
+
+l=Math.round(l*100000)/100000
+i=Math.round(i*100000)/100000
+a=Math.round(a*100000)/100000
+k=Math.round(k*100000)/100000
+m=Math.round(m*100000)/100000
+
+
+document.calc4.l4.value=l
+document.calc4.id4.value=i
+document.calc4.a4.value=a
+document.calc4.k4.value=k
+document.calc4.m4.value=m
+
+st=st1; document.calc4.stat4.value=st
+
+}}}}}}}}}}}}
+
+//---- End Compute
+
+</script>
+
+<script language="JavaScript">
+
+function Calculator_5()
+{
+
+//---- Erase ouputs from any previous calculations
+
+l=""
+h=""
+i=""
+a=""
+m=""
+
+document.calc5.l5.value=l
+document.calc5.h5.value=h
+document.calc5.id5.value=i
+document.calc5.a5.value=a
+document.calc5.m5.value=m
+
+
+
+//---- End Erase
+
+//---- Check for correct input
+
+sides=document.calc5.n5.value
+
+if(!sides){st=st8; document.calc5.stat5.value=st}
+else
+{
+
+if(isNaN (sides)){st=st7; document.calc5.stat5.value=st}
+else
+{
+
+side=Math.round(eval(sides))
+
+if (side < 5) {st=st6; document.calc5.stat5.value=st}
+else
+{
+
+od=document.calc5.od5.value
+kk=document.calc5.k5.value
+
+if(!od){st=st8; document.calc5.stat5.value=st}
+else
+{
+
+if(!kk){st=st8; document.calc5.stat5.value=st}
+else
+{
+
+if(isNaN (od)){st=st7; document.calc5.stat5.value=st}
+else
+{
+
+if(isNaN (kk)){st=st7; document.calc5.stat5.value=st}
+else
+{
+
+o=(Math.round(eval(od)*1000000))/1000000
+k=(Math.round(eval(kk)*1000000))/1000000
+
+if (o<=0) {st=st2; document.calc5.stat5.value=st}
+else
+{
+
+if (k<=0) {st=st2; document.calc5.stat5.value=st}
+else
+{
+
+//---- End Check correct input
+//---- Compute and display values and status
+
+l=o/(((1-k*(Math.sin(2*(Math.PI/side))))/(Math.tan(Math.PI/side)))+2*k)
+
+h=k*l
+
+i=((l-(h*(Math.sin(2*(Math.PI/side)))))/(Math.sin(Math.PI/side)))
+
+//---- Check for correct results (ID must be smaller than OD)
+
+if ((i-o)>=0) {st=st5; document.calc5.stat5.value=st}
+else
+{
+
+error1=(Math.sin(2*(Math.PI/side)))
+
+if (k>=(1/error1)) {st=st10; document.calc5.stat5.value=st}
+else
+{
+
+
+//---- End Check correct reults
+
+a=i/o
+
+m=o/l
+
+//---- Round results to 5 decimal places
+
+l=Math.round(l*100000)/100000
+i=Math.round(i*100000)/100000
+a=Math.round(a*100000)/100000
+h=Math.round(h*100000)/100000
+m=Math.round(m*100000)/100000
+
+
+document.calc5.l5.value=l
+document.calc5.h5.value=h
+document.calc5.id5.value=i
+document.calc5.a5.value=a
+document.calc5.m5.value=m
+
+
+st=st1; document.calc5.stat5.value=st
+
+}}}}}}}}}}}}
+
+//---- End Compute
+
+</script>
+
+<script language="JavaScript">
+
+function Calculator_6()
+{
+
+//---- Erase ouputs from any previous calculations
+
+o=""
+h=""
+i=""
+a=""
+m=""
+
+document.calc6.od6.value=o
+document.calc6.h6.value=h
+document.calc6.id6.value=i
+document.calc6.a6.value=a
+document.calc6.m6.value=m
+
+
+//---- End Erase
+
+//---- Check for correct input
+
+sides=document.calc6.n6.value
+
+if(!sides){st=st8; document.calc6.stat6.value=st}
+else
+{
+
+if(isNaN (sides)){st=st7; document.calc6.stat6.value=st}
+else
+{
+
+side=Math.round(eval(sides))
+
+if (side < 5) {st=st6; document.calc6.stat6.value=st}
+else
+{
+
+ll=document.calc6.l6.value
+kk=document.calc6.k6.value
+
+if(!ll){st=st8; document.calc6.stat6.value=st}
+else
+{
+
+if(!kk){st=st8; document.calc6.stat6.value=st}
+else
+{
+
+if(isNaN (ll)){st=st7; document.calc6.stat6.value=st}
+else
+{
+
+if(isNaN (kk)){st=st7; document.calc6.stat6.value=st}
+else
+{
+
+l=(Math.round(eval(ll)*1000000))/1000000
+k=(Math.round(eval(kk)*1000000))/1000000
+
+if (l<=0) {st=st2; document.calc6.stat6.value=st}
+else
+{
+
+if (k<=0) {st=st2; document.calc6.stat6.value=st}
+else
+{
+
+//---- End Check correct input
+//---- Compute and display values and status
+
+o=l*(((1-k*(Math.sin(2*(Math.PI/side))))/(Math.tan(Math.PI/side)))+2*k)
+
+h=k*l
+
+i=((l-(h*(Math.sin(2*(Math.PI/side)))))/(Math.sin(Math.PI/side)))
+
+//---- Check for correct results (ID must be smaller than OD)
+
+if ((i-o)>=0) {st=st4; document.calc6.stat6.value=st}
+else
+{
+
+error1=(Math.sin(2*(Math.PI/side)))
+
+if (k>=(1/error1)) {st=st10; document.calc6.stat6.value=st}
+else
+{
+
+
+//---- End Check correct reults
+
+a=i/o
+
+m=o/l
+
+//---- Round results to 5 decimal places
+
+o=Math.round(o*100000)/100000
+i=Math.round(i*100000)/100000
+a=Math.round(a*100000)/100000
+h=Math.round(h*100000)/100000
+m=Math.round(m*100000)/100000
+
+
+document.calc6.od6.value=o
+document.calc6.h6.value=h
+document.calc6.id6.value=i
+document.calc6.a6.value=a
+document.calc6.m6.value=m
+
+st=st1; document.calc6.stat6.value=st
+
+}}}}}}}}}}}}
+
+//---- End Compute
+
+</script>
+
+<!-- ********************************************** -->
+<!-- JavaScript Head Section to be copied ends here -->
+<!-- ********************************************** -->
+
+<title>Duckworks Magazine</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link href="Bird%27s%20Mouth%20Spars%20revisited_files/navbar.css" rel="stylesheet" type="text/css">
+<link href="Bird%27s%20Mouth%20Spars%20revisited_files/Content.css" type="text/css" rel="stylesheet"><script>try {  for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){    var lastpass_f = document.forms[lastpass_iter];    if(typeof(lastpass_f.lpsubmitorig)=="undefined"){      if (typeof(lastpass_f.submit) == "function") {        lastpass_f.lpsubmitorig = lastpass_f.submit;        lastpass_f.submit = function(){          var form = this;          try {            if (document.documentElement && 'createEvent' in document)            {              var forms = document.getElementsByTagName('form');              for (var i=0 ; i<forms.length ; ++i)                if (forms[i]==form)                {                  var element = document.createElement('lpformsubmitdataelement');                  element.setAttribute('formnum',i);                  element.setAttribute('from','submithook');                  document.documentElement.appendChild(element);                  var evt = document.createEvent('Events');                  evt.initEvent('lpformsubmit',true,false);                  element.dispatchEvent(evt);                  break;                }            }          } catch (e) {}          try {            form.lpsubmitorig();          } catch (e) {}        }      }    }  }} catch (e) {}</script><style>@-webkit-keyframes popikgcpiyuueoufdqxgfymgtxzmgnccclvdi {50% {-webkit-transform:scale(1.2);}100% {-webkit-transform:scale(1);}}@keyframes popikgcpiyuueoufdqxgfymgtxzmgnccclvdi {50% {-webkit-transform:scale(1.2);transform:scale(1.2);}100% {-webkit-transform:scale(1);transform:scale(1);}}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;border:solid 2px #fff !important;color:#fff !important;display:block !important;height:auto !important;margin:0 !important;opacity:0.9 !important;padding:7px 10px !important;position:fixed !important;visibility:visible !important;width:auto !important;z-index:2147483647 !important;-moz-border-radius:5px !important;border-radius:5px !important;-moz-box-shadow:0px 0px 20px #000 !important;box-shadow:0px 0px 20px #000 !important;}.ikgcpiyuueoufdqxgfymgtxzmgnccclvdi-blocked{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;color:#AAA !important;display:inline !important;text-decoration:line-through !important;}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi br{display:block !important;padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi span{background:transparent !important;padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi div{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;border:0 !important;margin:0 !important;padding:0 !important;width:auto !important;letter-spacing:normal !important;font:13px Arial,Helvetica !important;text-align:left !important;text-shadow:none !important;text-transform:none !important;word-spacing:normal !important;}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi a{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;font-weight:normal !important;background:none !important;text-decoration:underline !important;color:#fff !important;}a#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi-gear{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;text-decoration:none !important;position:absolute !important;display:none !important;font-size:20px !important;width:20px !important;height:20px !important;line-height:20px !important;text-align:center !important;background-color:rgba(255,255,255,.8) !important;background-image:url(resource://firefox-at-ghostery-dot-com/ghostery/data/images/gear.svg) !important;background-size:16px 16px !important;background-position:center center !important;background-repeat:no-repeat !important;text-decoration:none !important;}a#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi-gear:hover{-webkit-animation-name:popikgcpiyuueoufdqxgfymgtxzmgnccclvdi !important;animation-name:popikgcpiyuueoufdqxgfymgtxzmgnccclvdi !important;-webkit-animation-duration:0.3s !important;animation-duration:0.3s !important;}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi:hover #ikgcpiyuueoufdqxgfymgtxzmgnccclvdi-gear{text-decoration:none !important;display:inline-block !important;}#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi hr{visibility:hidden !important;padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;height:1em;}@media print{#ikgcpiyuueoufdqxgfymgtxzmgnccclvdi{display:none !important;}}</style></head>
+<body onload="restart();">
+<table border="0" cellpadding="0" cellspacing="0" align="center" height="75" width="780">
+  <tbody><tr> 
+    <td bgcolor="#CCFFCC" width="136"> <div align="center"><a href="http://www.duckworksmagazine.com/04/index.cfm"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/new_duck_2.gif" border="0" height="68" width="110"></a></div></td>
+    <td width="370"> <div align="center"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/duckworks.gif" height="55" width="325"></div></td>
+    <td width="100">&nbsp;</td>
+    <td width="174">&nbsp;</td>
+  </tr>
+</tbody></table>
+<table border="0" cellpadding="0" cellspacing="0" align="center" height="30" width="800">
+  <tbody><tr> 
+    <td bgcolor="#FFFFCC" width="136">&nbsp;</td>
+    <td bgcolor="#CCFFCC"> <div align="center"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/tomfbb.gif" height="21" width="454"></div></td>
+    <td bgcolor="#CCFFCC" width="174"><div align="center"></div></td>
+  </tr>
+</tbody></table>
+<table border="0" cellpadding="0" cellspacing="0" align="center" width="780">
+    
+  <tbody><tr>
+      
+    <td>
+<table border="0" cellpadding="0" cellspacing="0" align="left" width="728">
+          
+        <tbody><tr>
+            
+          <td><script type="text/javascript"><!--
+google_ad_client = "pub-3913451939716508";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "66CCCC";
+google_color_bg = "FFFFFF";
+google_color_link = "0000CC";
+google_color_url = "008000";
+google_color_text = "6F6F6F";
+//--></script>
+</td>
+        </tr>
+      </tbody></table>
+    </td>
+  </tr>
+  
+</tbody></table>
+<table border="0" cellpadding="0" cellspacing="0" align="center" width="780">
+  <tbody><tr> 
+    <td bgcolor="#66CCCC" valign="top" width="136"> <div align="center"> 
+        <table border="0" cellpadding="0" cellspacing="3" align="right" width="110">
+          <tbody><tr> 
+            <td class="box1" width="110"> <div align="left"></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/new.htm">NEW</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/index.cfm">HOME</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/input.htm">INPUT</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/r/indexes.htm">INDEXES</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/features.htm">FEATURES</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/classified.htm">CLASSIFIED</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left">&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/newsletter.htm">NEWSLETTER</a></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/contests.htm">CONTESTS</a></strong> 
+            </td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/archive_index.htm">ARCHIVES</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/s/forum.htm">FORUM</a></strong></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="20"> 
+              <div align="left"><strong>&nbsp;&nbsp;<a href="http://www.duckworksmagazine.com/04/store/store.htm">STORE</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" background="Bird%27s%20Mouth%20Spars%20revisited_files/blank1.gif" height="8"> 
+              <div align="left"><strong>&nbsp;<a href="http://www.duckworksmagazine.com/04/s/links.htm">&nbsp;LINKS</a></strong></div></td>
+          </tr>
+          <tr> 
+            <td class="box1" bgcolor="#FFFFCC" height="9"><div align="center"><a href="http://www.duckworksmagazine.com/04/ddrd/index.cfm">Design 
+                Review<br>
+                Database</a> </div></td>
+          </tr>
+          <tr> 
+            <td class="box1"> <div align="center"><b><font size="2"><a href="http://www.duckworksmagazine.com/04/store/plans/jim/piragua/index.htm"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/piragua-s.jpg" border="1" height="61" width="90"><br>
+                </a></font></b></div></td>
+          </tr>
+          <tr> 
+            <td class="box1"> <div align="center"><b><a href="http://www.duckworksmagazine.com/04/store/plans/jim/campjon/index.htm"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/campjon-s.jpg" border="1" height="54" width="90"></a><a href="http://www.duckworksmagazine.com/04/store/plans/jim/jonsboat/index.htm"><br>
+                </a></b></div></td>
+          </tr>
+          <tr> 
+            <td class="box1"> <div align="center"><b><a href="http://www.duckworksmagazine.com/04/store/plans/jw/goldenbaysetnet/index.htm"> 
+                <img src="Bird%27s%20Mouth%20Spars%20revisited_files/goldenbay-s.jpg" border="1" height="89" width="90"><br>
+                </a></b></div></td>
+          </tr>
+          <tr> 
+            <td class="box1"> <div align="center"><b><a href="http://www.duckworksmagazine.com/04/store/plans/jw/penguin/index.htm"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/penguin-s.jpg" border="1" height="94" width="90"></a><a href="http://www.duckworksmagazine.com/04/store/plans/jw/navigator/index.htm"> 
+                <br>
+                </a></b></div></td>
+          </tr>
+        </tbody></table>
+        <p align="center">&nbsp;</p>
+      </div></td>
+    <td valign="top" width="550"> <div align="center"> 
+        <table border="0" cellpadding="1" align="center" width="500">
+          <tbody><tr> 
+            <td align="center" valign="top" width="531"><table class="bodytext" align="center" width="505">
+                <tbody><tr> 
+                  <td width="505"> <table width="450">
+                      <tbody><tr> 
+                        <td><img src="Bird%27s%20Mouth%20Spars%20revisited_files/med_th.jpg" border="0"> </td>
+                        <td valign="top"> <p><font size="1">&nbsp;</font></p>
+                          <p class="headline" align="center">Bird's Mouth Spars 
+                            revisited</p>
+                          <p align="center"> <span class="bodytext">By <a href="mailto:gaetan.jette@sympatico.ca">Gaétan 
+                            Jetté</a> </span></p>
+                          <hr size="1"></td>
+                      </tr>
+                    </tbody></table>
+                    <table width="450">
+                      <tbody><tr> 
+                        <td> <p align="center"><b>Contents</b></p>
+                          <ul class="bodytext" type="square">
+                            <li><font color="#99CC99"></font> What is a <a href="#what-is">bird's 
+                              mouth spar?</a> 
+                            </li><li><font color="#99CC99"></font> <a href="#limits">Some 
+                              limits</a> and possibilities explored 
+                            </li><li><font color="#99CC99"></font> Simple size calculations, 
+                              <a href="#manual-calc">the manual method</a> 
+                            </li><li><font color="#99CC99"></font> Easiest size calculations, 
+                              <a href="#online-calc">let your PC do the job!</a> 
+                            </li><li><font color="#99CC99"></font> <a href="#taper">Dealing 
+                              with a tapered mast</a> 
+                            </li><li><font color="#99CC99"></font> <a href="#weight">Weight 
+                              saving and strength loss</a> 
+                            </li><li><font color="#99CC99"></font> <a href="http://www.duckworksmagazine.com/04/s/articles/birdsmouth/appendix.htm">Appendix</a> 
+                          </li></ul></td>
+                      </tr>
+                    </tbody></table>
+                    <p><strong>Introduction</strong></p>
+                    <p class="bodytext"> A few months ago, an interesting <a href="http://www.duckworksmagazine.com/03/r/articles/birdsmouth/mast.htm"><strong>article</strong></a> 
+                      on bird's mouth spars was published right here, at Duckworks. 
+                      The author, David Farless, presented a series of equations 
+                      to accurately calculate the size of such a construction. 
+                      This has inspired me to study this subject in greater depth. 
+                      In this article, we will explore some of the limits and 
+                      potentials of bird's mouth spars. You will also be provided 
+                      with tools to let your computer do the size calculations 
+                      for you. But first, a quick reminder... </p>
+                    <a name="what-is"></a> <p><strong>What is a bird's mouth spar?</strong></p>
+                    <p class="bodytext"> A bird's mouth spar is a way to make 
+                      a hollow mast or spar from wood for use on a sailboat. Figure 
+                      1 below shows what the cross section looks like. It typically 
+                      uses 8 identical pieces of wood or staves glued together. 
+                      The outside is then trimmed to produce a round spar. The 
+                      main goal is to save weight. </p>
+                    <a name="remind-me"></a> <table border="0" cellpadding="0" align="center" width="500">
+                      <tbody><tr> 
+                        <td colspan="2" align="center"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/Defin-01B.gif" border="1"> 
+                        </td>
+                      </tr>
+                      <tr> 
+                        <td colspan="2" bgcolor="#EEFFEE"> <table border="0" cellpadding="0" align="center" width="500">
+                            <tbody><tr> 
+                              <td colspan="2"> <p class="caption" align="center"><b>Figure 
+                                  1- Bird's Mouth Spar : Definitions</b> </p></td>
+                            </tr>
+                            <tr> 
+                              <td colspan="2"> <table align="center">
+                                  <tbody><tr> 
+                                    <td><p class="bodytext"> <b>O.D.</b> is the 
+                                        outside diameter<br>
+                                        <b>I.D.</b> is the largest inside diameter<br>
+                                        <b>R<sub>1</sub></b> is the shortest inner 
+                                        radius<br>
+                                        <b>R<sub>2</sub></b> is the largest inner 
+                                        radius or half <b>I.D.</b><br>
+                                        <b>N</b> is the number of sides (eight 
+                                        in this case)<br>
+                                        <img src="Bird%27s%20Mouth%20Spars%20revisited_files/alpha3.gif"> 
+                                        (alpha) is the angle between adjacent 
+                                        staves or <b>360° / N</b><br>
+                                        <b>L</b> is the width of material<br>
+                                        <b>H</b> is the thickness of material<br>
+                                      </p>
+                                      <p class="bodytext"> <b>Important Ratios</b></p>
+                                      <p class="bodytext"> <b>K</b> is the thickness 
+                                        to width ratio of staves or <b>(H / L)</b><br>
+                                        <b>M</b> is the "conversion factor" or 
+                                        <b>(O.D. / L)</b><br>
+                                        <b>A</b> is the inside to outside diameter 
+                                        ratio or <b>(I.D. / O.D.)</b></p></td>
+                                  </tr>
+                                </tbody></table></td>
+                            </tr>
+                          </tbody></table></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> The definitions used here are pretty 
+                      much the same that were used in the previous article. I 
+                      have only added a few names for the ratios that will be 
+                      of interest here. The model shown in Figure 1 is of "classic" 
+                      proportions, that is, a stave's thickness ratio of 0.5 in 
+                      an 8-sided configuration. Although I have never seen other 
+                      configurations, it is possible to build a bird's mouth spar 
+                      with a different number of sides. Figure 2 shows some of 
+                      the possibilities. </p>
+                    <a name="limits"></a> <table align="center">
+                      <tbody><tr> 
+                        <td><img src="Bird%27s%20Mouth%20Spars%20revisited_files/birdworld1.gif" border="1"> </td>
+                      </tr>
+                      <tr> 
+                        <td> <p class="caption" align="center"> Figure 2- The 
+                            world of Bird's Mouth Spars </p></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> Okay, you might think that the math for 
+                      size calculations would be far too complex for such configurations, 
+                      right? Well, no! The equations presented by David Farless 
+                      in the previously mentioned <a href="http://www.duckworksmagazine.com/04/r/articles/birdsmouth/mast.cfm"><strong>article</strong></a> 
+                      had a hidden potential. With just a minor modification, 
+                      these equations can handle any possible configuration! From 
+                      now on, we will refer to these as the Farless equations. 
+                      (Always give credit when credit is due!) The revised equations 
+                      can be found in the <a href="http://www.duckworksmagazine.com/04/s/articles/birdsmouth/appendix.htm">Appendix section</a>. 
+                    </p>
+                    <p class="bodytext"> The trick for building a spar with more 
+                      or less than 8 sides is in the V-notch angles used on the 
+                      staves. Figure 3 shows them in a little bit more detail 
+                      than Figure 2. Table 1 gives you the angles used and a few 
+                      other points to take in consideration. </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td><img src="Bird%27s%20Mouth%20Spars%20revisited_files/birdworld2.gif" border="1"> </td>
+                      </tr>
+                      <tr> 
+                        <td> <p class="caption" align="center"> Figure 3- Stave 
+                            shape </p></td>
+                      </tr>
+                    </tbody></table>
+                    <br> <table border="0" cellpadding="0" align="center" bgcolor="#EEEEEE">
+                      <tbody><tr> 
+                        <td bgcolor="#EEEEEE"> <table border="1" cellpadding="1" align="center" width="490">
+                            <tbody><tr bgcolor="white"> 
+                              <td colspan="6" align="center" bgcolor="#DDFFDD" height="35" width="490"> 
+                                <p><font face="Arial" size="3"><b>Table 1- Basic 
+                                  rules for bird's mouth spars</b></font> </p></td>
+                            </tr>
+                            <tr> 
+                              <td colspan="6" align="center" bgcolor="#EEEFFEE" height="0" width="490"></td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55"><b>Number<br>
+                                of sides</b></td>
+                              <td class="bodytext" colspan="2" align="center" width="136"><b>Angles 
+                                for the <br>
+                                V-notch (degrees)</b></td>
+                              <td class="bodytext" colspan="2" align="center" width="136"><b>Theoretical 
+                                limits<br>
+                                for ratio(K) or (H /L)</b></td>
+                              <td class="bodytext" rowspan="2" align="center" width="136"><b>Practical 
+                                range <br>
+                                for ratio (K) </b></td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td align="center" width="55"><p class="bodytext"><b>N</b></p></td>
+                              <td align="center" width="68"><p class="bodytext">Angle<br>
+                                  1</p></td>
+                              <td align="center" width="68"><p class="bodytext">Angle<br>
+                                  2</p></td>
+                              <td align="center" width="68"><p class="bodytext">Minimum</p></td>
+                              <td align="center" width="68"><p class="bodytext">Maximum</p></td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">&nbsp;5</td>
+                              <td class="bodytext" align="center" width="68">72</td>
+                              <td class="bodytext" align="center" width="68">18</td>
+                              <td class="bodytext" align="center" width="68">0.1407</td>
+                              <td class="bodytext" align="center" width="68">1.0515</td>
+                              <td class="bodytext" align="center" width="136">not 
+                                recommended</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">&nbsp;6</td>
+                              <td class="bodytext" align="center" width="68">60</td>
+                              <td class="bodytext" align="center" width="68">30</td>
+                              <td class="bodytext" align="center" width="68">0.1200</td>
+                              <td class="bodytext" align="center" width="68">1.1547</td>
+                              <td class="bodytext" align="center" width="136">0.195 
+                                - 0.85</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">&nbsp;8</td>
+                              <td class="bodytext" align="center" width="68">45</td>
+                              <td class="bodytext" align="center" width="68">45</td>
+                              <td class="bodytext" align="center" width="68">0.0929</td>
+                              <td class="bodytext" align="center" width="68">1.4142</td>
+                              <td class="bodytext" align="center" width="136">0.15 
+                                - 1</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">&nbsp;9</td>
+                              <td class="bodytext" align="center" width="68">40</td>
+                              <td class="bodytext" align="center" width="68">50</td>
+                              <td class="bodytext" align="center" width="68">0.0834</td>
+                              <td class="bodytext" align="center" width="68">1.5557</td>
+                              <td class="bodytext" align="center" width="136">0.135 
+                                - 1.15</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">10</td>
+                              <td class="bodytext" align="center" width="68">36</td>
+                              <td class="bodytext" align="center" width="68">54</td>
+                              <td class="bodytext" align="center" width="68">0.0757</td>
+                              <td class="bodytext" align="center" width="68">1.7013</td>
+                              <td class="bodytext" align="center" width="136">0.125 
+                                - 1.3</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">12</td>
+                              <td class="bodytext" align="center" width="68">30</td>
+                              <td class="bodytext" align="center" width="68">60</td>
+                              <td class="bodytext" align="center" width="68">0.0637</td>
+                              <td class="bodytext" align="center" width="68">2.0000</td>
+                              <td class="bodytext" align="center" width="136">0.105 
+                                - 1.5</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">15</td>
+                              <td class="bodytext" align="center" width="68">24</td>
+                              <td class="bodytext" align="center" width="68">66</td>
+                              <td class="bodytext" align="center" width="68">0.0515</td>
+                              <td class="bodytext" align="center" width="68">2.4586</td>
+                              <td class="bodytext" align="center" width="136">0.085 
+                                - 1.875</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">16</td>
+                              <td class="bodytext" align="center" width="68">22.5</td>
+                              <td class="bodytext" align="center" width="68">67.5</td>
+                              <td class="bodytext" align="center" width="68">	
+                                0.0483</td>
+                              <td class="bodytext" align="center" width="68">2.6131</td>
+                              <td class="bodytext" align="center" width="136">0.08 
+                                - 2</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">18</td>
+                              <td class="bodytext" align="center" width="55">20</td>
+                              <td class="bodytext" align="center" width="68">70</td>
+                              <td class="bodytext" align="center" width="68">0.0431</td>
+                              <td class="bodytext" align="center" width="68">2.9238</td>
+                              <td class="bodytext" align="center" width="136">0.07 
+                                - 2.25</td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="55">20</td>
+                              <td class="bodytext" align="center" width="68">18</td>
+                              <td class="bodytext" align="center" width="68">72</td>
+                              <td class="bodytext" align="center" width="68">0.0389</td>
+                              <td class="bodytext" align="center" width="68">3.2361</td>
+                              <td class="bodytext" align="center" width="136">not 
+                                recommended</td>
+                            </tr>
+                          </tbody></table></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> <b>Angle 1</b>, shown in Figure 4 below, 
+                      is located on the inside of the spar. Its value is always 
+                      the same as "<img src="Bird%27s%20Mouth%20Spars%20revisited_files/alpha3.gif">" (alpha), 
+                      shown in Figure 1. <strong>Angle 2</strong> is on the outside 
+                      and is equal to 90 degrees minus the first angle. </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td align="center"> <img src="Bird%27s%20Mouth%20Spars%20revisited_files/stave-01.gif" border="1"> 
+                        </td>
+                      </tr>
+                      <tr> 
+                        <td> <p class="caption" align="center">Figure 4- Stave 
+                            Angles </p></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> Table 1 also lists minimum and maximum 
+                      limits for the thickness ratio of the staves (K). The minimum 
+                      theoretical limit is reached when I.D. is equal to O.D. 
+                      Figure 5 below shows an example of K going too far in that 
+                      direction. In practice, you obviously need to use a higher 
+                      ratio to have some thickness left! Otherwise your spar will 
+                      fall apart when you try to round the outside. That's where 
+                      the practical range comes into play. The minimum practical 
+                      limits shown in Table 1 corresponds to the maximum weight 
+                      saving possible for a given strength. (More on that later.) 
+                    </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td align="center"> <img src="Bird%27s%20Mouth%20Spars%20revisited_files/2-thin-d.gif" border="1"> 
+                        </td>
+                      </tr>
+                      <tr> 
+                        <td> <p class="caption" align="center">Figure 5- Going 
+                            too far: K is too low, I.D. is larger than O.D.!</p></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> The maximum theoretical limit is reached 
+                      when I.D. equals zero (See Figure 6B). You can actually 
+                      exceed that limit: the inside will open up again (Figure 
+                      6C). However, the formulas for calculating size can produce 
+                      some weird results when you go in that zone. Better stay 
+                      below that maximum limit. Here again, a practical upper 
+                      limit for K has been shown. This maximum practical limit 
+                      was chosen at the point where the weight saving falls to 
+                      5 percent compared to a solid spar of equal strength. (More 
+                      on that later too.) </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td> <img src="Bird%27s%20Mouth%20Spars%20revisited_files/2-thick.gif" border="1"> </td>
+                      </tr>
+                      <tr> 
+                        <td align="center"> <p class="caption"> Figure 6- Going 
+                            too far, high values of K<br>
+                            <br>
+                            A- "Practical Maximum"<br>
+                            B- "Theoretical Maximum", I.D. = 0<br>
+                            C- Gone too far, formula results unpredictable</p></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> You may have noticed that both the 5 
+                      and 20-sided configuration have the comment "not recommended". 
+                      Here is why. For these, one of the angles used is very sharp. 
+                      This means that the corresponding side of the V-notch becomes 
+                      very thin (See Figure 3). This may be too fragile, at least 
+                      during assembly. But this may very well be a weak spot under 
+                      stress, even when glue has cured. This potential problem 
+                      would only get worse for any larger number of sides and 
+                      sets the limit of what you can do. This is one reason why 
+                      8-sided spars are far more common. For an 8-sided spar, 
+                      the angles are equal and each side is of equal strength. 
+                      And the glue area of the V-notch is also the largest at 
+                      45 degrees. So it is probably not a good idea to go very 
+                      far from that 45-degree value. It may be wise to use a number 
+                      of sides between 6 and 12. The smallest angle never falls 
+                      below 30 degrees with these. </p>
+                    <p class="bodytext"> Configurations using 7, 11, 13, 14, 17 
+                      and 19 sides are not discussed here: the angles required 
+                      with these are just too odd. </p>
+                    <p class="bodytext"> Now that we have looked at some of the 
+                      limits of bird's mouth spars, let's look at ways to simplify 
+                      size calculations. </p>
+                    <a name="manual-calc"></a> <p><strong>Size Calculations</strong></p>
+                    <p class="bodytext"> For those of you who have read the previous 
+                      <a href="http://www.duckworksmagazine.com/04/r/articles/birdsmouth/mast.cfm"> <strong>article</strong></a> 
+                      written by David Farless, you already know that accurate 
+                      size calculations are not really simple. That article also 
+                      mentions a "rule-of-thumb" solution originating from a WoodenBoat 
+                      article (I must admit that I have never read that article). 
+                      The outside diameter was defined as 2.5 times the stave 
+                      width. However that solution is not entirely accurate. In 
+                      fact, both the width and thickness of the staves have an 
+                      effect on the resulting diameter. </p>
+                    <p class="bodytext"> Wouldn't it be nice to have a solution 
+                      that offers the simplicity of the WoodenBoat rule-of-thumb 
+                      and the accuracy of the Farless equations at the same time? 
+                      Better still, wouldn't it be great to have a computer program 
+                      that does the calculations for you? Well, that is exactly 
+                      what we'll do! </p>
+                    <p class="bodytext"> First, our new rule-of-thumb. If you 
+                      look back at <a href="#remind-me"><strong>Figure 1</strong></a>, 
+                      among the definitions, there is a ratio called "M". It is 
+                      defined as O.D. divided by L. That is exactly the same thing 
+                      as the "2.5x" from the WoodenBoat article. We "only" need 
+                      to figure out what is the real value for "M". That ratio 
+                      is defined in the <a href="http://www.duckworksmagazine.com/04/s/articles/birdsmouth/appendix.htm">Appendix</a> if 
+                      you are really "math curious". Table 2 below, however, will 
+                      save you time. It gives you pre-calculated "M" values for 
+                      6 to 12-sided spars. The cells are highlighted in <b>pink</b> 
+                      when K falls outside the "Practical Range" defined in Table 
+                      1. You should avoid these. No values are shown when K falls 
+                      outside the theoretical limits of Table 1. </p>
+                    <table border="0" cellpadding="0" align="center" bgcolor="#EEEEEE">
+                      <tbody><tr> 
+                        <td> <table border="1" cellpadding="1" align="center" width="450">
+                            <tbody><tr bgcolor="white"> 
+                              <td colspan="6" align="center" bgcolor="#DDFFDD" height="35" width="450"> 
+                                <p><font face="Arial" size="3"><b>Table 2- Improved 
+                                  "Rule-of-Thumb" : Conversion Factor (M)</b></font> 
+                              </p></td>
+                            </tr>
+                            <tr> 
+                              <td colspan="6" align="center" bgcolor="#EEFFEE" height="0" width="450"></td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75"> 
+                                Stave Thickness<br>
+                                Ratio (K) </td>
+                              <td class="bodytext" align="center" width="75"> 
+                                <b>(M)</b><br>
+                                6 sides </td>
+                              <td class="bodytext" align="center" width="75"> 
+                                <b>(M)</b><br>
+                                8 sides </td>
+                              <td class="bodytext" align="center" width="75"> 
+                                <b>(M)</b><br>
+                                9 sides </td>
+                              <td class="bodytext" align="center" width="75"> 
+                                <b>(M)</b><br>
+                                10 sides </td>
+                              <td class="bodytext" align="center" width="75"> 
+                                <b>(M)</b><br>
+                                12 sides </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.100 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.444 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.771 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.097 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.745 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.125 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">1.795 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.451 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.777 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.102 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.749 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.150 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">1.807 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.458 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.783 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.106 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.752 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.175 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">1.820 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.465 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.788 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.111 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.755 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.200 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">1.832 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.473 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.794 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.116 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.759 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.225 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.845 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.480 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.800 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.121 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.762 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.250 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.857 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.487 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.806 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.125 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.766 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.275 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.870 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.495 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.812 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.130 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.769 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.300 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.882 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.502 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.818 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.135 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.772 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.325 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.895 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.509 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.824 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.140 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.776 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.350 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.907 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.517 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.829 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.145 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.779 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.375 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.920 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.524 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.835 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.149 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.782 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.400 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.932 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.531 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.841 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.154 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.786 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.425 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.945 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.539 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.847 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.159 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.789 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.450 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.957 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.546 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.853 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.164 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.792 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.475 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.970 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.553 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.859 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.168 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.796 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" bgcolor="#FFFFCC" width="75">0.500 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.982 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFFFCC" width="75">2.561 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.864 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.173 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.799 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.525 
+                              </td>
+                              <td class="bodytext" align="center" width="75">1.995 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.568 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.870 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.178 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.802 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.550 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.007 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.575 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.876 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.183 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.806 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.575 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.020 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.583 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.882 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.187 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.809 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.600 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.032 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.590 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.888 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.192 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.812 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.625 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.045 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.597 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.894 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.197 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.816 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.650 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.057 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.605 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.900 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.202 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.819 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.675 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.070 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.612 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.905 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.207 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.822 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.700 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.082 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.619 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.911 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.211 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.826 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.725 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.095 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.627 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.917 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.216 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.829 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.750 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.107 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.634 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.923 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.221 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.833 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.775 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.120 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.641 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.929 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.226 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.836 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.800 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.132 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.649 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.935 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.230 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.839 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.825 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.145 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.656 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.940 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.235 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.843 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.850 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.157 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.663 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.946 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.240 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.846 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.875 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.170 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.670 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.952 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.245 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.849 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.900 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.182 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.678 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.958 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.250 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.853 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.925 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.195 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.685 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.964 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.254 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.856 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.950 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.207 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.692 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.970 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.259 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.859 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">0.975 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.220 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.700 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.976 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.264 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.863 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.000 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.232 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.707 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.981 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.269 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.866 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.025 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.245 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.714 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.987 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.273 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.869 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.050 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.257 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.722 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.993 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.278 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.873 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.075 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.270 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.729 
+                              </td>
+                              <td class="bodytext" align="center" width="75">2.999 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.283 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.876 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.100 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.282 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.736 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.005 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.288 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.879 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.125 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.295 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.744 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.011 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.293 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.883 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.150 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.307 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.751 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.017 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.297 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.886 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.175 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.758 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.022 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.302 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.889 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.200 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.766 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.028 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.307 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.893 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.225 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.773 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.034 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.312 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.896 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.250 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.780 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.040 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.316 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.900 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.275 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.788 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.046 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.321 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.903 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.300 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.795 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.052 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.326 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.906 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.325 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.802 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.057 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.331 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.910 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.350 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.810 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.063 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.336 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.913 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.375 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.817 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.069 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.340 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.916 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.400 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">2.824 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.075 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.345 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.920 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.425 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.081 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.350 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.923 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.450 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.087 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.355 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.926 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.475 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.093 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.359 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.930 
+                              </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center" width="75">1.500 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" width="75">- 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.098 
+                              </td>
+                              <td class="bodytext" align="center" bgcolor="#FFCCCC" width="75">3.364 
+                              </td>
+                              <td class="bodytext" align="center" width="75">3.933 
+                            </td></tr>
+                          </tbody></table></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> Choose the stave thickness ratio and 
+                      the number of sides that you want to use, look up the corresponding 
+                      value of "M" in the table, and you have everything you need 
+                      to do the size calculations. Let's do an example. </p>
+                    <table border="0" cellpadding="3" align="center" bgcolor="#EEFFEE" width="475">
+                      <tbody><tr> 
+                        <td> <p class="bodytext"> <b>Example 1</b><br>
+                            Let's say we want to build a 3-inch diameter, 8-sided 
+                            spar. If we choose a stave thickness ratio (K) of 
+                            0.5, the resulting value for M is 2.561 (highlighted 
+                            in yellow in Table 2). The value for the stave width 
+                            (L) is then:<br>
+                            L = O.D. / M<br>
+                            L = 3 inches / 2.561 = 1.171 inches<br>
+                            <br>
+                            Since we chose a stave thickness ratio of 0.5, the 
+                            thickness of the stave (H) is <br>
+                            (0.5 X 1.171) or about 0.586 inches.</p></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> You can download a text version of <a href="http://www.duckworksmagazine.com/04/s/articles/birdsmouth/M-table.txt">Table 
+                      2</a> and print it on a single page. (You may have to adjust 
+                      the page margins and the font size to achieve that). With 
+                      this table at your disposal, you can do the calculations 
+                      by hand if you have to. </p>
+                    <a name="online-calc"></a> <p class="bodytext"> Let's now 
+                      look at the easiest method: your PC doing the calculations 
+                      for you! </p>
+                    <p class="headline">Bird's Mouth Spar Size Calculators </p>
+                    <p><b>Instructions</b> </p>
+                    <p class="bodytext"> 
+                    <noscript>
+                    <b>Make sure that the JavaScript function of your browser 
+                    is activated. </b> </noscript> </p><p></p>
+                    <p class="bodytext">Choose the Calculator that suits your 
+                      needs. Enter the values of your choice on the left, then 
+                      click on the "Calculate!" button. Results will appear on 
+                      the right. An error message will appear in the Status box 
+                      if your inputs don't work out. You can clear all entries 
+                      by clicking on the Reload or Refresh button of your Web 
+                      browser. Or you can just enter new inputs and click on "Calculate!" 
+                      again. Clicking on the pictogram in the middle will lead 
+                      you back to Figure 1, in case you need a reminder for all 
+                      those definitions. Dimensions must all be in the same units. 
+                      Ex.: Inputs in inches give results in inches. </p>
+                    <p class="bodytext"> <b>Hints to avoid error messages (in 
+                      the Status box)</b> </p>
+                    <p class="bodytext"> Input values must be numbers higher than 
+                      zero (no negatives, no letters).<br>
+                      The number of sides must be 5 or more.<br>
+                      I.D. must be smaller than O.D. (obviously).<br>
+                      H or K must not be too small or too large (less obvious).<br>
+                      H must be smaller than the radius or half the diameter. 
+                    </p>
+                    <!-- ***************************************************** -->
+                    <!-- ***********   Calculators Section   ***************** -->
+                    <!-- ***************************************************** -->
+                    <!-- Display the first Calculator -->
+                    <!-- Associated JavaScript: function Calculator_1() -->
+                    <form name="calc1">
+                      <table border="0" align="center" bgcolor="#cccccc" width="450">
+                        <tbody><tr bgcolor="#cccccc"> 
+                          <td> <table border="2" cellpadding="3" cellspacing="1" bgcolor="#ccffcc">
+                              <tbody><tr> 
+                                <td colspan="2" align="center" bgcolor="#FFFF99"><font color="#000000" face="Arial" size="2"><b>Calculator 
+                                  1: Given N, calculate the two angles<br>
+                                  used for the V-notch on the staves.</b></font> 
+                                </td>
+                              </tr>
+                              <tr> 
+                                <td valign="top"> <table cellspacing="2" width="150">
+                                    <tbody><tr> 
+                                      <td valign="top">&nbsp; </td>
+                                      <td colspan="2" valign="top"><font face="Times New Roman" size="3"><b>Input</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td valign="top"><font face="Times New Roman" size="3"> 
+                                        N:</font> </td>
+                                      <td valign="top"><input name="n1" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td colspan="2" valign="top"><font face="Times New Roman" size="3"> 
+                                        (Number of sides)</font> </td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table cellspacing="2" align="center" width="300">
+                                    <tbody><tr> 
+                                      <td valign="top" width="150"> <input name="compute_1" value="Calculate!" onclick="Calculator_1()" type="button"> </td>
+                                      <td valign="top" width="150"><font face="Times New Roman" size="3"><b>Results</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td class="bodytext" width="100"> Angle 
+                                        1: </td>
+                                      <td class="bodytext" width="200"><input name="angle1" ,="" size="9" type="number">
+                                        degrees </td>
+                                    </tr>
+                                    <tr> 
+                                      <td class="bodytext" width="100"> Angle 
+                                        2: </td>
+                                      <td class="bodytext" width="200"><input name="angle2" ,="" size="9" type="number">
+                                        degrees </td>
+                                    </tr>
+                                  </tbody></table></td>
+                              </tr>
+                              <tr> 
+                                <td colspan="2" align="center" bgcolor="#FFFF99"><p class="bodytext" align="left"> 
+                                    &nbsp;<b>Status :</b><br>
+                                    &nbsp; <font class="bodytext"> 
+                                    <input name="stat1" ,="" size="48" type="text">
+                                    </font> </p></td>
+                              </tr>
+                            </tbody></table></td>
+                        </tr>
+                      </tbody></table>
+                    </form>
+                    <!-- End of first Calculator Display -->
+                    <!-- Display the second Calculator -->
+                    <form name="calc2">
+                      <table border="0" align="center" bgcolor="#cccccc" width="450">
+                        <tbody><tr> 
+                          <td> <table border="2" cellpadding="3" cellspacing="1" bgcolor="#ccffcc">
+                              <tbody><tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><font color="#000000" face="Arial" size="2"><b>Calculator 
+                                  2: Given N, O.D. and I.D., calculate L, H and 
+                                  K</b></font> </td>
+                              </tr>
+                              <tr> 
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Inputs</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="50"><font face="Times New Roman" size="3">N: 
+                                        </font> </td>
+                                      <td width="100"><input name="n2" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="50"><font face="Times New Roman" size="3">O.D.: 
+                                        </font> </td>
+                                      <td width="100"><input name="od2" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="50"><font face="Times New Roman" size="3">I.D.: 
+                                        </font> </td>
+                                      <td width="100"><input name="id2" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table align="center" width="150">
+                                    <tbody><tr> 
+                                      <td align="center" valign="top"> <input name="compute_2" value="Calculate!" onclick="Calculator_2()" type="button"> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td align="center"><p>&nbsp;<br>
+                                          <a class="link" href="#remind-me"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/med_th.jpg"></a></p></td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Results</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">L 
+                                        : </font> </td>
+                                      <td width="105"><input name="l2" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">H 
+                                        : </font> </td>
+                                      <td width="105"><input name="h2" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">A 
+                                        : </font> </td>
+                                      <td width="105"><input name="a2" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">K 
+                                        : </font> </td>
+                                      <td width="105"><input name="k2" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">M 
+                                        : </font> </td>
+                                      <td width="105"><input name="m2" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                              </tr>
+                              <tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><p class="bodytext" align="left"> 
+                                    &nbsp;<b>Status :</b><br>
+                                    &nbsp; <font class="bodytext"> 
+                                    <input name="stat2" ,="" size="48" type="text">
+                                    </font> </p></td>
+                              </tr>
+                            </tbody></table></td>
+                        </tr>
+                      </tbody></table>
+                    </form>
+                    <!-- End of second Calculator Display -->
+                    <!-- Display the third Calculator -->
+                    <form name="calc3">
+                      <table border="0" align="center" bgcolor="#cccccc" width="450">
+                        <tbody><tr> 
+                          <td> <table border="2" cellpadding="3" cellspacing="1" bgcolor="#ccffcc">
+                              <tbody><tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><font color="#000000" face="Arial" size="2"><b>Calculator 
+                                  3: Given N, L and H, calculate O.D., I.D. and 
+                                  K</b></font> </td>
+                              </tr>
+                              <tr> 
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Inputs</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">N 
+                                        : </font> </td>
+                                      <td width="105"><input name="n3" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">L 
+                                        : </font> </td>
+                                      <td width="105"><input name="l3" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">H 
+                                        : </font> </td>
+                                      <td width="105"><input name="h3" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table align="center" width="150">
+                                    <tbody><tr> 
+                                      <td align="center" valign="top"> <input name="compute_3" value="Calculate!" onclick="Calculator_3()" type="button"> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td align="center"><p>&nbsp;<br>
+                                          <a class="link" href="#remind-me"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/med_th.jpg"></a></p></td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Results</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">O.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="od3" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">I.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="id3" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">A 
+                                        : </font> </td>
+                                      <td width="105"><input name="a3" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">K 
+                                        : </font> </td>
+                                      <td width="105"><input name="k3" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">M 
+                                        : </font> </td>
+                                      <td width="105"><input name="m3" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                              </tr>
+                              <tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><p class="bodytext" align="left"> 
+                                    &nbsp;<b>Status :</b><br>
+                                    &nbsp; <font class="bodytext"> 
+                                    <input name="stat3" ,="" size="48" type="text">
+                                    </font> </p></td>
+                              </tr>
+                            </tbody></table></td>
+                        </tr>
+                      </tbody></table>
+                    </form>
+                    <!-- End of third Calculator Display -->
+                    <!-- Display the fourth Calculator -->
+                    <form name="calc4">
+                      <table border="0" align="center" bgcolor="#cccccc" width="450">
+                        <tbody><tr> 
+                          <td> <table border="2" cellpadding="3" cellspacing="1" bgcolor="#ccffcc">
+                              <tbody><tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><font color="#000000" face="Arial" size="2"><b>Calculator 
+                                  4: Given N, O.D. and H, calculate L, I.D. and 
+                                  K</b></font> </td>
+                              </tr>
+                              <tr> 
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Inputs</b><br>
+                                        <font size="1">&nbsp;</font> </font></td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">N 
+                                        : </font> </td>
+                                      <td width="105"><input name="n4" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">O.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="od4" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">H 
+                                        : </font> </td>
+                                      <td width="105"><input name="h4" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table align="center" width="150">
+                                    <tbody><tr> 
+                                      <td align="center" valign="top"> <input name="compute_4" value="Calculate!" onclick="Calculator_4()" type="button"> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td align="center"><p>&nbsp;<br>
+                                          <a class="link" href="#remind-me"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/med_th.jpg"></a></p></td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Results</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">L 
+                                        : </font> </td>
+                                      <td width="105"><input name="l4" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">I.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="id4" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">A 
+                                        : </font> </td>
+                                      <td width="105"><input name="a4" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">K 
+                                        : </font> </td>
+                                      <td width="105"><input name="k4" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">M 
+                                        : </font> </td>
+                                      <td width="105"><input name="m4" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                              </tr>
+                              <tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><p class="bodytext" align="left"> 
+                                    &nbsp;<b>Status :</b><br>
+                                    &nbsp; <font class="bodytext"> 
+                                    <input name="stat4" ,="" size="48" type="text">
+                                    </font> </p></td>
+                              </tr>
+                            </tbody></table></td>
+                        </tr>
+                      </tbody></table>
+                    </form>
+                    <!-- End of fourth Calculator Display -->
+                    <!-- Display the fifth Calculator -->
+                    <form name="calc5">
+                      <table border="0" align="center" bgcolor="#cccccc" width="450">
+                        <tbody><tr> 
+                          <td> <table border="2" cellpadding="3" cellspacing="1" bgcolor="#ccffcc">
+                              <tbody><tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><font color="#000000" face="Arial" size="2"><b>Calculator 
+                                  5: Given N, O.D. and K, calculate L, H and I.D.</b></font> 
+                                </td>
+                              </tr>
+                              <tr> 
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Inputs</b><br>
+                                        <font size="1">&nbsp;</font> </font></td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">N 
+                                        : </font> </td>
+                                      <td width="105"><input name="n5" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">O.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="od5" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">K 
+                                        : </font> </td>
+                                      <td width="105"><input name="k5" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table align="center" width="150">
+                                    <tbody><tr> 
+                                      <td align="center" valign="top"> <input name="compute_5" value="Calculate!" onclick="Calculator_5()" type="button"> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td align="center"><p>&nbsp;<br>
+                                          <a class="link" href="#remind-me"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/med_th.jpg"></a></p></td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Results</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">L 
+                                        : </font> </td>
+                                      <td width="105"><input name="l5" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">H 
+                                        : </font> </td>
+                                      <td width="105"><input name="h5" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">I.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="id5" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">A 
+                                        : </font> </td>
+                                      <td width="105"><input name="a5" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">M 
+                                        : </font> </td>
+                                      <td width="105"><input name="m5" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                              </tr>
+                              <tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><p class="bodytext" align="left"> 
+                                    &nbsp;<b>Status :</b><br>
+                                    &nbsp; <font class="bodytext"> 
+                                    <input name="stat5" ,="" size="48" type="text">
+                                    </font> </p></td>
+                              </tr>
+                            </tbody></table></td>
+                        </tr>
+                      </tbody></table>
+                    </form>
+                    <!-- End of fifth Calculator Display -->
+                    <!-- Display the sixth Calculator -->
+                    <form name="calc6">
+                      <table border="0" align="center" bgcolor="#cccccc" width="450">
+                        <tbody><tr> 
+                          <td> <table border="2" cellpadding="3" cellspacing="1" bgcolor="#ccffcc">
+                              <tbody><tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><font color="#000000" face="Arial" size="2"><b>Calculator 
+                                  6: Given N, L and K, calculate O.D., H and I.D.</b></font> 
+                                </td>
+                              </tr>
+                              <tr> 
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Inputs</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">N 
+                                        : </font> </td>
+                                      <td width="105"><input name="n6" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">L 
+                                        : </font> </td>
+                                      <td width="105"><input name="l6" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">K 
+                                        : </font> </td>
+                                      <td width="105"><input name="k6" ,="" size="9" type="number"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table align="center" width="150">
+                                    <tbody><tr> 
+                                      <td align="center" valign="top"> <input name="compute_6" value="Calculate!" onclick="Calculator_6()" type="button"> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td align="center"><p>&nbsp;<br>
+                                          <a class="link" href="#remind-me"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/med_th.jpg"></a></p></td>
+                                    </tr>
+                                  </tbody></table></td>
+                                <td> <table width="150">
+                                    <tbody><tr> 
+                                      <td colspan="2" align="center" valign="top"><font face="Times New Roman" size="3"><b>Results</b></font><br> 
+                                        <font size="1">&nbsp;</font> </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">O.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="od6" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">H 
+                                        : </font> </td>
+                                      <td width="105"><input name="h6" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">I.D.: 
+                                        </font> </td>
+                                      <td width="105"><input name="id6" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">A 
+                                        : </font> </td>
+                                      <td width="105"><input name="a6" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                    <tr> 
+                                      <td width="45"><font face="Times New Roman" size="3">M 
+                                        : </font> </td>
+                                      <td width="105"><input name="m6" ,="" size="10" type="text"> 
+                                      </td>
+                                    </tr>
+                                  </tbody></table></td>
+                              </tr>
+                              <tr> 
+                                <td colspan="3" align="center" bgcolor="#FFFF99"><p class="bodytext" align="left"> 
+                                    &nbsp;<b>Status :</b><br>
+                                    &nbsp; <font class="bodytext"> 
+                                    <input name="stat6" ,="" size="48" type="text">
+                                    </font> </p></td>
+                              </tr>
+                            </tbody></table></td>
+                        </tr>
+                      </tbody></table>
+                    </form>
+                    <!-- End of sixth Calculator Display -->
+                    <!-- ***************************************************** -->
+                    <!-- *********** End of Calculators Section ************** -->
+                    <!-- ***************************************************** -->
+                    <a name="taper"></a> <p><b>Dealing with a Tapered Mast</b></p>
+                    <p class="bodytext"> There is one case where the Calculators 
+                      above will prove handy: building a mast with a taper. A 
+                      taper means that the mast diameter will gradually be reduced 
+                      in size as you go up. I have never built a bird's mouth 
+                      mast so far; I have only drafted a few in TurboCAD. So, 
+                      I <i>think</i> the easiest way to build a tapered bird's 
+                      mouth mast is to cut a taper in the width of the staves, 
+                      leaving the thickness constant all the way. Figure 7 below 
+                      illustrates this. As you can guess, the length has been 
+                      condensed to better show what is going on.</p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td><img src="Bird%27s%20Mouth%20Spars%20revisited_files/taper02.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 7- Creating 
+                          a taper : just cut away the yellow section</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> The yellow section would be removed to 
+                      produce a tapered mast. This is the easiest cut to do: your 
+                      piece of wood would be lying flat on its largest side. It 
+                      sure beats cutting a taper on the V-notch side. It is also 
+                      the best compromise for strength. By cutting this way, the 
+                      thickness ratio would go up, minimizing the strength loss 
+                      caused by a smaller end diameter. It also keeps the glue 
+                      joint surface at its maximum. </p>
+                    <p class="bodytext"> Let's do an example. You can try it for 
+                      yourself as we go along. </p>
+                    <table cellpadding="3" align="center" bgcolor="EEFFEE">
+                      <tbody><tr> 
+                        <td> <p class="bodytext"><b> Example 2</b> </p>
+                          <p class="bodytext"> Step 1 </p>
+                          <p class="bodytext"> Let's say we want to build a 3-inch 
+                            diameter mast with a tapered top diameter of 2 inches. 
+                            We will do a 12-sided mast this time. We can start 
+                            with the bottom section of the mast using either Calculator 
+                            2, 4 or 5. Let's say we want to use O.D. and I.D. 
+                            as inputs. This means we must choose Calculator 2 
+                            to do the job. Let's choose an I.D. of 1.75 inches. 
+                            The results obtained for L and H are:<br>
+                            <br>
+                            L = 0.780 inch at the bottom<br>
+                            H = 0.655 inch </p>
+                          <p class="bodytext"> Step 2 </p>
+                          <p class="bodytext"> Now, for the final dimensions at 
+                            the top, we use Calculator 4 and enter our final O.D. 
+                            of 2 inches and the value for H we have just calculated. 
+                            The final stave width (L) we obtain for the top is: 
+                            <br>
+                            <br>
+                            L = 0.512 inch at the top </p>
+                          <p class="bodytext"> So we have to remove (0.780 - 0. 
+                            512) or 0.268 inch at the top, gradually reducing 
+                            to zero at the point where we go back to the full 
+                            3-inch diameter. </p></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> This approach could be extended to multiple 
+                      levels of taper. </p>
+                    <a name="weight"></a> <p><b>Weight Saving and Strength Loss</b></p>
+                    <p class="bodytext"> We now arrive at the core of the subject: 
+                      the weight saving that a bird's mouth spar can achieve. 
+                      The information presented here is based in part on the "Farless 
+                      equations", with one refinement. The formulas for relative 
+                      mass and strength presented in that article were (and still 
+                      are) first approximations. In the case of the strength formula, 
+                      that approximation is also the worst-case figure, so it 
+                      is a good idea to keep it as is. </p>
+                    <p class="bodytext"> The relative mass equation, though, can't 
+                      be used to compare relative mass (or weight saving) for 
+                      various configurations. It does not take into account the 
+                      number of sides. Figure 8 below shows you why we must take 
+                      that in account. It shows, using the same I.D. and O.D., 
+                      a 6- and a 12-sided spar, superposed. The 12-sided spar 
+                      area is shown in yellow; the 6-sided spar has additional 
+                      area (in grey). Although these two examples have the same 
+                      theoretical strength, the 6-sided spar is heavier. </p>
+                    <p class="bodytext"> The accurate formula for weight saving 
+                      is substantially longer than the first approximation (see 
+                      the <a href="http://www.duckworksmagazine.com/04/s/articles/birdsmouth/appendix.htm">Appendix Section</a>). </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td align="center" bgcolor="#FFFFFF"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/six-twelve-s.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 8- Cross 
+                          section area comparison, 6- and 12-sided configuration</b> 
+                        </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> So how does a bird's mouth spar compare 
+                      to a solid spar in terms of weight saving and strength? 
+                      To avoid comparing apples and oranges, we will use the ratio 
+                      A or (I.D. / O.D.). First, Figure 9 below compares bird's 
+                      mouth spars to a solid round spar of the same size or diameter. 
+                      We can see that the weight saving increases with the number 
+                      of sides. The difference is more important for high values 
+                      of ratio A (thinner spar). The weight saving can look fantastic 
+                      there, if you forget to look at the strength loss curve 
+                      (in grey), which is the same for all configurations. You 
+                      obviously don't get something for nothing. As ratio A comes 
+                      closer to unity, you start to loose strength faster than 
+                      you loose weight. Not an improvement. The range used for 
+                      ratio A in these graphs stops at 0.2: at that point, the 
+                      weight saving falls to about 5%, our "practical limit" for 
+                      maximum K (See Table 1). </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/same-size.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 9- Weight 
+                          saving compared to a solid round spar of same size ...Round 
+                          Exterior</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> There are two solutions to get a big 
+                      weight saving without losing too much strength. First, use 
+                      a larger diameter than the original solid spar. You can 
+                      achieve the same theoretical strength and still save weight. 
+                      Sounds too good to be true? There is one drawback: you end 
+                      up with a larger spar. The larger the weight saving, the 
+                      larger that spar becomes. You might end up with a spar that 
+                      is just too large to be practical. Figure 10 below shows 
+                      you what you can expect to achieve. The grey curve shows 
+                      you how much bigger the spar must be to achieve the corresponding 
+                      weight saving. We can see, for example, that a 12-sided 
+                      spar can achieve a maximum weight saving of 70%! But to 
+                      do so, its diameter must be about 90% larger than a solid 
+                      spar! A less extreme example, the "classic" configuration 
+                      (8-sided, K=0.5), requires a size only about 5% larger for 
+                      equivalent strength, while saving about one-third in weight. 
+                      Not bad! </p>
+                    <p class="bodytext"> (A note, here, you can use the Size Calculator 
+                      #2 to figure what is the value of K for a given ratio A. 
+                      Enter the number of sides you want to use, enter "1" for 
+                      O.D. and enter the value A in the "I.D." input box. There 
+                      is also a conversion table in the Appendix section.) </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/same-strength.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 10- Weight 
+                          saving compared to a solid round spar of same strength 
+                          ...Round Exterior</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> This graph reveals something interesting. 
+                      As you go for a thinner spar, the weight saving goes up, 
+                      until it reaches a peak. That peak, by the way, is the practical 
+                      minimum ratio K proposed in Table 1. If you try a thinner 
+                      value past that point, the weight saving starts to fall 
+                      down again. This happens more or less in the graph area 
+                      located on the left side of the "Size Increase" curve. You 
+                      should avoid using values in that area: not only you won't 
+                      save more weight, but also the size increase becomes enormous! 
+                      There are two explanations for this phenomenon. This problem 
+                      is due to the fact that the inside and outside shape are 
+                      different. If both the inside and outside were the same 
+                      shape, the weight saving would continue to climb on that 
+                      graph. But because of the "corners" or vertex of the polygon 
+                      shape, you end up with a big difference between minimum 
+                      and maximum thickness. Those vertex are weak spots that 
+                      put a limit on optimum weight saving. Another way to look 
+                      at it is in the amount of material that you must remove 
+                      to obtain a round exterior (See Figure 11). As a 12-sided 
+                      spar is much "rounder" than a 6-sided, there is less waste. 
+                      But even with a large number of sides, for very thin stave 
+                      construction, you waste more material, weakening your spar. 
+                    </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/round-waste.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 11- Outside 
+                          waste that must be removed to obtain a round exterior</b> 
+                        </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> The graph of Figure 10 tells you how 
+                      to achieve the best weight saving, for a given strength. 
+                      The highest results are achieved with a pretty large increase 
+                      in size, perhaps too large. In real life, you would probably 
+                      want a good compromise between weight, strength and size. 
+                      Figure 12 below is an attempt at finding such a compromise. 
+                      This Arbitrary Score is not a "scientific" calculation. 
+                      The curves shown were obtained by subtracting the Size Increase 
+                      curve from the Weight Saving curves of Figure 10. This is 
+                      a "two-thumbs up" kind of rating. It rewards good weight 
+                      saving but penalizes large size increases. It does shows 
+                      where the overall good compromises are. You have to take 
+                      the results with a grain of salt. You can get equal scores 
+                      for very different weight saving values. On the left portion 
+                      of the graph, high score values reflects great weight saving. 
+                      On the right portion of the graph, high score values reflects 
+                      minimal size increase. If weight saving is more important 
+                      to you, go "left". If you want to replace an existing solid 
+                      mast and you are limited in space, go "right". </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/round-score.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 12- Arbitrary 
+                          Score compared to a solid round spar of same strength 
+                          ...Round Exterior</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> The second method to maximize strength 
+                      is to keep the exterior in the same polygon shape as the 
+                      inside (See Figure 13). This is not as pretty, but you don't 
+                      hit the same weight saving limit as a rounded bird's mouth 
+                      spar. That's because the ratio A (I.D./O.D) is constant 
+                      all around. And for a beginner like me, it might be easier 
+                      to build. A 12-sided spar done this way wouldn't look too 
+                      bad. For weight saving and strength comparison, we will 
+                      use the minimum diameter for that polygon. This will allow 
+                      us to use the same overall size calculations as a rounded 
+                      spar. </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/octa-01.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 13- Polygon 
+                          exterior shape</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> Figure 14 compares a polygon-shaped bird's 
+                      mouth spar to a solid round spar of equivalent strength. 
+                      You can see, if you compare with Figure 10, that the weight 
+                      saving can reach higher values. And the increase in size 
+                      required to maintain strength is smaller. That's for high 
+                      values of A. Although the graph stops at a maximum of one, 
+                      ratio A can actually exceed one with such a configuration. 
+                      That's because I.D. has been defined in diagonal, while 
+                      O.D. is measured straight across. </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/poly_same-strength.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 14- Weight 
+                          saving compared to a solid round spar of same strength 
+                          ...Polygon Exterior</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> Table 3 below gives you the maximum limit 
+                      for (A). At that point, the stave thickness has reached 
+                      zero. </p>
+                    <table border="0" cellpadding="0" align="center" bgcolor="#EEEEEE" width="300">
+                      <tbody><tr> 
+                        <td> <table border="1" cellpadding="1" align="center" width="300">
+                            <tbody><tr><td colspan="2" bgcolor="#DDFFDD"> <p align="center"><font face="Arial" size="3"> 
+                                Table 3- Maximum theoretical values <br>
+                                for ratio (A) - Polygon Exterior</font></p></td>
+                            </tr>
+                            <tr> 
+                              <td colspan="2" bgcolor="#EEEEEE" height="0"> </td>
+                            </tr><tr> 
+                              <td bgcolor="white"><p class="bodytext" align="center"><b>Number<br>
+                                  of sides (N)</b></p></td>
+                              <td bgcolor="white"><p class="bodytext" align="center"><b>Maximum 
+                                  Ratio (A)<br>
+                                  (I.D. / O.D.)</b></p></td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">5 </td>
+                              <td class="bodytext" align="center">1.2361 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">6 </td>
+                              <td class="bodytext" align="center">1.1547 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">8 </td>
+                              <td class="bodytext" align="center">1.0824 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">9 </td>
+                              <td class="bodytext" align="center">1.0642 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">10 </td>
+                              <td class="bodytext" align="center">1.0515 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">12 </td>
+                              <td class="bodytext" align="center">1.0353 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">15 </td>
+                              <td class="bodytext" align="center">1.0223 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">16 </td>
+                              <td class="bodytext" align="center">1.0196 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">18 </td>
+                              <td class="bodytext" align="center">1.0154 </td>
+                            </tr>
+                            <tr bgcolor="white"> 
+                              <td class="bodytext" align="center">20 </td>
+                              <td class="bodytext" align="center">1.0124 </td>
+                            </tr>
+                          </tbody></table></td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> When ratio (A) and the hollow area becomes 
+                      small, you can reach a point where you no longer save weight! 
+                      You end up with a higher weight than a solid round spar. 
+                      So, for a thick stave, this configuration is not a good 
+                      idea; the rounded version is a better choice for that. </p>
+                    <p class="bodytext"> Figure 15 below shows the Arbitrary Score 
+                      for a polygon shape. The peak score is a bit higher than 
+                      for a rounded version. But you hit negative values at the 
+                      right end of the graph, just like Figure 14. </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/poly-score.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 15- Arbitrary 
+                          Score compared to a solid round spar of same strength 
+                          ...Polygon Exterior</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> The outside waste, for a polygon exterior, 
+                      is obviously much smaller than for a round exterior, as 
+                      can be seen in Figure 16 below. The waste increases as the 
+                      hollow area becomes smaller. </p>
+                    <table align="center">
+                      <tbody><tr> 
+                        <td bgcolor="#FCFCFC"><img src="Bird%27s%20Mouth%20Spars%20revisited_files/poly-waste.gif" border="1"></td>
+                      </tr><tr> 
+                      </tr><tr> 
+                        <td class="caption" align="center"> <b>Figure 16- Outside 
+                          waste for a polygon exterior shape</b> </td>
+                      </tr>
+                    </tbody></table>
+                    <p class="bodytext"> You may have noticed, throughout these 
+                      graphs, a large gap between the 6-sided and 8-sided configuration. 
+                      That's because no 7-sided curves were done. This gap also 
+                      tells you that an 8-sided spar would be a much better choice 
+                      than a 6-sided one. </p>
+                    <p class="bodytext"> All the strength calculations are theoretical 
+                      strength values. The formulas use what is called the moment 
+                      of inertia. This is a fair estimate as long as the stress 
+                      is uniformly distributed. In real life, there are always 
+                      some localized stress points, like at the mast partner, 
+                      for example. So you may have to add some extra reinforcements 
+                      in critical areas to avoid bad surprises. </p>
+                    <p class="bodytext"> This about covers what I had to say about 
+                      bird's mouth spars. I hope you have found this "exploration" 
+                      interesting. Feel free to have a look at the <a href="http://www.duckworksmagazine.com/04/s/articles/birdsmouth/appendix.htm">Appendix</a> 
+                      section where the formulas used and the graph results in 
+                      Table format are shown. </p>
+                    <p class="bodytext" align="center"><b>- The End -</b> </p></td>
+                </tr>
+              </tbody></table></td>
+          </tr>
+        </tbody></table>
+        <b></b></div></td>
+    <td valign="top" width="94">&nbsp;</td>
+  </tr>
+</tbody></table>
+<p>&nbsp;</p>
+
+
+</body></html>

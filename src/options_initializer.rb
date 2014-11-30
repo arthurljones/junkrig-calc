@@ -8,6 +8,7 @@ module OptionsInitializer
           value = init_opts[attribute]
           required = attr_opts[:required]
           units = attr_opts[:units]
+          value ||= options[:default]
 
           raise "#{attribute} is required" if required && value.blank?
 
