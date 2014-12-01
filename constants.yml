@@ -6,10 +6,10 @@ epoxy_application_thickness: "0.09375 in"
 epoxy_density: "8.8 lb/gal"
 epoxy_cost: "55.00 USD/gal"
 air_density: "1.25 kg/m^3"
-saltwater_density: "64.3 lb/ft^3"
+saltwater_density: "1024 kg/m^3"
 
 table_saw_kerf: "0.098 in"
-gravity: "32.174 ft/s^2"
+gravity: "9.80665 m/s^2"
 
 bamboo_wall_thickness_ratio: 0.085
 scarf_ratio: 12

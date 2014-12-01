@@ -14,4 +14,5 @@ end
 add_root_load_path("src")
 
 require "monkey_patches"
+require "custom_units"
 require "constants"

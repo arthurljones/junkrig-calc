@@ -10,11 +10,11 @@ class Constants
     end
 
     def method_missing(meth, *args, &block)
-      @all.include?(meth) ? @all[meth] : super
+      all.include?(meth) ? all[meth] : super
     end
 
     def respond_to_missing?(method_name, include_private = false)
-      @all.include?(meth) || super
+      all.include?(meth) || super
     end
   end
 end
