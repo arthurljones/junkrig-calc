@@ -1,5 +1,5 @@
 require_relative '../../spec_helper'
-require_relative '../../../src/cross_sections/tube'
+require 'cross_sections/tube'
 
 RSpec.describe CrossSections::Tube do
   def default_options
@@ -62,7 +62,7 @@ RSpec.describe CrossSections::Tube do
   end
 
   #Common cross section methods
-  
+
   describe "#extreme_fiber_radius" do
     it "returns the distance from the neutral axis to the furthest fiber of the cross section" do
       expect(default_tube.extreme_fiber_radius).to eq Unit("0.5 in")

@@ -1,3 +1,13 @@
+require "nokogiri"
+require "awesome_print"
+
+require "bounds"
+require "vector2"
+require "helpers"
+
+require "junk_sail/batten"
+require "junk_sail/panel"
+
 module JunkSail
   class Sail
     BATTEN_STAGGER = 0.01

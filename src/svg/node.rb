@@ -1,3 +1,5 @@
+require "svg/path_builder"
+
 module SVG
   class Node
     VALID_TRANSFORMS = %w(translate scale rotate skewX skewY matrix).freeze

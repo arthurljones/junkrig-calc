@@ -1,14 +1,7 @@
-require 'rubygems'
-require 'bundler/setup'
-
-Bundler.require
-Dir.glob("src/**/*.rb").each { |file| require_relative file }
-
-def closest_piece(pieces, target)
-  piece = pieces.delete(pieces.min_by { |piece| [piece.best_match_for(target), -piece.small_end] })
-  piece.truncate_for(target)
-  piece
-end
+require_relative "boilerplate"
+require "mast/lumber_piece"
+require "mast/stave"
+require "mast/stave_builder"
 
 all_singles = [
   59, 69, 72, 75, 79, 79, 87, 87, 88, 89, 89,

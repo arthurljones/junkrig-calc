@@ -1,8 +1,6 @@
-require 'rubygems'
-require 'bundler/setup'
+require_relative "../boilerplate"
 
-Bundler.require
-Dir.glob("../src/**/*.rb").each { |file| require_relative file }
+add_root_load_path("spec/src")
 
 require_relative "support/helpers"
 

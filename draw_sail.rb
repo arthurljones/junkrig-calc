@@ -1,8 +1,8 @@
-require 'rubygems'
-require 'bundler/setup'
+require_relative "boilerplate"
 
-Bundler.require
-Dir.glob("src/**/*.rb").each { |file| require_relative file }
+require "transform"
+require "svg/node"
+require "junk_sail/sail"
 
 sail = JunkSail::Sail.new(
   parallelogram_luff: Unit(16, "ft"),
@@ -30,5 +30,3 @@ File.open(filename, "wb") do |file|
   file.write(svg.node.to_xml)
   file.close
 end
-
-draw_sail

@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
-require_relative '../../src/beam'
-require_relative '../../src/material'
+require 'beam'
+require 'material'
 
 RSpec.describe Beam do
   def default_cross_section

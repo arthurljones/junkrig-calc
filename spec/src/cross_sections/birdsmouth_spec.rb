@@ -1,5 +1,5 @@
 require_relative '../../spec_helper'
-require_relative '../../../src/cross_sections/birdsmouth'
+require 'cross_sections/birdsmouth'
 
 RSpec.describe CrossSections::Birdsmouth do
   def default_options

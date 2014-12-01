@@ -1,3 +1,6 @@
+require "active_support/concern"
+require "active_support/core_ext"
+
 module OptionsInitializer
   extend ActiveSupport::Concern
 
@@ -8,14 +11,14 @@ module OptionsInitializer
         attributes.each do |attribute_name, options|
           value = new_args[attribute_name] || options[:default]
 
-          raise "#{attribute} is required" if options[:required] && value.blank?
+          raise "#{attribute_name} is required for #{self.class.name}" if options[:required] && value.blank?
 
           units = options[:units]
           if units && value.present?
             begin
               value = Unit(value).to(units)
             rescue ArgumentError => e
-              e.message = "#{e.message} (#{attribute})"
+              e.message = "#{e.message} (#{attribute_name})"
               raise e
             end
           end

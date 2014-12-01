@@ -1,3 +1,5 @@
+require "math_proxy"
+
 class Transform
   extend MathProxy
 

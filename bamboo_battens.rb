@@ -1,8 +1,12 @@
-require 'rubygems'
-require 'bundler/setup'
+require_relative "boilerplate"
+require "battens/batten_piece"
+require "battens/batten_set"
 
-Bundler.require
-Dir.glob("src/**/*.rb").each { |file| require_relative file }
+def closest_piece(pieces, target)
+  piece = pieces.delete(pieces.min_by { |piece| [piece.best_match_for(target), -piece.small_end] })
+  piece.truncate_for(target)
+  piece
+end
 
 pieces = [
   { :name => 'A', :ends => [2.5, :t, 2.375] },

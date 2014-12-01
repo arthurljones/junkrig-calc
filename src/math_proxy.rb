@@ -1,3 +1,5 @@
+
+
 module MathProxy
   private
   def math_proxy(name, klass, &argument_map)
