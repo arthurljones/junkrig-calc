@@ -5,8 +5,10 @@ require "bounds"
 require "vector2"
 require "helpers"
 
+require "transform"
 require "junk_sail/batten"
 require "junk_sail/panel"
+require "svg/node"
 
 module JunkSail
   class Sail
@@ -128,11 +130,29 @@ module JunkSail
       panels.sum { |panel| panel.center * panel.area } / area
     end
 
-    def draw(svg)
+    def draw_to_svg(svg)
       svg.layer("Sail") do |outer_layer|
         draw_sail(outer_layer)
         draw_sheet_zone(outer_layer)
         #sail.draw_measurements(outer_layer)
+      end
+    end
+
+    def draw_to_file(filename)
+      bounds = image_bounds
+      image_size = bounds.size.to("in")
+      svg = SVG::Node.new_document(
+        :width => image_size.x.to_s,
+        :height => image_size.y.to_s,
+        :viewBox => "0 0 #{image_size.x.scalar.round(4)} #{image_size.y.scalar.round(4)}"
+      )
+      transform = Transform.new.scaled(Vector2.new(-1, -1)).translated(-bounds.max)
+      svg.local_transform = transform
+      draw_to_svg(svg)
+
+      File.open(filename, "wb") do |file|
+        file.write(svg.node.to_xml)
+        file.close
       end
     end
 
