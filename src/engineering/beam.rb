@@ -8,9 +8,9 @@ module Engineering
     attr_reader :material, :cross_section, :length, :unsupported_length
 
     options_initialize(
-      :material => { :required => true },
-      :cross_section => { :required => true },
-      :length => { :required => true, :units => "in" },
+      :material => { },
+      :cross_section => { },
+      :length => { :units => "in" },
       :unsupported_length => { :units => "in" }
     ) do |options|
       #TODO: Maybe this should go in Material itself?

@@ -6,7 +6,6 @@ module Engineering
     class Tube
       include CrossSection
       include OptionsInitializer
-      attr_reader :outer_radius, :wall_thickness
 
       options_initialize(
         :outer_diameter => { :required => :true, :units => "in", :write => false },

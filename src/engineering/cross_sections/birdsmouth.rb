@@ -8,23 +8,18 @@ module Engineering
       include OptionsInitializer
 
       attr_reader *%i(
-        sides
-        stave_thickness
-        stave_width
-        outer_diameter
         inner_diameter
         extreme_fiber_radius
         wall_thickness
         area
         second_moment_of_area
-        defect_to_total_area_ratio
       )
 
       options_initialize(
-        :stave_thickness => { :required => :true, :units => "in" },
-        :outer_diameter => { :units => "in" },
-        :stave_width => { :units => "in" },
-        :sides => { :required => true, :default => 8 },
+        :stave_thickness => { :units => "in" },
+        :outer_diameter => { :required => false, :units => "in" },
+        :stave_width => { :required => false, :units => "in" },
+        :sides => { :default => 8 },
         :defect_to_total_area_ratio => { :default => 0 }
       ) do |options|
 

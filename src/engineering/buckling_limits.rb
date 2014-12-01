@@ -4,11 +4,11 @@ module Engineering
   class BucklingLimits
     include OptionsInitializer
 
-    attr_reader :beam, :end_attachment, :unsupported_length, :effective_length_ratio
+    attr_reader :effective_length_ratio
 
     options_initialize(
-      :beam => { :required => true },
-      :end_attachment => { :required => true },
+      :beam => { },
+      :end_attachment => { },
       :unsupported_length => { :units => "in" },
     ) do |options|
       @unsupported_length ||= @beam.length

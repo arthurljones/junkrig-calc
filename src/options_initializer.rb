@@ -5,12 +5,18 @@ module OptionsInitializer
 
   module ClassMethods
     def options_initialize(attributes, &block)
+      attributes.each do |attribute_name, options|
+        attr_reader attribute_name unless options[:write] == false
+      end
+
       define_method :initialize do |new_args|
         new_args = new_args.clone
         attributes.each do |attribute_name, options|
           value = new_args[attribute_name] || options[:default]
 
-          raise "#{attribute_name} is required for #{self.class.name}" if options[:required] && value.blank?
+          #Required by default, only a literal false value means not required
+          required = options[:required] != false
+          raise "#{attribute_name} is required for #{self.class.name}" if required && value.blank?
 
           units = options[:units]
           if units && value.present?
@@ -22,7 +28,7 @@ module OptionsInitializer
             end
           end
 
-          #:write option is default true, so we only skip writing if the variable is specifically false, not just false-like
+          #write is true by default, only a literal false value does not write
           instance_variable_set("@#{attribute_name}", value) unless options[:write] == false
           new_args[attribute_name] = value
 

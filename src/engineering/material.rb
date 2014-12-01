@@ -3,13 +3,12 @@ require "options_initializer"
 module Engineering
   class Material
     include OptionsInitializer
-    attr_reader :yield_strength, :density, :modulus_of_elasticity
     @@materials_cache = nil
-    
+
     options_initialize(
-      :yield_strength => { :required => true, :units => "psi" },
-      :density => { :required => true, :units => "lbs/in^3" },
-      :modulus_of_elasticity => { :required => true, :units => "psi" }
+      :yield_strength => { :units => "psi" },
+      :density => { :units => "lbs/in^3" },
+      :modulus_of_elasticity => { :units => "psi" }
     )
 
     def self.get(name)
