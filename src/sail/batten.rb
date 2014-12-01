@@ -1,4 +1,6 @@
-module JunkSail
+require "math/vector2"
+
+module Sail
   class Batten
     attr_accessor :tack, :clew
     def initialize(length, luff_height, angle)

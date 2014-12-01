@@ -1,4 +1,6 @@
-module JunkSail
+require "math/vector2"
+
+module Sail
   class Panel
     attr_accessor :head, :foot, :area, :center
 

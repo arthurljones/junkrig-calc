@@ -1,8 +1,8 @@
 require_relative "boilerplate"
 
-require "junk_sail/sail"
+require "sail/sail"
 
-sail = JunkSail::Sail.new(
+sail = Sail::Sail.new(
   parallelogram_luff: Unit(16, "ft"),
   batten_length: Unit(18, "ft"),
   lower_panel_count: 4,

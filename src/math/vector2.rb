@@ -1,4 +1,4 @@
-require "math_proxy"
+require "math/math_proxy"
 
 class Vector2
   extend MathProxy

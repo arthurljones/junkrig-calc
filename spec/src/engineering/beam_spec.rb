@@ -1,20 +1,16 @@
-require_relative '../spec_helper'
-require 'beam'
-require 'material'
+require_relative '../../spec_helper'
+require 'engineering/beam'
 
-RSpec.describe Beam do
-  def default_cross_section
-    CrossSections::Tube.new(
-      :outer_diameter => "1.0 in",
-      :wall_thickness => "0.125 in"
-    )
-  end
-
-  def default_options(cross_section = default_cross_section)
+RSpec.describe Engineering::Beam do
+  def default_options
     {
-      :material => Material.get("6061-T6 Aluminum"),
-      :cross_section => cross_section,
-      :length => "100 in"
+      :material => "6061-T6 Aluminum",
+      :length => "100 in",
+      :cross_section => {
+        :type => :tube,
+        :outer_diameter => "1.0 in",
+        :wall_thickness => "0.125 in"
+      }
     }
   end
 
@@ -23,12 +19,12 @@ RSpec.describe Beam do
   end
 
   def default_beam
-    Beam.new(default_options)
+    Engineering::Beam.new(default_options)
   end
 
   describe "#volume" do
     it "returns the volume of the beam" do
-      expect(default_beam.volume).to be_within(delta("in^3")).of("34.3611696486 in^3")
+      expect(default_beam.volume).to be_within(delta "in^3").of("34.3611696486 in^3")
     end
   end
 

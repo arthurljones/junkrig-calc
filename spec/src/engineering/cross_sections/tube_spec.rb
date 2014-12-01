@@ -1,16 +1,16 @@
-require_relative '../../spec_helper'
-require 'cross_sections/tube'
+require_relative '../../../spec_helper'
+require 'engineering/cross_sections/tube'
 
-RSpec.describe CrossSections::Tube do
-  def default_options
+RSpec.describe Engineering::CrossSections::Tube do
+  def default_options(overrides = {})
     {
       :outer_diameter => "1.0 in",
       :wall_thickness => "0.125 in"
-    }
+    }.merge(overrides)
   end
 
-  def default_tube
-    CrossSections::Tube.new(default_options)
+  def default_tube(overrides = {})
+    Engineering::CrossSections::Tube.new(default_options(overrides))
   end
 
   describe "#initialize" do
@@ -22,23 +22,18 @@ RSpec.describe CrossSections::Tube do
     end
 
     it "converts compatible units" do
-      options = default_options
-      options[:outer_diameter] = "50.8 mm"
-      tube = CrossSections::Tube.new(options)
-      expect(tube.outer_diameter).to eq "2 in"
+      expect(default_tube(:outer_diameter => "50.8 mm").outer_diameter).to eq "2 in"
     end
 
     it "disallows mismatched units" do
-      options = default_options
-      options[:outer_diameter] = "10 seconds"
-      expect{CrossSections::Tube.new(options)}.to raise_error
+      expect{default_tube(:outer_diameter => "10 seconds")}.to raise_error
     end
 
     it "disallows invalid values" do
-      expect{CrossSections::Tube.new(default_options.merge(:outer_diameter => "0 in"))}.to raise_error
-      expect{CrossSections::Tube.new(default_options.merge(:outer_diameter => "-5 in"))}.to raise_error
-      expect{CrossSections::Tube.new(default_options.merge(:wall_thickness => "0 in"))}.to raise_error
-      expect{CrossSections::Tube.new(default_options.merge(:wall_thickness => "-5 in"))}.to raise_error
+      expect{default_tube(:outer_diameter => "0 in")}.to raise_error
+      expect{default_tube(:outer_diameter => "-5 in")}.to raise_error
+      expect{default_tube(:wall_thickness => "0 in")}.to raise_error
+      expect{default_tube(:wall_thickness => "-5 in")}.to raise_error
     end
 
   end

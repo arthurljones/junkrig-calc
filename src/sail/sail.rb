@@ -1,16 +1,13 @@
-require "nokogiri"
-require "awesome_print"
-
-require "bounds"
-require "vector2"
 require "helpers"
 
-require "transform"
-require "junk_sail/batten"
-require "junk_sail/panel"
+require "math/transform"
+require "math/bounds"
+require "math/vector2"
+require "sail/batten"
+require "sail/panel"
 require "svg/node"
 
-module JunkSail
+module Sail
   class Sail
     BATTEN_STAGGER = 0.01
     BATTEN_TO_HEAD_PANEL_LUFF = 9/(25*12)

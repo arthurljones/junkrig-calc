@@ -1,7 +1,7 @@
-require_relative '../../spec_helper'
-require 'cross_sections/birdsmouth'
+require_relative '../../../spec_helper'
+require 'engineering/cross_sections/birdsmouth'
 
-RSpec.describe CrossSections::Birdsmouth do
+RSpec.describe Engineering::CrossSections::Birdsmouth do
   def default_options
     {
       :stave_thickness => "2 in",
@@ -11,7 +11,7 @@ RSpec.describe CrossSections::Birdsmouth do
   end
 
   def default_section
-    CrossSections::Birdsmouth.new(default_options)
+    Engineering::CrossSections::Birdsmouth.new(default_options)
   end
 
   describe "#initialize" do

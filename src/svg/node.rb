@@ -1,4 +1,5 @@
-require "svg/path_builder"
+require "nokogiri"
+require_relative "path_builder"
 
 module SVG
   class Node
