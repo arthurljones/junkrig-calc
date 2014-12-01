@@ -12,7 +12,3 @@ ap boat.stability_range
 ap boat.displacement_to_length.to_f
 ap boat.max_righting_moment
 ap boat.water_pressure_at_keel
-
-ap Constants.all
-ap Constants.epoxy_cost
-ap Constants.epoxy_cost * "3 gallons"

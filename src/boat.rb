@@ -30,12 +30,12 @@ class Boat
     ballast / displacement
   end
 
-  def stability_value
-    maximum_beam.to("m")**2 / (ballast_ratio * draft_of_canoe_body.to("m") * saltwater_displaced.to("m^3")**(1/3))
+  def screening_stability_value
+    maximum_beam.to("in")**2 / (ballast_ratio * draft_of_canoe_body * saltwater_displaced**(1/3)).to("in^2")
   end
 
   def stability_range
-    Unit(110 + (400 / (stability_value - 10)), "deg")
+    Unit(110 + (400 / (screening_stability_value - 10)), "degrees")
   end
 
   def displacement_to_length
@@ -46,7 +46,8 @@ class Boat
     @buoyancy_lever || maximum_beam / 4
   end
 
-  def max_righting_moment
+  def estimated_max_righting_moment
+    #TODO: This assumes that the center of buoyancy doesn't move as the boat heels, which is technically wrong.
     buoyancy_lever * displacement
   end
 
