@@ -1,5 +1,5 @@
-require 'mast/mast'
-require 'mast/wood_pile'
+require_relative 'mast'
+require_relative 'wood_pile'
 
 module Mast
   class StaveBuilder

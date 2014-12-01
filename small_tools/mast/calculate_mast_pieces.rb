@@ -1,7 +1,8 @@
-require_relative "boilerplate"
-require "mast/lumber_piece"
-require "mast/stave"
-require "mast/stave_builder"
+require_relative "lumber_piece"
+require_relative "stave"
+require_relative "stave_builder"
+
+require "ap"
 
 all_singles = [
   59, 69, 72, 75, 79, 79, 87, 87, 88, 89, 89,

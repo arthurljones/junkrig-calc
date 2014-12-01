@@ -1,5 +1,5 @@
-require "mast/piece_set"
-require "mast/swap_set"
+require_relative "piece_set"
+require_relative "swap_set"
 
 module Mast
   class Stave < PieceSet

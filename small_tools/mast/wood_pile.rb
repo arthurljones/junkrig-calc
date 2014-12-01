@@ -1,4 +1,5 @@
 require_relative 'stave'
+
 module Mast
   class WoodPile < Stave
     def initialize(initial)

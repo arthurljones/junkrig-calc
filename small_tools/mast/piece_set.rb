@@ -1,3 +1,6 @@
+require 'set'
+require 'active_support/core_ext/enumerable' #For Enumerable#sum
+
 module Mast
   class PieceSet
   protected

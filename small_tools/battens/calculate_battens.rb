@@ -1,6 +1,5 @@
-require_relative "boilerplate"
-require "battens/batten_piece"
-require "battens/batten_set"
+require_relative "batten_piece"
+require_relative "batten_set"
 
 def closest_piece(pieces, target)
   piece = pieces.delete(pieces.min_by { |piece| [piece.best_match_for(target), -piece.small_end] })

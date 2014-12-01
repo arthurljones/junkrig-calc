@@ -20,6 +20,10 @@ module Mast
       @to_s #+ (locked? ? "(L)" : '')
     end
 
+    def inspect
+      to_s
+    end
+
     def <=>(other)
       length <=> other.length || (double_scarfed ? 1 : 0) <=> (other.double_scarfed ? 1 : 0)
     end
