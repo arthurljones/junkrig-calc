@@ -61,8 +61,10 @@ RSpec.describe CrossSections::Tube do
     end
   end
 
+  #Common cross section methods
+  
   describe "#extreme_fiber_radius" do
-    it "returns the second moment of area" do
+    it "returns the distance from the neutral axis to the furthest fiber of the cross section" do
       expect(default_tube.extreme_fiber_radius).to eq Unit("0.5 in")
     end
   end
@@ -81,7 +83,7 @@ RSpec.describe CrossSections::Tube do
 
 
   describe "#elastic_section_modulus" do
-    it "returns the second moment of area" do
+    it "returns the elastic section modulus (second moment of area / extreme fiber radius)" do
       expect(default_tube.elastic_section_modulus).to be_within(delta "in^3").of "0.06711166 in^3"
     end
   end
