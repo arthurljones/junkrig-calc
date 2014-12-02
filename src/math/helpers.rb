@@ -1,4 +1,4 @@
-module Helpers
+module MathHelpers
   module_function
 
   def triangle_height(side_a, side_b, base)

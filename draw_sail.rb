@@ -2,14 +2,7 @@ require_relative "boilerplate"
 
 require "sail/sail"
 
-sail = Sail::Sail.new(
-  parallelogram_luff: Unit(16, "ft"),
-  batten_length: Unit(18, "ft"),
-  lower_panel_count: 4,
-  head_panel_count: 3,
-  yard_angle: Unit(65, "deg"),
-  min_sheet_ratio: 2.0,
-  sheet_area_width: Unit(4, "ft"),
-)
-
+root = File.expand_path(File.dirname(__FILE__))
+sail_data = YAML.load_file(File.join(root, "sail.yml")).with_indifferent_access
+sail = Sail::Sail.new(sail_data)
 sail.draw_to_file(ARGV[0] || "sail.svg")
