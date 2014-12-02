@@ -11,13 +11,15 @@ module Engineering
     def create(options)
       type = options.delete(:type)
       raise "No cross section type specified" unless type.present?
+      klass = nil
       begin
         require_relative "cross_sections/#{type}"
         klass = Engineering::CrossSections.const_get(type.to_s.camelize)
-        klass.new(options)
       rescue LoadError, NameError => e
         raise "Could not find cross section named #{type}"
       end
+
+      klass.new(options) if klass
     end
   end
 end

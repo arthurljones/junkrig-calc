@@ -1,4 +1,5 @@
 require "options_initializer"
+require "engineering/cross_section"
 require "engineering/material"
 
 module Engineering
@@ -11,7 +12,7 @@ module Engineering
       :material => { },
       :cross_section => { },
       :length => { :units => "in" },
-      :unsupported_length => { :units => "in" }
+      :unsupported_length => { :required => false, :units => "in" }
     ) do |options|
       #TODO: Maybe this should go in Material itself?
       unless @material.respond_to?(:yield_strength)
