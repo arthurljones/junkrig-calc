@@ -17,8 +17,6 @@ RSpec.describe FiberglassCloth do
     #TODO
   end
 
-  #:cost_per_area, :cost_per_volume, :cost_per_weight, :finished_cost_per_volume :ply_thickness,
-
   describe "#cost_per_area" do
     it "returns the cost of the fiberglass per unit area" do
       expect(default_boat.cost_per_area).to be_within("0.001 USD/in^2").of "0.0028 USD/in^2"
