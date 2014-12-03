@@ -4,14 +4,35 @@ require "engineering/material"
 
 module Engineering
   class Beam
+    ATTACHMENT_MODES = {
+      [:fixed,  :fixed ] => { length_ratio: 0.65, load_modifiers: { point: 8,   uniform: 24  } },
+      [:fixed,  :hinged] => { length_ratio: 0.8,  load_modifiers: { point: nil, uniform: 8   } },
+      [:fixed,  :guided] => { length_ratio: 1.2,  load_modifiers: { point: 2,   uniform: 3   } },
+      [:fixed,  :free  ] => { length_ratio: 2.1,  load_modifiers: { point: 1,   uniform: 2   } },
+      [:guided, :guided] => { length_ratio: 1.2,  load_modifiers: { point: nil, uniform: nil } },
+      [:guided, :hinged] => { length_ratio: 2,    load_modifiers: { point: nil, uniform: nil } },
+      [:free,   :guided] => { length_ratio: 2.1,  load_modifiers: { point: nil, uniform: nil } },
+      [:hinged, :hinged] => { length_ratio: 1,    load_modifiers: { point: 4,   uniform: 8   } }
+    }
+
     include OptionsInitializer
 
-    attr_reader :material, :cross_section, :length, :unsupported_length
+    attr_reader *%i(
+      effective_length_ratio
+      euler
+      compressive
+      rankine_gordon
+      volume
+      weight
+      min_point_breaking_load
+      min_uniform_breaking_load
+    )
 
     options_initialize(
       :material => { },
       :cross_section => { },
       :length => { :units => "in" },
+      :attachment_type => { :default => [:fixed, :free] },
       :unsupported_length => { :required => false, :units => "in" }
     ) do |options|
       #TODO: Maybe this should go in Material itself?
@@ -31,36 +52,24 @@ module Engineering
       end
 
       @unsupported_length ||= length
-    end
 
-    def volume
-      length * cross_section.area
-    end
+      @attachment_type = @attachment_type.sort
+      attachment_data = ATTACHMENT_MODES[@attachment_type]
+      raise "Unsupported end attachment configuration ${@end_attachment}" unless attachment_data
 
-    def weight
-      volume * material.density
-    end
 
-    def cantilever_end_load_limit
-      base_load_limit
-    end
+      @effective_length_ratio = attachment_data[:length_ratio]
+      @effective_length = @unsupported_length * @effective_length_ratio
+      euler_limit = Math::PI**2 * @material.modulus_of_elasticity * @cross_section.second_moment_of_area / @effective_length**2
+      compressive_limit = @material.yield_strength * @cross_section.area
+      @buckling_load = (euler_limit.inverse + compressive_limit.inverse).inverse #Rankine-Gordon
+      @volume = length * cross_section.area
+      @weight = volume * material.density
 
-    def cantilever_uniform_load_limit
-      2 * base_load_limit
-    end
-
-    def simply_supported_center_load_limit
-      4 * base_load_limit
-    end
-
-    def simply_supported_uniform_load_limit
-      8 * base_load_limit
-    end
-
-    private
-
-    def base_load_limit
-      material.yield_strength * cross_section.elastic_section_modulus / unsupported_length
+      base_load_limit = @material.yield_strength * @cross_section.elastic_section_modulus / @unsupported_length
+      load_modifiers = attachment_data[:load_modifiers]
+      @min_point_breaking_load = base_load_limit * (load_modifiers[:point] || Float::NAN)
+      @min_uniform_breaking_load = base_load_limit * (load_modifiers[:uniform] || Float::NAN)
     end
   end
 end
