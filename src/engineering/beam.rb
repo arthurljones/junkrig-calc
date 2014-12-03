@@ -18,10 +18,6 @@ module Engineering
     include OptionsInitializer
 
     attr_reader *%i(
-      effective_length_ratio
-      euler
-      compressive
-      rankine_gordon
       volume
       weight
       buckling_load_limit
@@ -61,9 +57,9 @@ module Engineering
       attachment_data = ATTACHMENT_MODES[@attachment_type]
       raise "Unsupported end attachment configuration ${@end_attachment}" unless attachment_data
 
-      @effective_length_ratio = attachment_data[:length_ratio]
-      @effective_length = @unsupported_length * @effective_length_ratio
-      euler_limit = Math::PI**2 * @material.modulus_of_elasticity * @cross_section.second_moment_of_area / @effective_length**2
+      effective_length_ratio = attachment_data[:length_ratio]
+      effective_length = @unsupported_length * effective_length_ratio
+      euler_limit = Math::PI**2 * @material.modulus_of_elasticity * @cross_section.second_moment_of_area / effective_length**2
       compressive_limit = @material.yield_strength * @cross_section.area
       @buckling_load_limit = (euler_limit.inverse + compressive_limit.inverse).inverse #Rankine-Gordon
 
