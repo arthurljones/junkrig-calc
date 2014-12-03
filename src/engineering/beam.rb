@@ -24,8 +24,9 @@ module Engineering
       rankine_gordon
       volume
       weight
-      min_point_breaking_load
-      min_uniform_breaking_load
+      buckling_load_limit
+      min_point_load_limit
+      min_uniform_load_limit
     )
 
     options_initialize(
@@ -53,23 +54,27 @@ module Engineering
 
       @unsupported_length ||= length
 
+      @volume = length * cross_section.area
+      @weight = volume * material.density
+
       @attachment_type = @attachment_type.sort
       attachment_data = ATTACHMENT_MODES[@attachment_type]
       raise "Unsupported end attachment configuration ${@end_attachment}" unless attachment_data
-
 
       @effective_length_ratio = attachment_data[:length_ratio]
       @effective_length = @unsupported_length * @effective_length_ratio
       euler_limit = Math::PI**2 * @material.modulus_of_elasticity * @cross_section.second_moment_of_area / @effective_length**2
       compressive_limit = @material.yield_strength * @cross_section.area
-      @buckling_load = (euler_limit.inverse + compressive_limit.inverse).inverse #Rankine-Gordon
-      @volume = length * cross_section.area
-      @weight = volume * material.density
+      @buckling_load_limit = (euler_limit.inverse + compressive_limit.inverse).inverse #Rankine-Gordon
 
       base_load_limit = @material.yield_strength * @cross_section.elastic_section_modulus / @unsupported_length
       load_modifiers = attachment_data[:load_modifiers]
-      @min_point_breaking_load = base_load_limit * (load_modifiers[:point] || Float::NAN)
-      @min_uniform_breaking_load = base_load_limit * (load_modifiers[:uniform] || Float::NAN)
+
+      #The maximum load that can be applied at the least supported point on the beam
+      @min_point_load_limit = base_load_limit * (load_modifiers[:point] || Float::NAN)
+
+      #The maximum load that can be applied uniformly along the length of the beam"
+      @min_uniform_load_limit = base_load_limit * (load_modifiers[:uniform] || Float::NAN)
     end
   end
 end

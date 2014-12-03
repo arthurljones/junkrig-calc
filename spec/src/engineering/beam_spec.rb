@@ -34,35 +34,19 @@ RSpec.describe Engineering::Beam do
     end
   end
 
-  context "with a fixed-free (cantilever) beam" do
-    let(:beam) { default_beam(attachment_type: [:fixed, :free]) }
+  context "with fixed-free (cantilever) attachment" do
+    subject { default_beam(attachment_type: [:fixed, :free]) }
 
-    describe "#min_point_breaking_load" do
-      it "returns the maximum point load that can be applied at the least supported point on the beam" do
-        expect(beam.min_point_breaking_load).to be_within(force_delta).of("26.845 lbf")
-      end
-    end
-
-    describe "#min_uniform_breaking_load" do
-      it "returns the maximum load that can be applied uniformly along the length of the beam" do
-        expect(beam.min_uniform_breaking_load).to be_within(force_delta).of("53.689 lbf")
-      end
-    end
+    its(:min_point_load_limit) { is_expected.to be_within(force_delta).of("26.845 lbf") }
+    its(:min_uniform_load_limit) { is_expected.to be_within(force_delta).of("53.689 lbf") }
+    its(:buckling_load_limit) { is_expected.to be_within(force_delta).of("74.690 lbf") }
   end
 
-  context "with a hinged-hinged (simply-supported) beam" do
-    let(:beam) { default_beam(attachment_type: [:hinged, :hinged]) }
+  context "with hinged-hinged (simply supported) attachment" do
+    subject { default_beam(attachment_type: [:hinged, :hinged]) }
 
-    describe "#min_point_breaking_load" do
-      it "returns the maximum point load that can be applied at the least supported point on the beam" do
-        expect(beam.min_point_breaking_load).to be_within(force_delta).of("107.379 lbf")
-      end
-    end
-
-    describe "#min_uniform_breaking_load" do
-      it "returns the maximum load that can be applied uniformly along the length of the beam" do
-        expect(beam.min_uniform_breaking_load).to be_within(force_delta).of("214.757 lbf")
-      end
-    end
+    its(:min_point_load_limit) { is_expected.to be_within(force_delta).of("107.379 lbf") }
+    its(:min_uniform_load_limit) { is_expected.to be_within(force_delta).of("214.757 lbf") }
+    its(:buckling_load_limit) { is_expected.to be_within(force_delta).of("323.390 lbf") }
   end
 end
