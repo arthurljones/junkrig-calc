@@ -1,4 +1,7 @@
-require "engineering/cross_section"
+require_relative "../cross_section"
+require_relative "compositable"
+require_relative "multipliable"
+require_relative "offsettable"
 require "options_initializer"
 
 module Engineering
@@ -8,16 +11,16 @@ module Engineering
       include OptionsInitializer
       include Compositable
       include Multipliable
-      include Offsetable
+      include Offsettable
 
       options_initialize(
-        :perpendicular_dimension => { :units => "in" },
-        :parallel_direction => { :units => "in" },
+        :height => { :units => "in" },
+        :width => { :units => "in" },
       ) do |options|
 
-        @area = perpendicular_dimension * parallel_direction
-        @second_moment_of_area = @perpendicular_dimension ** 3 * @parallel_direction
-        @extreme_fiber_radius = @perpendicular_dimension / 2
+        @area = @height * @width
+        @second_moment_of_area = @width * @height ** 3
+        @extreme_fiber_radius = @height / 2
       end
     end
   end

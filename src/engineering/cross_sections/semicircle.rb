@@ -1,4 +1,7 @@
-require "engineering/cross_section"
+require_relative "../cross_section"
+require_relative "compositable"
+require_relative "multipliable"
+require_relative "offsettable"
 require "options_initializer"
 
 module Engineering
@@ -8,7 +11,7 @@ module Engineering
       include OptionsInitializer
       include Compositable
       include Multipliable
-      include Offsetable
+      include Offsettable
 
       attr_reader :centroid_from_base
 

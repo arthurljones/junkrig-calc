@@ -1,8 +1,11 @@
-require "engineering/cross_section"
+require_relative "../cross_section"
+require_relative "compositable"
+require_relative "multipliable"
 require "options_initializer"
 
 module Engineering
   module CrossSections
+
     class Offset
       include CrossSection
       include OptionsInitializer
@@ -23,15 +26,6 @@ module Engineering
 
       def neutral_axis_through_centroid
         false
-      end
-    end
-
-    module Offsetable
-      extend ActiveSupport::Concern
-      included do
-        def offset(amount)
-          new Offset(self, amount)
-        end
       end
     end
   end

@@ -1,4 +1,7 @@
-require "engineering/cross_section"
+require_relative "../cross_section"
+require_relative "compositable"
+require_relative "multipliable"
+require_relative "offsettable"
 require "options_initializer"
 
 module Engineering
@@ -8,16 +11,12 @@ module Engineering
       include OptionsInitializer
       include Compositable
       include Multipliable
-      include Offsetable
+      include Offsettable
 
       options_initialize(
         :section => { },
         :multiplier => { :default => 1 }
       ) do |options|
-        if @multiplier % 1 > 0
-          puts "Warning: Non-integer multiplier for transformed cross section. This probably won't work correctly"
-        end
-
         @second_moment_of_area = @section.second_moment_of_area * @multiplier
         @extreme_fiber_radius = @section.extreme_fiber_radius
         @area = @section.area * @multiplier
@@ -25,15 +24,6 @@ module Engineering
 
       def neutral_axis_through_centroid
         @section.neutral_axis_through_centroid
-      end
-    end
-
-    module Multipliable
-      extend ActiveSupport::Concern
-      included do
-        def *(amount)
-          new Multiplied(self, amount)
-        end
       end
     end
   end
