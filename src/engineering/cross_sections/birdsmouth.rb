@@ -6,14 +6,11 @@ module Engineering
     class Birdsmouth
       include CrossSection
       include OptionsInitializer
+      include Compositable
+      include Multipliable
+      include Offsetable
 
-      attr_reader *%i(
-        inner_diameter
-        extreme_fiber_radius
-        wall_thickness
-        area
-        second_moment_of_area
-      )
+      attr_reader :inner_diameter, :wall_thickness
 
       options_initialize(
         :stave_thickness => { :units => "in" },

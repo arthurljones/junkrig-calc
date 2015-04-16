@@ -6,24 +6,22 @@ module Engineering
     class Tube
       include CrossSection
       include OptionsInitializer
+      include Compositable
+      include Multipliable
+      include Offsetable
 
-      attr_reader *%i(
-        outer_radius
-        inner_diameter
-        inner_radius
-        area
-        second_moment_of_area
-        extreme_fiber_radius
-      )
+      attr_reader :outer_radius, :inner_diameter, :inner_radius
 
       options_initialize(
         :outer_diameter => { :required => :true, :units => "in" },
-        :wall_thickness => { :required => :true, :units => "in" },
+        :wall_thickness => { :units => "in" },
       ) do |options|
         raise "outer_diameter must be more than 0" unless @outer_diameter > "0 in"
-        raise "wall_thickness must be more than 0" unless @wall_thickness > "0 in"
 
         @outer_radius = @outer_diameter / 2.0
+
+        @wall_thickness ||= @outer_radius
+
         @inner_radius = @outer_radius - @wall_thickness
         @inner_diameter = @inner_radius * 2
 

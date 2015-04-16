@@ -2,8 +2,15 @@ module Engineering
   module CrossSection
     extend ActiveSupport::Concern
     included do
+      #These must be implemented by subclasses
+      attr_reader :area, :second_moment_of_area, :extreme_fiber_radius
+
       def elastic_section_modulus
         second_moment_of_area / extreme_fiber_radius
+      end
+
+      def neutral_axis_through_centroid
+        true
       end
     end
 
