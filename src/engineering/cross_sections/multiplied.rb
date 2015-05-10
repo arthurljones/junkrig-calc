@@ -29,10 +29,6 @@ module Engineering
       def structure_content(depth = 0, &block)
         "#{@multiplier}\n#{@section.structure_string(depth + 1, &block)}"
       end
-
-      def to_s
-        structure_content
-      end
     end
   end
 end
