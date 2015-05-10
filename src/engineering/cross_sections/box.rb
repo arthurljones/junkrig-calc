@@ -19,7 +19,7 @@ module Engineering
       ) do |options|
 
         @area = @height * @width
-        @second_moment_of_area = @width * @height ** 3
+        @second_moment_of_area = (@width * @height ** 3) / 12
         @extreme_fiber_radius = @height / 2
       end
 
