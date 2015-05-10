@@ -29,6 +29,10 @@ RSpec.describe Engineering::CrossSections::Tube do
       expect{default_tube(:outer_diameter => "10 seconds")}.to raise_error
     end
 
+    it "defaults wall thickness to equal the tube's radius" do
+      expect(default_tube(:wall_thickness => nil).wall_thickness).to eq "0.5 in"
+    end
+
     it "disallows invalid values" do
       expect{default_tube(:outer_diameter => "0 in")}.to raise_error
       expect{default_tube(:outer_diameter => "-5 in")}.to raise_error

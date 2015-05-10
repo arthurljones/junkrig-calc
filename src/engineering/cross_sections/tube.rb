@@ -16,14 +16,16 @@ module Engineering
       attr_reader :outer_radius, :inner_diameter, :inner_radius
 
       options_initialize(
-        :outer_diameter => { :required => :true, :units => "in" },
-        :wall_thickness => { :units => "in" },
+        :outer_diameter => { :units => "in" },
+        :wall_thickness => { :units => "in", :required => false },
       ) do |options|
         raise "outer_diameter must be more than 0" unless @outer_diameter > "0 in"
 
         @outer_radius = @outer_diameter / 2.0
 
         @wall_thickness ||= @outer_radius
+
+        raise "wall_thickness must be more than 0" unless @wall_thickness > "0 in"
 
         @inner_radius = @outer_radius - @wall_thickness
         @inner_diameter = @inner_radius * 2
