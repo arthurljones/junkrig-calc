@@ -26,6 +26,7 @@ module Engineering
         @wall_thickness ||= @outer_radius
 
         raise "wall_thickness must be more than 0" unless @wall_thickness > "0 in"
+        raise "wall_thickness must be less than or equal to outer radius" unless @wall_thickness <= @outer_radius
 
         @inner_radius = @outer_radius - @wall_thickness
         @inner_diameter = @inner_radius * 2

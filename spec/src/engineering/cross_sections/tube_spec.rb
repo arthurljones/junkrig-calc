@@ -38,6 +38,7 @@ RSpec.describe Engineering::CrossSections::Tube do
       expect{default_tube(:outer_diameter => "-5 in")}.to raise_error
       expect{default_tube(:wall_thickness => "0 in")}.to raise_error
       expect{default_tube(:wall_thickness => "-5 in")}.to raise_error
+      expect{default_tube(:wall_thickness => "1 in")}.to raise_error
     end
 
   end
