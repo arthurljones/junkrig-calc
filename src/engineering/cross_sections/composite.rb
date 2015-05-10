@@ -37,6 +37,10 @@ module Engineering
       def neutral_axis_through_centroid
         false
       end
+
+      def structure_content(depth = 0, &block)
+        "\n#{@sections.map{|section| section.structure_string(depth + 1, &block)}.join("\n")}"
+      end
     end
   end
 end

@@ -32,6 +32,10 @@ module Engineering
         @second_moment_of_area = Math::PI/4 * (outer_radius**4 - inner_radius**4)
         @extreme_fiber_radius = @outer_radius
       end
+
+      def structure_content(depth = 0)
+        "#{outer_diameter}OD, #{wall_thickness} wall"
+      end
     end
   end
 end

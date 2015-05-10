@@ -12,6 +12,25 @@ module Engineering
       def neutral_axis_through_centroid
         true
       end
+
+      def structure_prefix(depth)
+        "#{"| "*(depth)}#{self.class.name.demodulize}"
+      end
+
+      def structure_content(depth, &block)
+        ""
+      end
+
+      def structure_string(depth = 0, &block)
+        result = "#{structure_prefix(depth)}"
+        result += " (#{yield(self)})" if block_given?
+        result += ": #{structure_content(depth, &block)}"
+        result
+      end
+
+      def to_s
+        structure_string
+      end
     end
 
     module_function

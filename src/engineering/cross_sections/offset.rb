@@ -27,6 +27,14 @@ module Engineering
       def neutral_axis_through_centroid
         false
       end
+
+      def structure_content(depth = 0, &block)
+        "#{@offset}\n#{@section.structure_string(depth + 1, &block)}"
+      end
+
+      def to_s
+        structure_content
+      end
     end
   end
 end

@@ -24,6 +24,10 @@ module Engineering
         @centroid_from_base = 4 * @radius / (3 * Math::PI)
         @extreme_fiber_radius = @radius - @centroid_from_base
       end
+
+      def structure_content(depth = 0)
+        "#{radius}"
+      end
     end
   end
 end

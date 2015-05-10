@@ -66,6 +66,10 @@ module Engineering
         ideal_circular_moment = Math::PI * outer_radius**4 / 4
         @second_moment_of_area = ideal_circular_moment - (empty_moment + defect_moment)
       end
+
+      def structure_content(depth = 0)
+        "#{outer_diameter} OD, #{sides} staves: #{stave_width}x#{stave_thickness}"
+      end
     end
   end
 end

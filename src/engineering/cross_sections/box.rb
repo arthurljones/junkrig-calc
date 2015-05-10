@@ -22,6 +22,11 @@ module Engineering
         @second_moment_of_area = @width * @height ** 3
         @extreme_fiber_radius = @height / 2
       end
+
+      def structure_content(depth = 0)
+        "#{height}x#{width}"
+      end
+
     end
   end
 end

@@ -90,10 +90,14 @@ module Engineering
         min_thickness = [[@side_thickness, @top_thickness].min, min_thickness].max
 
         if min_thickness < 0
-          puts "Warning: Corner radius (#{corner_radius}) smale than minimum radius (#{minimum_radius}) allowed by thinnest wall (#{minimum_thickness}) and gusset size (#{@gusset_size})"
+          raise "Corner radius (#{corner_radius}) causes negative thickness"
         end
 
         min_thickness
+      end
+
+      def structure_content(depth = 0, &block)
+        "\n#{@section.structure_string(depth + 1, &block)}"
       end
     end
   end
