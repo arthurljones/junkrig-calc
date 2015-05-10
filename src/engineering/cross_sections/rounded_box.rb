@@ -5,6 +5,7 @@ require_relative "multipliable"
 require_relative "offsettable"
 require_relative "box"
 require_relative "semicircle"
+require_relative "defect"
 
 require "options_initializer"
 
@@ -39,7 +40,7 @@ module Engineering
 
         @minimum_thickness = minimum_thickness
 
-        @section = box + gussets - radius_material_removed - wall_defects
+        @section = box + gussets - radius_material_removed + wall_defects
 
         @extreme_fiber_radius = @section.extreme_fiber_radius
         @area = @section.area
@@ -65,7 +66,7 @@ module Engineering
         side_offset = (@height  - @defect_width) / 2 - @corner_radius
         side_defect = Box.new(:height => @side_thickness, :width => @defect_width).offset(side_offset)
 
-        (side_defect + top_defect) * 2
+        Defect.new(:section => (side_defect + top_defect) * 2)
       end
 
       def gussets

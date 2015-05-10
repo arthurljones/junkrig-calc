@@ -5,7 +5,6 @@ require "options_initializer"
 
 module Engineering
   module CrossSections
-
     class Offset
       include CrossSection
       include OptionsInitializer

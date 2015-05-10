@@ -41,7 +41,7 @@ module Engineering
       begin
         require_relative "cross_sections/#{type}"
         klass = Engineering::CrossSections.const_get(type.to_s.camelize)
-      rescue LoadError, NameError => e
+      rescue LoadError, NameError
         raise "Could not find cross section named #{type}"
       end
 
