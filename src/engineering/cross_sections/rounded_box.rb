@@ -48,11 +48,11 @@ module Engineering
       end
 
       def radius_material_removed
-        square_distance = (@height - @corner_radius) / 2
-        square = Box.new(:height => @corner_radius, :width => @corner_radius).offset(square_distance)
+        radius_start = @height/2 - @corner_radius
+        square = Box.new(:height => @corner_radius, :width => @corner_radius).offset(radius_start + @corner_radius/2)
 
         radiused = Semicircle.new(:radius => @corner_radius)
-        radiused_distance = square_distance - radiused.centroid_from_base
+        radiused_distance = radius_start + radiused.centroid_from_base
         radiused = radiused.offset(radiused_distance) / 2
 
         (square - radiused) * 4
@@ -63,8 +63,8 @@ module Engineering
         # surface close to the radiused corner
         top_offset = (@height - @top_thickness) / 2
         top_defect = Box.new(:height => @side_thickness, :width => @defect_width).offset(top_offset)
-        side_offset = (@height  - @defect_width) / 2 - @corner_radius
-        side_defect = Box.new(:height => @side_thickness, :width => @defect_width).offset(side_offset)
+        side_offset = (@height - @defect_width) / 2 - @corner_radius
+        side_defect = Box.new(:height => @defect_width, :width => @side_thickness).offset(side_offset)
 
         Defect.new(:section => (side_defect + top_defect) * 2)
       end
