@@ -1,9 +1,11 @@
+require_relative "../../math/vector2"
 require_relative "../cross_section"
 require_relative "compositable"
 require_relative "multipliable"
 require_relative "offsettable"
 require_relative "box"
 require_relative "semicircle"
+
 require "options_initializer"
 
 module Engineering
@@ -78,18 +80,20 @@ module Engineering
       end
 
       def minimum_thickness
-        minimum_thickness = [@top_thickness, @side_thickness].min
-        if @corner_radius > minimum_thickness + @gusset_size
+        outer_corner = Vector2.new(@width/2, @height/2)
+        inner_corner = outer_corner - Vector2.new(@side_thickness, @top_thickness)
+        radius_center = outer_corner - Vector2.new(@corner_radius, @corner_radius)
+        gusset_offsets = [[0, @gusset_size], [@gusset_size, 0]]
+        displacements = gusset_offsets.map{|offset| (inner_corner - Vector2.new(*offset)) - radius_center}
+        displacements.reject!{|disp| disp.x < 0 || disp.y < 0}
+        min_thickness = displacements.map{|disp| @corner_radius - disp.magnitude}.min
+        min_thickness = [[@side_thickness, @top_thickness].min, min_thickness].max
 
-          minimum_radius = [@top_thickness, @side_thickness].max_by do |thickness|
-            ((@corner_radius - thickness - @gusset_size) ** 2 + (@corner_radius - thickness) ** 2) ** 0.5
-          end
-
-          puts "Warning: Corner radius reduces minimum thickness to less than thinnest wall"
-          minimum_thickness = @gusset_size - minimum_radius
+        if min_thickness < 0
+          puts "Warning: Corner radius (#{corner_radius}) smale than minimum radius (#{minimum_radius}) allowed by thinnest wall (#{minimum_thickness}) and gusset size (#{@gusset_size})"
         end
 
-        minimum_thickness
+        min_thickness
       end
     end
   end
