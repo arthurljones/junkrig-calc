@@ -51,7 +51,7 @@ module Engineering
         square = Box.new(:height => @corner_radius, :width => @corner_radius).offset(square_distance)
 
         radiused = Semicircle.new(:radius => @corner_radius)
-        radiused_distance = square_distance + radiused.centroid_from_base
+        radiused_distance = square_distance - radiused.centroid_from_base
         radiused = radiused.offset(radiused_distance) / 2
 
         (square - radiused) * 4
