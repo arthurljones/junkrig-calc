@@ -39,8 +39,7 @@ class FiberglassCloth
 
   def data
     if @@data.blank?
-      dir = File.expand_path(File.dirname(__FILE__))
-      data = YAML.load_file(File.join(dir, "..", "fiberglass.yml")).with_indifferent_access
+      data = load_yaml_data_file("fiberglass.yml")
       @@data = data.inject({}) do |result, (key, val)|
         weight = Unit(key)
         cost = Unit(value)

@@ -7,3 +7,22 @@ bow_height_above_water: 47 in
 length_overall: 30 ft
 length_at_waterline: 23 ft
 foredeck_angle: 3.0 deg
+
+mast:
+  mast_tip_to_batten_length:	0.14
+  sling_point_to_batten_length: 0.05
+  tack_above_partners: 0 in
+  foot_above_keel: 54 in
+  partners_length: 0 in
+  pivot_above_partners: 4 in
+  masthead_to_partners_diameter: 0.4
+  foot_to_partners_diameter: 1.0
+
+  sail:
+    parallelogram_luff: 16 ft
+    batten_length: 18 ft
+    lower_panel_count: 4
+    head_panel_count: 3
+    yard_angle: 65 deg
+    min_sheet_ratio: 2.0
+    sheet_area_width: 4 ft

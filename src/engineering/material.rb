@@ -39,8 +39,7 @@ module Engineering
 
     def self.cache
       unless @@materials_cache
-        root = File.expand_path(File.dirname(__FILE__))
-        materials_data = YAML.load_file(File.join(root, "..", "..", "materials.yml")).with_indifferent_access
+        materials_data = load_yaml_data_file("materials.yml")
         @@materials_cache = materials_data.inject({}) do |cache, (name, data)|
           raise "Duplicate material definition for #{name}" if cache[name].present?
           cache[name] = new(data)

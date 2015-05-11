@@ -2,8 +2,7 @@ class Constants
   class << self
     def all
       unless @all
-        dir = File.expand_path(File.dirname(__FILE__))
-        @all = YAML.load_file(File.join(dir, "..", "constants.yml")).with_indifferent_access
+        @all = load_yaml_data_file("constants.yml")
         @all.each { |key, val| @all[key] = Unit(val) rescue val }
       end
       @all

@@ -1,6 +1,6 @@
 #Replaces calculations from the RBCalc sheet until fully moved to ruby
-require_relative "boilerplate"
-require_relative "src/engineering/cross_sections/rounded_box"
+require_relative "../boilerplate"
+require "engineering/cross_sections/rounded_box"
 
 columns = %i(height width wall_thickness corner_radius defect_width gusset_size)
 

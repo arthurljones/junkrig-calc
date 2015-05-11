@@ -1,7 +1,5 @@
 require_relative "../boilerplate"
-require_relative "../sail/sail"
+require "sail/sail"
 
-root = File.expand_path(File.dirname(__FILE__))
-sail_data = YAML.load_file(File.join(root, "../sail.yml")).with_indifferent_access
-sail = Sail::Sail.new(sail_data)
+sail = Sail::Sail.new(load_yaml_data_file("sail.yml"))
 sail.draw_to_file(ARGV[0] || "sail.svg")

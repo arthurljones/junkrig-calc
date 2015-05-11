@@ -12,6 +12,7 @@ class Boat
     max_buoyancy_lever
     estimated_max_righting_moment
     water_pressure_at_keel
+    comfort_ratio
   )
 
   options_initialize(
@@ -45,9 +46,7 @@ class Boat
     @estimated_max_righting_moment = @max_buoyancy_lever * @displacement
     #saltwater pressure outside the hull at the top of the keel
     @water_pressure_at_keel = (Constants.saltwater_density * Constants.gravity * @draft_of_canoe_body).to("psi")
-  end
-
-  def self.from_file(file)
-    new(YAML.load_file(file).with_indifferent_access)
+    #Ted Brewer's comfort ratio. Ranges from 5 for a light daysailer to 60+ for super heavy boats. Cruisers are often mid-30s. See http://www.tedbrewer.com/yachtdesign.html
+    @comfort_ratio = @displacement.to("lbs").scalar / (0.65 * (0.7 * @length_at_waterline.to("ft").scalar + 0.3 * @length_overall.to("ft").scalar) * @maximum_beam.to("ft").scalar**1.333)
   end
 end
