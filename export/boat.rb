@@ -1,8 +1,9 @@
 require_relative "../boilerplate"
 require "boat"
+require "export_helper"
 
 boat = Boat.new(load_yaml_data_file("boat.yml"))
-output = [
+output_format = [
     [:displacement, "lbs"],
     [:ballast, "lbs"],
     [:draft_of_canoe_body, "in"],
@@ -24,21 +25,4 @@ output = [
     [:comfort_ratio, nil]
 ]
 
-output.each do |output_format|
-    property = output_format.first
-    units = output_format.last
-
-    result = ""
-    if property
-        value = boat.send(property)
-        value = value.to(units) if units && value.respond_to?(:to)
-        value = value.scalar if value.respond_to?(:scalar)
-        value = value.to_f
-
-        result += "#{property.to_s.titleize}"
-        result += " (#{units})" if units
-        result += ",#{value}"
-    end
-
-    puts result
-end
+puts ExportHelper.generate_csv(boat, output_format)

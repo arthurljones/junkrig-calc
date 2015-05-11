@@ -1,10 +1,11 @@
 #Replaces calculations from the RBCalc sheet until fully moved to ruby
 require_relative "../boilerplate"
 require "engineering/cross_sections/rounded_box"
+require "export_helper"
 
 columns = %i(height width wall_thickness corner_radius defect_width gusset_size)
 
-rb_input = {
+input = {
     :mast_partners => [10, 10, 1.5, 3, 0.75, 1.5],
     :mast_tip => [4.25, 4.25, 1.5, 1.5, 0.31875, 0.25],
     :mast_foot => [5.25, 5.25, 1.5, 1.5, 0.39375, 0.25],
@@ -24,20 +25,23 @@ rb_input = {
     :strong_2x4_pair => [3.5, 3, -1, 0.125, 0, 0]
 }
 
-output = {}
+#puts "," + input.keys.join(",")
 
-rb_input.each do |name, raw_input|
+objects = input.map do |name, raw_input|
     options = {}
     columns.each_with_index do |column, index|
         value = raw_input[index]
         options[column] = "#{value}in" unless column == :wall_thickness && value < 0
     end
-    output[name] = Engineering::CrossSections::RoundedBox.new(options)
+    Engineering::CrossSections::RoundedBox.new(options)
 end
 
-puts "Name," + output.keys.join(",")
-puts "Total Moment of Area (in⁴),=" + output.values.collect{|val| val.second_moment_of_area.to("in^4").scalar}.join(",=")
-puts "Cross Section (in²),=" + output.values.collect{|val| val.area.to("in^2").scalar}.join(",=")
-puts "Distance to Extreme Fiber (in),=" + output.values.collect{|val| val.extreme_fiber_radius.to("in").scalar}.join(",=")
-puts "Section Modulus (in^3),=" + output.values.collect{|val| val.elastic_section_modulus.to("in^3").scalar}.join(",=")
-puts "Outside Circumference (in),=" + output.values.collect{|val| val.circumference.to("in").scalar}.join(",=")
+output_format = [
+    ["second_moment_of_area", "in^4"],
+    ["area", "in^2"],
+    ["extreme_fiber_radius", "in"],
+    ["elastic_section_modulus", "in^3"],
+    ["circumference", "in"]
+]
+
+puts ExportHelper.generate_csv(objects, output_format)
