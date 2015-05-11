@@ -50,7 +50,7 @@ module Engineering
         @extreme_fiber_radius = @section.extreme_fiber_radius
         @area = @section.area
         @second_moment_of_area = @section.second_moment_of_area
-        @circumference = (@height + @width) * 2 + @corner_radius * (2 * Math::PI - 8);
+        @circumference = (@height + @width) * 2 + @corner_radius * (2 * Math::PI - 8)
       end
 
       def radius_material_removed
