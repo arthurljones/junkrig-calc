@@ -17,9 +17,9 @@ module Sail
 
     attr_reader *%i(
       total_panels
-      panel_luff
+      lower_panel_luff
       panel_leech
-      panel_width
+      parallelogram_width
       tack_angle
       clew_rise
       head_panel_luff
@@ -30,6 +30,8 @@ module Sail
       yard_span
       throat
       peak
+      tack_to_peak
+      aspect_ratio
       sling_point
       sling_point_mast_distance
       inner_sheet_distance
@@ -52,20 +54,24 @@ module Sail
     ) do |options|
 
       @total_panels = @lower_panel_count + @head_panel_count
-      @panel_luff = @parallelogram_luff / @lower_panel_count
-      @panel_leech = @panel_luff
+      @lower_panel_luff = @parallelogram_luff / @lower_panel_count
+      @panel_leech = @lower_panel_luff
 
-      @panel_width = MathHelpers.triangle_height(@batten_length, @batten_length * (1.0 - BATTEN_STAGGER), @panel_luff)
-      @tack_angle = Unit(Math::PI/2 - Math::asin(@panel_width / @batten_length), "radians")
+      @parallelogram_width = MathHelpers.triangle_height(@batten_length, @batten_length * (1.0 - BATTEN_STAGGER), @lower_panel_luff)
+      @tack_angle = Unit(Math::PI/2 - Math::asin(@parallelogram_width / @batten_length), "radians")
       @clew_rise = @batten_length * Math::sin(@tack_angle)
       @head_panel_luff = (@batten_length * BATTEN_TO_HEAD_PANEL_LUFF).to("in").round(0).to("ft")
       @total_luff = @parallelogram_luff + @head_panel_luff * @head_panel_count
 
       @tack = Vector2.from_angle(@tack_angle, @batten_length)
-      @clew = Vector2.new(@panel_width, @clew_rise)
+      @clew = Vector2.new(@parallelogram_width, @clew_rise)
       @yard_span = Vector2.from_angle(@yard_angle, @batten_length)
       @throat = Vector2.new(Unit("0 ft"), @total_luff)
       @peak = @throat + @yard_span
+      @tack_to_peak = @peak - @tack
+
+      puts @tack_to_peak.y.to("ft"), @clew_rise, @parallelogram_width
+      @aspect_ratio = (@tack_to_peak.y - @clew_rise / 2) / @parallelogram_width
       @sling_point = @throat + @yard_span / 2
 
       @sling_point_mast_distance = @batten_length * BATTEN_TO_MAST_OFFSET
@@ -73,7 +79,7 @@ module Sail
       @outer_sheet_distance = @inner_sheet_distance + @sheet_area_width
 
       lower_battens = (0 ... @lower_panel_count + 1).collect do |position|
-        Batten.new(@batten_length, @panel_luff * position, @tack_angle)
+        Batten.new(@batten_length, @lower_panel_luff * position, @tack_angle)
       end
 
       upper_battens = (1 ... @head_panel_count + 1).collect do |position|
@@ -95,12 +101,12 @@ module Sail
       @panels.drop(panels_reefed).sum(&:area)
     end
 
-    def center_above_tack
-      @center.y
+    def luff_to_batten_length
+      @lower_panel_luff / @batten_length
     end
 
-    def center_before_tack
-      -@center.x
+    def peak_above_tack
+
     end
   end
 end
