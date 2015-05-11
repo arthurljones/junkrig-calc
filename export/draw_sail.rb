@@ -1,5 +1,6 @@
 require_relative "../boilerplate"
 require "sail/sail"
 
-sail = Sail::Sail.new(load_yaml_data_file("sail.yml"))
+data = load_yaml_data_file("boat.yml")
+sail = Sail::Sail.new(data[:mast][:sail])
 sail.draw_to_file(ARGV[0] || "sail.svg")

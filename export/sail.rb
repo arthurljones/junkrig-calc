@@ -2,7 +2,8 @@ require_relative "../boilerplate"
 require "sail/sail"
 require "export_helper"
 
-sail = Sail::Sail.new(load_yaml_data_file("sail.yml"))
+data = load_yaml_data_file("boat.yml")
+sail = Sail::Sail.new(data[:mast][:sail])
 output_format = [
     [:parallelogram_luff, "ft"],
     [:batten_length, "ft"],
