@@ -50,4 +50,10 @@ RSpec.describe Engineering::CrossSections::RoundedBox do
     end
   end
 
+  describe "#circumference" do
+    it "returns the outer circumference" do
+      expect(default_section.circumference).to be_within(delta "in").of "34.8495559215 in"
+    end
+  end
+
 end

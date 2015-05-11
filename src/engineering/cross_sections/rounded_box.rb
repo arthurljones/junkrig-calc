@@ -18,7 +18,7 @@ module Engineering
       include Multipliable
       include Offsettable
 
-      attr_reader :height, :width, :wall_thickness, :corner_radius, :defect_width, :gusset_size, :minimum_thickness
+      attr_reader :height, :width, :wall_thickness, :corner_radius, :defect_width, :gusset_size, :minimum_thickness, :circumference
 
       options_initialize(
         :height => { :units => "in" },
@@ -45,6 +45,7 @@ module Engineering
         @extreme_fiber_radius = @section.extreme_fiber_radius
         @area = @section.area
         @second_moment_of_area = @section.second_moment_of_area
+        @circumference = (@height + @width) * 2 + @corner_radius * (2 * Math::PI - 8);
       end
 
       def radius_material_removed
