@@ -63,14 +63,13 @@ module Sail
       @head_panel_luff = (@batten_length * BATTEN_TO_HEAD_PANEL_LUFF).to("in").round(0).to("ft")
       @total_luff = @parallelogram_luff + @head_panel_luff * @head_panel_count
 
-      @tack = Vector2.from_angle(@tack_angle, @batten_length)
+      @tack = Vector2.new("0 ft", "0 ft")
       @clew = Vector2.new(@parallelogram_width, @clew_rise)
       @yard_span = Vector2.from_angle(@yard_angle, @batten_length)
       @throat = Vector2.new(Unit("0 ft"), @total_luff)
       @peak = @throat + @yard_span
       @tack_to_peak = @peak - @tack
 
-      puts @tack_to_peak.y.to("ft"), @clew_rise, @parallelogram_width
       @aspect_ratio = (@tack_to_peak.y - @clew_rise / 2) / @parallelogram_width
       @sling_point = @throat + @yard_span / 2
 
