@@ -29,14 +29,19 @@ module Engineering
         :gusset_size => { :units => "in", :default => "0 in" },
       ) do |options|
 
-        @top_thickness = @wall_thickness || @width / 2
-        @side_thickness = @wall_thickness || @height / 2
+        @top_thickness = @wall_thickness || @height / 2
+        @side_thickness = @wall_thickness || @width / 2
 
         @inner_height = @height - 2 * @top_thickness
         @inner_width = @width - 2 * @side_thickness
 
-        raise "Impossibly large corner radius" if @corner_radius > @height / 2 || @corner_radius > @width / 2
-        raise "Impossibly large gussets" if @gusset_size > @inner_height / 2 || @gusset_size > @inner_width / 2
+        narrowest_outer_radius = [@width, @height].min / 2
+        narrowest_inner_radius = [@inner_width, @inner_height].min / 2
+
+        raise "Top thickness (#{@top_thickness}) cannot be larger than half height (#{@height / 2})" if @inner_height < 0
+        raise "Side thickness (#{@side_thickness}) cannot be larger than half width (#{@width / 2})" if @inner_width < 0
+        raise "Corner radius (#{@corner_radius}) cannot be larger than half the narrowest outer dimension (#{narrowest_outer_radius})" if @corner_radius > narrowest_outer_radius
+        raise "Gusset size (#{@gusset_size}) cannot be larger than half the narrowest inner dimension (#{narrowest_inner_radius})" if @gusset_size > narrowest_inner_radius
 
         @minimum_thickness = minimum_thickness
 
@@ -88,7 +93,7 @@ module Engineering
         gusset_offsets = [[0, @gusset_size], [@gusset_size, 0]]
         displacements = gusset_offsets.map{|offset| (inner_corner - Vector2.new(*offset)) - radius_center}
         displacements.reject!{|disp| disp.x < 0 || disp.y < 0}
-        min_thickness = displacements.map{|disp| @corner_radius - disp.magnitude}.min
+        min_thickness = displacements.map{|disp| @corner_radius - disp.magnitude}.min || "0 in"
         min_thickness = [[@side_thickness, @top_thickness].min, min_thickness].max
 
         if min_thickness < 0
