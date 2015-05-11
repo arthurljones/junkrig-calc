@@ -2,7 +2,7 @@ require "math/vector2"
 
 module Sail
   class Panel
-    attr_accessor :head, :foot, :area, :center
+    attr_accessor :head, :foot, :area, :center, :leech_length
 
     def initialize(foot, head)
       @foot = foot
@@ -20,6 +20,7 @@ module Sail
 
       @area = area_accum * 0.5
       @center = center_accum / (@area * 6)
+      @leech_length = (foot.clew - head.clew).magnitude
     end
 
     def perimeter

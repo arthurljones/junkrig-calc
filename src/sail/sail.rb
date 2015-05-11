@@ -23,6 +23,8 @@ module Sail
       tack_angle
       clew_rise
       head_panel_luff
+      total_luff
+      total_leech
       tack
       clew
       yard_span
@@ -36,6 +38,7 @@ module Sail
       panels
       area
       center
+      circumference
     )
 
     options_initialize(
@@ -56,11 +59,12 @@ module Sail
       @tack_angle = Unit(Math::PI/2 - Math::asin(@panel_width / @batten_length), "radians")
       @clew_rise = @batten_length * Math::sin(@tack_angle)
       @head_panel_luff = (@batten_length * BATTEN_TO_HEAD_PANEL_LUFF).to("in").round(0).to("ft")
+      @total_luff = @parallelogram_luff + @head_panel_luff * @head_panel_count
 
       @tack = Vector2.from_angle(@tack_angle, @batten_length)
       @clew = Vector2.new(@panel_width, @clew_rise)
       @yard_span = Vector2.from_angle(@yard_angle, @batten_length)
-      @throat = Vector2.new(Unit("0 ft"), @parallelogram_luff + @head_panel_luff * @head_panel_count)
+      @throat = Vector2.new(Unit("0 ft"), @total_luff)
       @peak = @throat + @yard_span
       @sling_point = @throat + @yard_span / 2
 
@@ -83,6 +87,20 @@ module Sail
 
       @area = @panels.sum(&:area)
       @center = @panels.sum { |panel| panel.center * panel.area } / @area
+      @total_leech = @panels.sum(&:leech_length)
+      @circumference = @total_luff + @total_leech + @batten_length * 2
+    end
+
+    def reefed_area(panels_reefed)
+      @panels.drop(panels_reefed).sum(&:area)
+    end
+
+    def center_above_tack
+      @center.y
+    end
+
+    def center_before_tack
+      -@center.x
     end
   end
 end
