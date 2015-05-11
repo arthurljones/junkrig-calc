@@ -41,14 +41,14 @@ module Sail
     private
 
       def draw_sail(group)
-        square_ft = area.to("ft^2").round(0).scalar
+        square_ft = "#{area.to("ft^2").round(0).scalar} ft²"
         ap "Sail Area: #{square_ft}"
 
         group.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
         group.layer("Mast Distance") { |l| l.circle(sling_point, sling_point_mast_distance) }
         group.layer("Sling Point") { |l| l.circle(sling_point, Unit(3, "in")) }
         group.layer("Center of Effort") { |l| l.circle(center, Unit(3, "in")) }
-        group.layer("Area") { |l| l.text(center + Vector2.new(0, -12), "#{square_ft} ft²") }
+        group.layer("Area") { |l| l.text(center + Vector2.new(0, -12), "#{square_ft}") }
       end
 
 
