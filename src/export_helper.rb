@@ -4,14 +4,19 @@ module ExportHelper
         objects = Array(objects)
         output_format.collect do |output|
             row_text = ""
-            property = output.first
+            property = output.shift
             if property
-                units = output.last
+                units = output.shift
+                getter = output.shift
                 row_text = "#{property.to_s.titleize}"
                 row_text += " (#{units})" if units
                 row_text += ","
                 row_text += objects.collect do |object|
-                    value = object.send(property)
+                    if getter
+                        value = getter.call(object)
+                    else
+                        value = object.send(property)
+                    end
                     value = value.to(units) if units && value.respond_to?(:to)
                     value = value.scalar if value.respond_to?(:scalar)
                     value.to_f
