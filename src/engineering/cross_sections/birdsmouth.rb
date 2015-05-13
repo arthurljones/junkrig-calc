@@ -2,6 +2,12 @@ require_relative "../cross_section"
 require_relative "compositable"
 require_relative "multipliable"
 require_relative "offsettable"
+
+require_relative "tube"
+require_relative "box"
+require_relative "defect"
+require_relative "regular_polygon"
+
 require "options_initializer"
 
 module Engineering
@@ -13,7 +19,7 @@ module Engineering
       include Multipliable
       include Offsettable
 
-      attr_reader :inner_diameter, :wall_thickness
+      attr_reader :inner_diameter, :wall_thickness, :circumference, :section
 
       options_initialize(
         :stave_thickness => { :units => "in" },
@@ -47,24 +53,22 @@ module Engineering
 
         @extreme_fiber_radius = outer_radius
 
-        #The area of the empty n-gon at the middle of the cross section
-        empty_area = (inner_radius**2 * sides * sin_alpha) / 2
-        #The length of each side of the empty area
-        inner_wall_width = inner_diameter * Math.sin(half_alpha)
+        filled_circle = Tube.new(outer_diameter: outer_diameter)
+        empty_area = RegularPolygon.new(sides: @sides, circumradius: inner_radius)
 
-        ideal_circular_area = Math::PI * outer_radius**2
-        @area = ideal_circular_area - empty_area
+        @section = filled_circle - empty_area
 
         #Defects are modeled as a rectangular void that extends from the outer surface halfway through the wall at the
-        # furthest distance from the neutral axis. The void's width is adjusted to match the specified defect area ratio.
-        defect_area = @defect_to_total_area_ratio * area
+        #furthest distance from the neutral axis. The void's width is adjusted to match the specified defect area ratio.
         defect_thickness = wall_thickness / 2
-        defect_width = defect_area / defect_thickness
-        defect_moment = (defect_width * defect_thickness**3) / 12 + defect_area * (outer_radius - defect_thickness / 2)**2
+        defect = Box.new(height: defect_thickness, width: @defect_to_total_area_ratio * @section.area / defect_thickness)
+        defect = Defect.new(section: defect.offset(outer_radius - defect_thickness / 2)) #TODO: This puts the corners of the defect outside the wall
+        @section = @section + defect
 
-        empty_moment = empty_area * (12 * inner_radius**2 + inner_wall_width**2) / 48.0
-        ideal_circular_moment = Math::PI * outer_radius**4 / 4
-        @second_moment_of_area = ideal_circular_moment - (empty_moment + defect_moment)
+        @area = @section.area
+        @second_moment_of_area = @section.second_moment_of_area
+        @extreme_fiber_radius = @section.extreme_fiber_radius
+        @circumference = filled_circle.circumference
       end
 
       def structure_content(depth = 0)
