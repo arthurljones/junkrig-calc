@@ -45,19 +45,19 @@ RSpec.describe Engineering::CrossSections::Tube do
 
   describe "#inner_diameter" do
     it "returns the inner diameter" do
-      expect(default_tube.inner_diameter).to eq Unit("0.75 in")
+      expect(default_tube.inner_diameter).to eq "0.75 in"
     end
   end
 
   describe "#outer_radius" do
     it "returns the outer radius" do
-      expect(default_tube.outer_radius).to eq Unit("0.5 in")
+      expect(default_tube.outer_radius).to eq "0.5 in"
     end
   end
 
   describe "#inner_radius" do
     it "returns the inner radius" do
-      expect(default_tube.inner_radius).to eq Unit("0.375 in")
+      expect(default_tube.inner_radius).to eq "0.375 in"
     end
   end
 
@@ -65,7 +65,7 @@ RSpec.describe Engineering::CrossSections::Tube do
 
   describe "#extreme_fiber_radius" do
     it "returns the distance from the neutral axis to the furthest fiber of the cross section" do
-      expect(default_tube.extreme_fiber_radius).to eq Unit("0.5 in")
+      expect(default_tube.extreme_fiber_radius).to eq "0.5 in"
     end
   end
 
@@ -81,10 +81,15 @@ RSpec.describe Engineering::CrossSections::Tube do
     end
   end
 
-
   describe "#elastic_section_modulus" do
     it "returns the elastic section modulus (second moment of area / extreme fiber radius)" do
       expect(default_tube.elastic_section_modulus).to be_within(delta "in^3").of "0.06711166 in^3"
+    end
+  end
+
+  describe "#second_moment_of_area" do
+    it "returns the second moment of area" do
+      expect(default_tube.circumference).to be_within(delta "in").of "3.14159265 in"
     end
   end
 

@@ -13,7 +13,7 @@ module Engineering
       include Multipliable
       include Offsettable
 
-      attr_reader :outer_radius, :inner_diameter, :inner_radius
+      attr_reader :outer_radius, :inner_diameter, :inner_radius, :circumference
 
       options_initialize(
         :outer_diameter => { :units => "in" },
@@ -34,6 +34,7 @@ module Engineering
         @area = Math::PI * (outer_radius**2 - inner_radius**2)
         @second_moment_of_area = Math::PI/4 * (outer_radius**4 - inner_radius**4)
         @extreme_fiber_radius = @outer_radius
+        @circumference = Math::PI * @outer_diameter
       end
 
       def structure_content(depth = 0)
