@@ -23,8 +23,16 @@ module OptionsInitializer
             begin
               value = Unit(value).to(units)
             rescue ArgumentError => e
-              e.message = "#{e.message} (#{attribute_name})"
-              raise e
+              raise e, "#{e.message} (#{attribute_name})", e.backtrace
+            end
+          end
+
+          constructor = options[:constructor]
+          if constructor
+            begin
+              value = constructor.call(value)
+            rescue ArgumentError => e
+              raise e, "#{e.message} (#{attribute_name})", e.backtrace
             end
           end
 
