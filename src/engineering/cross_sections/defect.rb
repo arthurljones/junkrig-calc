@@ -16,6 +16,7 @@ module Engineering
       options_initialize(
         :section => { }
       ) do |options|
+        #TODO: Offsetting this object will generate a nonzero extreme fiber radius, which is undesirable
         @second_moment_of_area = -@section.second_moment_of_area
         @extreme_fiber_radius = "0 in"
         @area = "0 in^2"
