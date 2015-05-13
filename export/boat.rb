@@ -2,7 +2,7 @@ require_relative "../boilerplate"
 require "boat"
 require "export_helper"
 
-boat = Boat.new(load_yaml_data_file("boat.yml"))
+boat = Boat.new(load_yaml_data_file("boat.yml")[:boat])
 output_format = [
     [:displacement, "lbs"],
     [:ballast, "lbs"],

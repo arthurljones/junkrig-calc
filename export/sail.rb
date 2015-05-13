@@ -3,7 +3,7 @@ require "sail/sail"
 require "export_helper"
 
 data = load_yaml_data_file("boat.yml")
-sail = Sail::Sail.new(data[:mast][:sail])
+sail = Sail::Sail.new(data[:sail])
 output_format = [
     [:parallelogram_luff, "ft"],
     [:batten_length, "ft"],
