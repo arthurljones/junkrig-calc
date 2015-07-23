@@ -23,14 +23,14 @@ output_format = [
     [:clew_rise, "ft"],
     [:center_above_tack, "ft", ->(obj){ obj.center.y }],
     [:center_before_tack, "ft", ->(obj){ obj.center.x }],
-    [:yard_vertical_span, "ft", ->(obj){ obj.yard_span.y }],
-    [:yard_horizontal_span, "ft", ->(obj){ obj.yard_span.x }],
     [:peak_above_tack, "ft", ->(obj){ obj.tack_to_peak.y }],
     [:aspect_ratio, nil],
     [nil],
+    [:sling_point_to_mast_center, "ft"],
+    [:sling_point_above_tack, "ft", ->(obj){ obj.sling_point.y }],
     [:tack_to_mast_center, "ft"],
     [:clew_to_mast_center, "ft"],
-    [:fore_aft_sail_balance, nil],
+    [:sail_balance_forward_of_mast, nil],
 ]
 
 puts ExportHelper.generate_csv(sail, output_format)

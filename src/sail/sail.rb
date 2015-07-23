@@ -12,7 +12,6 @@ module Sail
     include SVGDrawable
 
     BATTEN_STAGGER = 0.01
-    BATTEN_TO_MAST_OFFSET = 0.05
 
     attr_reader *%i(
       total_panels
@@ -32,7 +31,7 @@ module Sail
       tack_to_peak
       aspect_ratio
       sling_point
-      sling_point_mast_distance
+      sling_point_to_mast_center
       inner_sheet_distance
       outer_sheet_distance
       battens
@@ -42,7 +41,7 @@ module Sail
       circumference
       tack_to_mast_center
       clew_to_mast_center
-      fore_aft_sail_balance
+      sail_balance_forward_of_mast
     )
 
     options_initialize(
@@ -55,7 +54,7 @@ module Sail
       sheet_area_width: { units: "in" },
       head_panel_luff_to_batten_ratio: { default: 9/(25*12) },
       upper_luff_curve_balance: { default: 0 }, #0.0 results in a vertical luff, 1.0 results in matching curve to leech
-      sling_offset_to_batten_length: {  },
+      sling_offset_to_batten_length: { default: 0.05 },
     ) do |options|
 
       @total_panels = @lower_panel_count + @head_panel_count
@@ -71,7 +70,7 @@ module Sail
       @tack = Vector2.new("0 ft", "0 ft")
       @clew = Vector2.new(@parallelogram_width, @clew_rise)
 
-      @sling_point_mast_distance = @batten_length * BATTEN_TO_MAST_OFFSET
+      @sling_point_to_mast_center = @batten_length * @sling_offset_to_batten_length
       @inner_sheet_distance = @min_sheet_ratio * @panel_leech
       @outer_sheet_distance = @inner_sheet_distance + @sheet_area_width
 
@@ -113,9 +112,9 @@ module Sail
       @total_leech = @panels.sum(&:leech_length)
       @circumference = @total_luff + @total_leech + @batten_length * 2
 
-      @tack_to_mast_center = @sling_point.x - @batten_length * @sling_offset_to_batten_length
+      @tack_to_mast_center = @sling_point.x - @sling_point_to_mast_center
       @clew_to_mast_center = @parallelogram_width - @tack_to_mast_center
-      @fore_aft_sail_balance = @tack_to_mast_center / @clew_to_mast_center
+      @sail_balance_forward_of_mast = @tack_to_mast_center / @parallelogram_width
     end
 
     def reefed_area(panels_reefed)
@@ -126,8 +125,5 @@ module Sail
       @lower_panel_luff / @batten_length
     end
 
-    def peak_above_tack
-
-    end
   end
 end

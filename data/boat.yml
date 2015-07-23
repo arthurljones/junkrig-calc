@@ -36,10 +36,9 @@ sail:
   sheet_area_width: 4 ft
   head_panel_luff_to_batten_ratio: 0.0
   upper_luff_curve_balance: 0.75
-  sling_offset_to_batten_length: 0.05
 
 rig:
-  tack_above_partners: 29 in
+  tack_above_partners: 18 in
 
 crane:
   length: 15 ft
