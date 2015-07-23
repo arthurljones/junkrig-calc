@@ -27,6 +27,10 @@ output_format = [
     [:yard_horizontal_span, "ft", ->(obj){ obj.yard_span.x }],
     [:peak_above_tack, "ft", ->(obj){ obj.tack_to_peak.y }],
     [:aspect_ratio, nil],
+    [nil],
+    [:tack_to_mast_center, "ft"],
+    [:clew_to_mast_center, "ft"],
+    [:fore_aft_sail_balance, nil],
 ]
 
 puts ExportHelper.generate_csv(sail, output_format)

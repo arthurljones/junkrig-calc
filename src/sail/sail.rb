@@ -40,6 +40,9 @@ module Sail
       area
       center
       circumference
+      tack_to_mast_center
+      clew_to_mast_center
+      fore_aft_sail_balance
     )
 
     options_initialize(
@@ -52,13 +55,14 @@ module Sail
       sheet_area_width: { units: "in" },
       head_panel_luff_to_batten_ratio: { default: 9/(25*12) },
       upper_luff_curve_balance: { default: 0 }, #0.0 results in a vertical luff, 1.0 results in matching curve to leech
+      sling_offset_to_batten_length: {  },
     ) do |options|
 
       @total_panels = @lower_panel_count + @head_panel_count
       @lower_panel_luff = @parallelogram_luff / @lower_panel_count
       @panel_leech = @lower_panel_luff
 
-      @parallelogram_width = MathHelpers.triangle_height(@batten_length, @batten_length * (1.0 - BATTEN_STAGGER), @lower_panel_luff)
+      @parallelogram_width = MathHelpers.triangle_height(@batten_length, @batten_length * (1.0 - BATTEN_STAGGER), @lower_panel_luff) #AKA chord
       @tack_angle = Unit(Math::PI/2 - Math::asin(@parallelogram_width / @batten_length), "radians")
       @clew_rise = @batten_length * Math::sin(@tack_angle)
       @head_panel_luff = (@batten_length * @head_panel_luff_to_batten_ratio).to("in").round(0).to("ft")
@@ -108,6 +112,10 @@ module Sail
       @center = @panels.sum { |panel| panel.center * panel.area } / @area
       @total_leech = @panels.sum(&:leech_length)
       @circumference = @total_luff + @total_leech + @batten_length * 2
+
+      @tack_to_mast_center = @sling_point.x - @batten_length * @sling_offset_to_batten_length
+      @clew_to_mast_center = @parallelogram_width - @tack_to_mast_center
+      @fore_aft_sail_balance = @tack_to_mast_center / @clew_to_mast_center
     end
 
     def reefed_area(panels_reefed)
