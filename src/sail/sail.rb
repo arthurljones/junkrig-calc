@@ -12,7 +12,6 @@ module Sail
     include SVGDrawable
 
     BATTEN_STAGGER = 0.01
-    BATTEN_TO_HEAD_PANEL_LUFF = 9/(25*12)
     BATTEN_TO_MAST_OFFSET = 0.05
 
     attr_reader *%i(
@@ -27,7 +26,7 @@ module Sail
       total_leech
       tack
       clew
-      yard_span
+      yard
       throat
       peak
       tack_to_peak
@@ -51,6 +50,8 @@ module Sail
       yard_angle: { units: "degrees" },
       min_sheet_ratio: { },
       sheet_area_width: { units: "in" },
+      head_panel_luff_to_batten_ratio: { default: 9/(25*12) },
+      upper_luff_curve_balance: { default: 0 }, #0.0 results in a vertical luff, 1.0 results in matching curve to leech
     ) do |options|
 
       @total_panels = @lower_panel_count + @head_panel_count
@@ -60,32 +61,45 @@ module Sail
       @parallelogram_width = MathHelpers.triangle_height(@batten_length, @batten_length * (1.0 - BATTEN_STAGGER), @lower_panel_luff)
       @tack_angle = Unit(Math::PI/2 - Math::asin(@parallelogram_width / @batten_length), "radians")
       @clew_rise = @batten_length * Math::sin(@tack_angle)
-      @head_panel_luff = (@batten_length * BATTEN_TO_HEAD_PANEL_LUFF).to("in").round(0).to("ft")
+      @head_panel_luff = (@batten_length * @head_panel_luff_to_batten_ratio).to("in").round(0).to("ft")
       @total_luff = @parallelogram_luff + @head_panel_luff * @head_panel_count
 
       @tack = Vector2.new("0 ft", "0 ft")
       @clew = Vector2.new(@parallelogram_width, @clew_rise)
-      @yard_span = Vector2.from_angle(@yard_angle, @batten_length)
-      @throat = Vector2.new(Unit("0 ft"), @total_luff)
-      @peak = @throat + @yard_span
-      @tack_to_peak = @peak - @tack
-
-      @aspect_ratio = (@tack_to_peak.y - @clew_rise / 2) / @parallelogram_width
-      @sling_point = @throat + @yard_span / 2
 
       @sling_point_mast_distance = @batten_length * BATTEN_TO_MAST_OFFSET
       @inner_sheet_distance = @min_sheet_ratio * @panel_leech
       @outer_sheet_distance = @inner_sheet_distance + @sheet_area_width
 
+      puts "panel_leech: #{panel_leech}"
+      puts "min_sheet_ratio: #{min_sheet_ratio}"
+      puts "inner_sheet_distance: #{inner_sheet_distance}"
+      puts "outer_sheet_distance: #{outer_sheet_distance}"
+      puts "tack: #{tack}"
+      puts "leech/batten ratio: #{panel_leech/batten_length}"
+
       lower_battens = (0 ... @lower_panel_count + 1).collect do |position|
-        Batten.new(@batten_length, @lower_panel_luff * position, @tack_angle)
+        Batten.new(@batten_length, Vector2.new("0 in", @lower_panel_luff * position), @tack_angle)
       end
 
+      head_panel_angle_increment = (@yard_angle - @tack_angle) / @head_panel_count
       upper_battens = (1 ... @head_panel_count + 1).collect do |position|
-        luff_position = @parallelogram_luff + @head_panel_luff * position
-        angle = @tack_angle + ((@yard_angle - @tack_angle) / @head_panel_count) * position
-        Batten.new(@batten_length, luff_position, angle)
+        angle_offset = head_panel_angle_increment * position
+        length_offset = Math::sin(angle_offset) * @upper_luff_curve_balance * @head_panel_luff
+        luff_x = length_offset
+        luff_y = @parallelogram_luff + @head_panel_luff * position
+        batten_angle = @tack_angle + angle_offset
+        batten_length = @batten_length - 2 * length_offset
+        puts "luff #{@head_panel_luff} offset #{length_offset} length #{batten_length}, x #{luff_x}, y #{luff_y}, angle #{batten_angle}"
+        Batten.new(batten_length, Vector2.new(luff_x, luff_y), batten_angle)
       end
+
+      @yard = upper_battens.last
+      @throat = @yard.tack
+      @peak = @yard.clew
+      @sling_point = @throat + (@peak - @throat) / 2
+      @tack_to_peak = @peak - @tack
+      @aspect_ratio = (@tack_to_peak.y - @clew_rise / 2) / @parallelogram_width
 
       @battens = lower_battens + upper_battens
       @panels = @battens.each_cons(2).collect { |b1, b2| Panel.new(b1, b2) }

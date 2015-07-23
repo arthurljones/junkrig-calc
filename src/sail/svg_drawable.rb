@@ -42,7 +42,7 @@ module Sail
 
       def draw_sail(group)
         square_ft = "#{area.to("ft^2").round(0).scalar} ft²"
-        ap "Sail Area: #{square_ft}"
+        ap "Sail Area: #{square_ft} #{area.to("m^2")}"
 
         group.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
         group.layer("Mast Distance") { |l| l.circle(sling_point, sling_point_mast_distance) }
@@ -71,7 +71,7 @@ module Sail
         arc2 = [bot * d_outer, top * d_outer]
 
         group.layer("Sheet Zone") do |layer|
-          layer.local_transform = Transform.new.translated(tack).scaled(Vector2.new(-1, 1))
+          layer.local_transform = Transform.new.translated(clew).scaled(Vector2.new(-1, 1))
           layer.build_path(:style => { :fill => "#000000", :fill_opacity => 0.1 }) do |path|
             path.move(arc1[0])
             path.arc(arc1[1], d_min, 0, false, false)
