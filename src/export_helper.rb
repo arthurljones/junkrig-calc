@@ -17,7 +17,8 @@ module ExportHelper
                     else
                         value = object.send(property)
                     end
-                    value = value.to(units) if units && value.respond_to?(:to)
+                    target_units = units || Unit.new(1)
+                    value = value.to(target_units) if value.respond_to?(:to)
                     value = value.scalar if value.respond_to?(:scalar)
                     value.to_f
                 end.join(",")
