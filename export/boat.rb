@@ -22,7 +22,8 @@ output_format = [
     [:displacement_to_length, nil],
     [:estimated_max_righting_moment, "in*lbs"],
     [:water_pressure_at_keel, "psi"],
-    [:comfort_ratio, nil]
+    [:comfort_ratio, nil],
+    [:hull_speed, "knots"]
 ]
 
 puts ExportHelper.generate_csv(boat, output_format)

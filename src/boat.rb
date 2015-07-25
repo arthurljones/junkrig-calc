@@ -3,6 +3,8 @@ require "options_initializer"
 class Boat
   include OptionsInitializer
 
+  HULL_SPEED_COEFFICIENT = 1.34 #kt/ft^0.5, which ruby-units can't represent as of writing this
+
   attr_reader *%i(
     saltwater_displaced
     ballast_ratio
@@ -13,6 +15,7 @@ class Boat
     estimated_max_righting_moment
     water_pressure_at_keel
     comfort_ratio
+    hull_speed
   )
 
   options_initialize(
@@ -48,5 +51,7 @@ class Boat
     @water_pressure_at_keel = (Constants.saltwater_density * Constants.gravity * @draft_of_canoe_body).to("psi")
     #Ted Brewer's comfort ratio. Ranges from 5 for a light daysailer to 60+ for super heavy boats. Cruisers are often mid-30s. See http://www.tedbrewer.com/yachtdesign.html
     @comfort_ratio = @displacement.to("lbs").scalar / (0.65 * (0.7 * @length_at_waterline.to("ft").scalar + 0.3 * @length_overall.to("ft").scalar) * @maximum_beam.to("ft").scalar**1.333)
+    #Theoretical maximum speed of displacement craft due to bow wave
+    @hull_speed = Unit.new(HULL_SPEED_COEFFICIENT * Math.sqrt(@length_at_waterline.to("ft").scalar), "knots")
   end
 end
