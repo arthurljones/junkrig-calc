@@ -74,13 +74,6 @@ module Sail
       @inner_sheet_distance = @min_sheet_ratio * @panel_leech
       @outer_sheet_distance = @inner_sheet_distance + @sheet_area_width
 
-      puts "panel_leech: #{panel_leech}"
-      puts "min_sheet_ratio: #{min_sheet_ratio}"
-      puts "inner_sheet_distance: #{inner_sheet_distance}"
-      puts "outer_sheet_distance: #{outer_sheet_distance}"
-      puts "tack: #{tack}"
-      puts "leech/batten ratio: #{panel_leech/batten_length}"
-
       lower_battens = (0 ... @lower_panel_count + 1).collect do |position|
         Batten.new(@batten_length, Vector2.new("0 in", @lower_panel_luff * position), @tack_angle)
       end
