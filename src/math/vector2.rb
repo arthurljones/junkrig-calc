@@ -7,9 +7,6 @@ class Vector2
   math_proxy :vector, Vector
 
   def initialize(*args)
-    options = args.extract_options!
-    options[:units] ||= "in"
-
     if args.size == 1
       args = args.first.first(2)
     end
@@ -24,23 +21,31 @@ class Vector2
       case arg
       when Unit
         arg
-      when String
-        Unit(arg)
       else
-        Unit("#{arg} #{options[:units]}")
+        Unit(arg)
       end
     end
 
     @vector = Vector.elements(args)
   end
 
-  def self.from_angle(angle, mag = Unit(1))
+  def self.from_angle(angle, mag = Unit(1), *args)
     angle = angle.to("rad")
-    new(Math::cos(angle) * mag, Math::sin(angle) * mag)
+    new(Math::cos(angle) * mag, Math::sin(angle) * mag, *args)
+  end
+
+  def self.from_complex(complex)
+    if Unit === complex
+      units = complex.units
+      complex = complex.scalar
+      new(Unit.new(complex.real, units), Unit.new(complex.imaginary, units))
+    else
+      new(complex.real, complex.imaginary)
+    end
   end
 
   def self.unitless(*args)
-    new(*args).unitless
+    Vector2.new(*args).unitless
   end
 
   def x
@@ -71,8 +76,13 @@ class Vector2
     Vector2.new(x * other.x, y * other.y)
   end
 
-  def to_s(unit = nil)
-    "#{x.round(3)}#{unit} #{y.round(3)}#{unit}"
+  def to_s(units = nil)
+    units ||= x.units
+    "#{x.to(units).scalar.to_f.round(3)}#{units} #{y.to(units).scalar.to_f.round(3)}#{units}"
+  end
+
+  def to_complex
+    Complex(x, y)
   end
 
   def perpendicular_dot(other)
@@ -84,7 +94,17 @@ class Vector2
   end
 
   def unitless
-    Vector2.new(x.scalar, y.scalar, :units => "")
+    Vector2.new(x.scalar, y.scalar)
+  end
+
+  def angle
+    Unit.new(Math::atan2(y, x), "rad")
+  end
+
+  def rotated_by(radians)
+    radians = radians.to("radians").scalar if radians.respond_to?(:to)
+    complex = to_complex * Math::E ** Complex(0, radians)
+    self.class.from_complex(complex)
   end
 
 end
