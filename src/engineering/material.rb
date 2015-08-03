@@ -8,7 +8,8 @@ module Engineering
     options_initialize(
       :yield_strength => { :units => "psi" },
       :density => { :units => "lbs/in^3" },
-      :modulus_of_elasticity => { :units => "psi" }
+      :modulus_of_elasticity => { :units => "psi" },
+      :shear_strength => { :units => "psi", :required => false },
     )
 
     def self.get(name)
@@ -19,8 +20,8 @@ module Engineering
       cache.keys
     end
 
-    def shear_yield_strength
-      yield_strength * 0.577
+    def shear_strength
+      @shear_strength || yield_strength * 0.577
     end
 
     def strength_to_density_ratio

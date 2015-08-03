@@ -10,11 +10,13 @@ Sitka Spruce:
 
 6061-T6 Aluminum:
   yield_strength: 40000 psi
+  shear_strength: 30000 psi
   density: 0.0975 lbs/in^3
   modulus_of_elasticity: 1.0e7 psi
 
 6063-T6 Aluminum:
-  yield_strength: 31000 psi
+  yield_strength: 35000 psi
+  shear_strength: 22000 psi
   density: 0.0975 lbs/in^3
   modulus_of_elasticity: 1.0e7 psi
 
