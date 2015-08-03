@@ -25,10 +25,10 @@ class Crane
     @guy_anchor_above_pivot = Unit.new("31.7 ft")
 
     #Mast Pivot
-    @below_pivot_weight = Unit.new("30 lbs")
-    @below_pivot_center_of_mass = Unit.new("1.666 in")
-    @above_pivot_weight = Unit.new("219 lbs")
-    @above_pivot_center_of_mass = Unit.new("12.9 ft")
+    @below_pivot_weight = Unit.new("29.8647651632 lbs")
+    @below_pivot_center_of_mass = Unit.new("1.6666666667 ft")
+    @above_pivot_weight = Unit.new("219.391159468 lbs")
+    @above_pivot_center_of_mass = Unit.new("12.9012345679 ft")
     @pivot_height_above_deck = Unit.new("0.0 ft")
 
     #NOTE: This coordinate system has the mast pivot at (0, 0)
@@ -48,20 +48,14 @@ class Crane
     @guy_anchor_initial = -@guy_anchor_zero #TODO: Simplify this so only the zero or inital is used (at least one is misnamed)
     @guy_length = (@guy_anchor_initial - @crane_tip_initial).magnitude #D7
 
-
-    puts @mast_pivot_to_pulley.to_s("ft")
-    puts @crane_anchor_zero.to_s("ft")
-    puts @crane_tip_initial.to_s("ft")
-    puts @guy_length
-
-    calculate(Unit.new("0 deg"))
-    calculate(Unit.new("10 deg"))
-    calculate(Unit.new("20 deg"))
     calculate(Unit.new("30 deg"))
+    #calculate(Unit.new("10 deg"))
+    #calculate(Unit.new("20 deg"))
+    #calculate(Unit.new("30 deg"))
   end
 
   def calculate(angle_above_horizontal)
-    angle = angle_above_horizontal + Unit(Math::PI, "radians")
+    angle = Unit(Math::PI, "radians") - angle_above_horizontal
     below_pivot_torque = @below_pivot_weight * @below_pivot_center_of_mass * Math::cos(angle)
     above_pivot_torque = @above_pivot_weight * @above_pivot_center_of_mass * Math::cos(angle)
     static_torque = above_pivot_torque - below_pivot_torque #C7
@@ -83,7 +77,7 @@ class Crane
 
     crane_torque_lever = Unit.new("0 in") #C15
     if @anchor_moves_with_mast
-      distance_to_crane_anchor = crane_anchor.magnitude * Math::sin(guy_anchor.angle) - guy_angle
+      crane_torque_lever = crane_anchor.magnitude * Math::sin(guy_anchor.angle) - guy_angle
     end
 
     lever_vector = crane_anchor + crane_vector
@@ -95,7 +89,7 @@ class Crane
     line_angle = line_vector.angle
     line_angle_to_lever = line_angle - lever_angle #C28 #TODO: This seems backward or at least misnamed
     line_angle_to_crane = line_angle - crane_angle #C29 #TODO: This seems backward or at least misnamed
-    line_angle_to_guy = line_angle_to_crane - guy_angle_to_crane #C30 #TODO: This seems backward or at least misnamed
+    line_angle_to_guy = line_angle_to_crane + guy_angle_to_crane #C30
 
     line_force = static_torque * Math::sin(guy_angle_to_crane) /
       (Math::sin(line_angle_to_crane) * guy_torque_lever + crane_torque_lever * Math::sin(line_angle_to_guy)) #C32
@@ -104,11 +98,9 @@ class Crane
 
     guy_force = (static_torque - crane_force * crane_torque_lever) / guy_torque_lever
 
-
-    puts
-    puts line_force
-    puts crane_force
-    puts guy_force
+    puts line_force: line_force
+    puts crane_force: crane_force
+    puts guy_force: guy_force
 
   end
 
