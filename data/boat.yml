@@ -39,7 +39,7 @@ sail:
   upper_luff_curve_balance: 0.75
 
 rig:
-  tack_above_partners: 18 in
+  tack_above_partners: 12 in
 
 crane:
   length: 15 ft
