@@ -22,7 +22,9 @@ input = {
     :strong_full_2x4 => [3.5, 1.5, -1, 0.125, 0, 0],
     :strong_half_2x4 => [1.6875, 1.5, -1, 0.125, 0, 0],
     :strong_stave => [1.5, 1, -1, 0, 0, 0],
-    :strong_2x4_pair => [3.5, 3, -1, 0.125, 0, 0]
+    :strong_2x4_pair => [3.5, 3, -1, 0.125, 0, 0],
+    :strong_composite => [5.5, 1.75, -1, 0, 0, 0],
+    :weak_composite => [1.75, 5.5, -1, 0, 0, 0],
 }
 
 #puts "," + input.keys.join(",")
