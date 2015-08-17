@@ -63,9 +63,8 @@ class Crane
     static_torque = (-@pivot_to_mast_cm_initial.rotated_by(angle) * @mast_weight).x
     static_torque += @lift_assist_torque if angle_above_horizontal <= @lift_assist_torque_cutout_angle
 
-    crane_pivot = @mast_pivot_to_crane_pivot
     guy_anchor = @guy_anchor_zero.rotated_by(angle)
-    guy_anchor_to_crane_pivot = crane_pivot - guy_anchor
+    guy_anchor_to_crane_pivot = @mast_pivot_to_crane_pivot - guy_anchor
     guy_anchor_to_crane_pivot_length = guy_anchor_to_crane_pivot.magnitude
     γ = Math::acos((guy_anchor_to_crane_pivot_length ** 2 + @crane_height ** 2 - @guy_length ** 2) / (-2 * @crane_height * guy_anchor_to_crane_pivot_length))
 
@@ -77,38 +76,35 @@ class Crane
     guy_angle_to_crane = crane_angle - guy_angle
     guy_torque_lever = guy_anchor_to_crane_pivot_length * Math::sin(guy_anchor_to_crane_pivot.angle - guy_angle)
 
-    crane_torque_lever = Unit.new("0 in")
-    lever_vector = crane_pivot + crane_vector
+    crane_tip = @mast_pivot_to_crane_pivot + crane_vector
 
-    line_vector = lever_vector - @mast_pivot_to_pulley
+    line_vector = crane_tip - @mast_pivot_to_pulley
     crane_tip_above_pulley = line_vector.dot(Vector2.new("0 in", "1 in")) > 0
     line_length = line_vector.magnitude
     line_angle = line_vector.angle
     line_angle_to_crane = line_angle - crane_angle #TODO: This seems backward or at least misnamed
     line_angle_to_guy = line_angle_to_crane + guy_angle_to_crane
 
-    line_force = static_torque * Math::sin(guy_angle_to_crane) /
-      (Math::sin(line_angle_to_crane) * guy_torque_lever + crane_torque_lever * Math::sin(line_angle_to_guy))
+    line_force = (static_torque * Math::sin(guy_angle_to_crane)) / (Math::sin(line_angle_to_crane) * guy_torque_lever)
 
     crane_force = line_force * Math::sin(line_angle_to_guy) / Math::sin(guy_angle_to_crane)
 
-    guy_force = (static_torque - crane_force * crane_torque_lever) / guy_torque_lever
+    guy_force = static_torque / guy_torque_lever
 
     guy_anchor_position = guy_anchor
-    crane_tip_position = lever_vector
-    crane_pivot_position = crane_pivot
+    crane_pivot_position = @mast_pivot_to_crane_pivot
     pulley_position = @mast_pivot_to_pulley
     mast_pivot_position = Vector2.new("0 in", "0 in")
 
     {
       mast_angle: angle_above_horizontal,
-      line_length: line_length,
+      line_length: line_length * @running_line_purchase,
       crane_tip_above_pulley: crane_tip_above_pulley,
       line_force: line_force,
       crane_force: crane_force,
       guy_force: guy_force,
       guy_anchor: guy_anchor_position,
-      crane_tip: crane_tip_position,
+      crane_tip: crane_tip,
       crane_pivot: crane_pivot_position,
       pulley: pulley_position,
       mast_pivot: mast_pivot_position,
