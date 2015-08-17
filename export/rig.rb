@@ -11,6 +11,7 @@ rig = Rig.new(options)
 output_format = [
     [:tack_above_partners, "ft"],
     [:sail_area_to_displacement, nil],
+    [:s_number, nil],
     [:clew_above_waterline, "ft"],
     [:center_of_area_above_partners, "in"],
     [:center_of_area_above_center_of_mass, "in"],
