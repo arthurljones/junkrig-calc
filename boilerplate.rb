@@ -6,6 +6,7 @@ Bundler.setup
 require "ruby-units"
 require "active_support/core_ext"
 require "awesome_print"
+require "ruby-prof"
 
 ROOT_PATH = File.dirname(File.expand_path(__FILE__))
 def add_root_load_path(*args)

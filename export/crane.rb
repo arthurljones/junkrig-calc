@@ -4,9 +4,20 @@ require "export_helper"
 
 crane = Crane.new({})
 
+require 'ruby-prof'
+
+RubyProf.start
+
 objects = (0..90).step(1).map do |angle|
   crane.calculate(Unit.new(angle, "deg"))
 end
+
+result = RubyProf.stop
+printer = RubyProf::FlatPrinter.new(result)
+#printer.print(STDOUT)
+#puts
+#puts
+#puts
 
 output_format = [
     [:angle, "deg", ->(x){x[:mast_angle]}],

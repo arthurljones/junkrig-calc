@@ -6,3 +6,4 @@ gem "activesupport", "~> 4.0.0", :require => "active_support/all"
 gem "ruby-units", :path => "../ruby-units"
 gem 'rspec'
 gem 'rspec-its'
+gem 'ruby-prof'
