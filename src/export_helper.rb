@@ -12,10 +12,15 @@ module ExportHelper
                 row_text += " (#{units})" if units
                 row_text += ","
                 row_text += objects.collect do |object|
-                    if getter
-                        value = getter.call(object)
-                    else
-                        value = object.send(property)
+                    begin
+                        if getter
+                            value = getter.call(object)
+                        else
+                            value = object.send(property)
+                        end
+                    rescue => error
+                        puts "Error getting property #{property} on object #{object}: #{error.message}"
+                        raise error
                     end
                     target_units = units || Unit.new(1)
                     value = value.to(target_units) if value.respond_to?(:to)
