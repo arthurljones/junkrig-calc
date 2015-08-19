@@ -39,6 +39,13 @@ objects = input.map do |name, raw_input|
 end
 
 output_format = [
+    ["height", "in"],
+    ["width", "in"],
+    ["wall_thickness", "in"],
+    ["corner_radius", "in"],
+    ["defect_width", "in"],
+    ["gusset_size", "in"],
+    [nil],
     ["second_moment_of_area", "in^4"],
     ["area", "in^2"],
     ["extreme_fiber_radius", "in"],

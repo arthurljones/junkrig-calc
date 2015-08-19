@@ -18,7 +18,16 @@ module Engineering
       include Multipliable
       include Offsettable
 
-      attr_reader :height, :width, :wall_thickness, :corner_radius, :defect_width, :gusset_size, :minimum_thickness, :circumference
+      attr_reader *%i(
+        height
+        width
+        wall_thickness
+        corner_radius
+        defect_width
+        gusset_size
+        minimum_thickness
+        circumference
+      )
 
       options_initialize(
         :height => { :units => "in" },
@@ -31,6 +40,7 @@ module Engineering
 
         @top_thickness = @wall_thickness || @height / 2
         @side_thickness = @wall_thickness || @width / 2
+        @wall_thickness ||= Unit.new("-1 in")
 
         @inner_height = @height - 2 * @top_thickness
         @inner_width = @width - 2 * @side_thickness
@@ -90,7 +100,7 @@ module Engineering
         outer_corner = Vector2.new(@width/2, @height/2)
         inner_corner = outer_corner - Vector2.new(@side_thickness, @top_thickness)
         radius_center = outer_corner - Vector2.new(@corner_radius, @corner_radius)
-        gusset_offsets = [[0, @gusset_size], [@gusset_size, 0]]
+        gusset_offsets = [["0 in", @gusset_size], [@gusset_size, "0 in"]]
         displacements = gusset_offsets.map{|offset| (inner_corner - Vector2.new(*offset)) - radius_center}
         displacements.reject!{|disp| disp.x < 0 || disp.y < 0}
         min_thickness = displacements.map{|disp| @corner_radius - disp.magnitude}.min || "0 in"
