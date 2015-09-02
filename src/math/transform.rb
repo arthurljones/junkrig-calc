@@ -9,7 +9,7 @@ class Transform
   math_proxy :matrix, Matrix
 
   def self.translation(vector)
-    vector = vector.to(SCALE_UNITS).unitless
+    vector = to_unitless(vector)
     new(Matrix.rows([
       [1, 0, vector.x],
       [0, 1, vector.y],
@@ -19,7 +19,7 @@ class Transform
 
   def self.scale(amount)
     amount = Vector2.new(amount, amount) if Numeric === amount
-    amount = amount.to(SCALE_UNITS).unitless
+    amount = to_unitless(amount)
     new(Matrix.rows([
       [amount.x, 0, 0],
       [0, amount.y, 0],
@@ -68,22 +68,22 @@ class Transform
 
   def translation=(value)
     orig = value
-    value = value.to(SCALE_UNITS).unitless
+    value = to_unitless(value)
     matrix[2, 0] = value.x
     matrix[2, 1] = value.y
     orig
   end
 
   def with_translation(value)
-    value = value.to(SCALE_UNITS).unitless
+    value = to_unitless(value)
     Transform.new(Matrix.columns([matrix.column(0), matrix.column(1), [value.x, value.y, 1]]))
   end
 
   def *(other)
     if Vector2 === other
-      other = other.to(SCALE_UNITS).unitless
+      other = to_unitless(other)
       vector = matrix * Vector[other.x, other.y, 1]
-      Vector2.new(vector[0].scalar, vector[1].scalar, :units => SCALE_UNITS)
+      Vector2.new(Unit.new(vector[0].scalar, SCALE_UNITS), Unit.new(vector[1].scalar, SCALE_UNITS))
     else
       super
     end
@@ -95,6 +95,16 @@ class Transform
 
   def self.from_xml(str)
     new(Matrix.rows(JSON.parse(str).map{|row| row.map{|el| el.to_f}}))
+  end
+
+private
+
+  def to_unitless(vec)
+    Transform.to_unitless(vec)
+  end
+
+  def self.to_unitless(vec)
+    vec.unitless? ? vec : vec.to(SCALE_UNITS).unitless
   end
 
 end

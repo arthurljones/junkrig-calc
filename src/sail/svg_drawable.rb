@@ -48,7 +48,7 @@ module Sail
         group.layer("Mast Distance") { |l| l.circle(sling_point, sling_point_to_mast_center) }
         group.layer("Sling Point") { |l| l.circle(sling_point, Unit(3, "in")) }
         group.layer("Center of Effort") { |l| l.circle(center, Unit(3, "in")) }
-        group.layer("Area") { |l| l.text(center + Vector2.new(0, -12), "#{square_ft}") }
+        group.layer("Area") { |l| l.text(center + Vector2.new("0 in", "-12 in"), "#{square_ft}") }
       end
 
 

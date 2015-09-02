@@ -22,6 +22,7 @@ class Vector2
       when Unit
         arg
       else
+        puts arg
         Unit(arg)
       end
     end
@@ -77,8 +78,8 @@ class Vector2
   end
 
   def to_s(units = nil)
-    units ||= x.units
-    "#{x.to(units).scalar.to_f.round(3)}#{units} #{y.to(units).scalar.to_f.round(3)}#{units}"
+    units ||= x.units unless x.units.empty?
+    [x, y].map {|val| "#{val.to(units).scalar.to_f.round(3)}#{units}"}.join(" ")
   end
 
   def to_complex
@@ -87,6 +88,10 @@ class Vector2
 
   def perpendicular_dot(other)
     perpendicular.inner_product(other)
+  end
+
+  def unitless?
+    return x.kind == :unitless && y.kind == :unitless
   end
 
   def to(unit)
