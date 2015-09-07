@@ -22,7 +22,6 @@ class Vector2
       when Unit
         arg
       else
-        puts arg
         Unit(arg)
       end
     end
