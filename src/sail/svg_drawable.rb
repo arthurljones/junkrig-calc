@@ -46,20 +46,20 @@ module Sail
 
         group.layer("Panels") { |l| panels.each { |panel| l.line_loop(panel.perimeter) } }
         group.layer("Mast Distance") { |l| l.circle(sling_point, sling_point_to_mast_center) }
-        group.layer("Sling Point") { |l| l.circle(sling_point, Unit(3, "in")) }
-        group.layer("Center of Effort") { |l| l.circle(center, Unit(3, "in")) }
+        group.layer("Sling Point") { |l| l.circle(sling_point, Unit.new(3, "in")) }
+        group.layer("Center of Effort") { |l| l.circle(center, Unit.new(3, "in")) }
         group.layer("Area") { |l| l.text(center + Vector2.new("0 in", "-12 in"), "#{square_ft}") }
       end
 
 
       def draw_sheet_zone(group)
-        pi = Unit(Math::PI, "rad")
+        pi = Unit.new(Math::PI, "rad")
 
         #Assumptions
-        leech_angle = Unit(270, "deg")
+        leech_angle = Unit.new(270, "deg")
 
-        start = pi - tack_angle + Unit(30, "deg")
-        stop = leech_angle - Unit(10, "deg")
+        start = pi - tack_angle + Unit.new(30, "deg")
+        stop = leech_angle - Unit.new(10, "deg")
 
         d_min = inner_sheet_distance
         d_outer = outer_sheet_distance

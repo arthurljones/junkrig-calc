@@ -62,7 +62,7 @@ module Sail
       @panel_leech = @lower_panel_luff
 
       @parallelogram_width = MathHelpers.triangle_height(@batten_length, @batten_length * (1.0 - BATTEN_STAGGER), @lower_panel_luff) #AKA chord
-      @tack_angle = Unit(Math::PI/2 - Math::asin(@parallelogram_width / @batten_length), "radians")
+      @tack_angle = Unit.new(Math::PI/2 - Math::asin(@parallelogram_width / @batten_length), "radians")
       @clew_rise = @batten_length * Math::sin(@tack_angle)
       @head_panel_luff = (@batten_length * @head_panel_luff_to_batten_ratio).to("in").round(0).to("ft")
       @total_luff = @parallelogram_luff + @head_panel_luff * @head_panel_count

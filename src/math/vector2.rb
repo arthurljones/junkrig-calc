@@ -22,14 +22,14 @@ class Vector2
       when Unit
         arg
       else
-        Unit(arg)
+        Unit.new(arg)
       end
     end
 
     @vector = Vector.elements(args)
   end
 
-  def self.from_angle(angle, mag = Unit(1), *args)
+  def self.from_angle(angle, mag = Unit.new(1), *args)
     angle = angle.to("rad")
     new(Math::cos(angle) * mag, Math::sin(angle) * mag, *args)
   end

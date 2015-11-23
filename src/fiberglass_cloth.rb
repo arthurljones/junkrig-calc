@@ -20,7 +20,7 @@ class FiberglassCloth
     weight_per_area: { units: "oz/yd^2" },
     cost_per_fifty_inch_yard: { units: "USD", write: false },
   ) do |options|
-    @cost_per_area = (options[:cost_per_fifty_inch_yard] / (Unit("1 yd") * Unit("50 in"))).to("USD/in^2")
+    @cost_per_area = (options[:cost_per_fifty_inch_yard] / (Unit.new("1 yd") * Unit.new("50 in"))).to("USD/in^2")
     @ply_thickness = (@weight_per_area / Constants.fiberglass_cloth_density).to("in")
     @cost_per_volume = (@cost_per_area / @ply_thickness).to("USD/in^3")
     @cost_per_weight = (@cost_per_area / @weight_per_area).to("USD/lb")
@@ -41,8 +41,8 @@ class FiberglassCloth
     if @@data.blank?
       data = load_yaml_data_file("fiberglass.yml")
       @@data = data.inject({}) do |result, (key, val)|
-        weight = Unit(key)
-        cost = Unit(value)
+        weight = Unit.new(key)
+        cost = Unit.new(value)
         result[weight.scalar] = new(weight_per_area: weight, cost_per_fifty_inch_yard: cost)
         result
       end

@@ -1,12 +1,5 @@
-Douglass Fir:
-  yield_strength: 7230 psi
-  density: 0.0191 lbs/in^3
-  modulus_of_elasticity: 1.886e6 psi
 
-Sitka Spruce:
-  yield_strength: 6700 psi
-  density: 0.0134 lbs/in^3
-  modulus_of_elasticity: 11.03 GPa
+### Aluminum
 
 6061-T6 Aluminum:
   yield_strength: 40000 psi
@@ -20,25 +13,7 @@ Sitka Spruce:
   density: 0.0975 lbs/in^3
   modulus_of_elasticity: 1.0e7 psi
 
-Mild Steel:
-  yield_strength: 36000 psi
-  density: 0.284 lbs/in^3
-  modulus_of_elasticity: 2.9e7 psi
-
-316 Stainless Steel:
-  yield_strength: 29700 psi
-  density: 0.289 lbs/in^3
-  modulus_of_elasticity: 2.8e7 psi
-
-304 Stainless Steel:
-  yield_strength: 31200 psi
-  density: 0.289 lbs/in^3
-  modulus_of_elasticity: 2.8e7 psi
-
-White Ash:
-  yield_strength: 7400 psi
-  density: 0.02373 lbs/in^3
-  modulus_of_elasticity: 12.00 GPa
+### Steel
 
 Grade B7 Bolt:
   yield_strength: 105000 psi
@@ -50,10 +25,51 @@ Cold Rolled Steel:
   density: 0.284 lbs/in^3
   modulus_of_elasticity: 200 GPa
 
+Mild Steel:
+  yield_strength: 36000 psi
+  density: 0.284 lbs/in^3
+  modulus_of_elasticity: 2.9e7 psi
+
+### Stainless Steel
+
+316 Stainless Steel:
+  yield_strength: 29700 psi
+  density: 0.289 lbs/in^3
+  modulus_of_elasticity: 2.8e7 psi
+
+304 Stainless Steel:
+  yield_strength: 31200 psi
+  density: 0.289 lbs/in^3
+  modulus_of_elasticity: 2.8e7 psi
+
+### Wood
+
+Douglas Fir:
+  yield_strength: 7230 psi
+  density: 0.0191 lbs/in^3
+  modulus_of_elasticity: 1.886e6 psi
+
+Sitka Spruce:
+  yield_strength: 6700 psi
+  density: 0.0134 lbs/in^3
+  modulus_of_elasticity: 11.03 GPa
+
+White Ash:
+  yield_strength: 7400 psi
+  density: 0.02373 lbs/in^3
+  modulus_of_elasticity: 12.00 GPa
+
 Bamboo:
   yield_strength: 20600 psi
   density: 0.02387 lbs/in^3
   modulus_of_elasticity: 2.3e6 psi
+
+Plywood:
+  yield_strength: 4500 psi
+  density: 0.0175 lbs/in^3
+  modulus_of_elasticity: 1.8e6 psi
+
+### Fiberglass
 
 Fiberglass:
   yield_strength: 21300 psi

@@ -63,7 +63,7 @@ class Transform
   end
 
   def rotation
-    Unit(Math::atan2(matrix[1, 2], matrix[1, 1]), "radians")
+    Unit.new(Math::atan2(matrix[1, 2], matrix[1, 1]), "radians")
   end
 
   def translation=(value)

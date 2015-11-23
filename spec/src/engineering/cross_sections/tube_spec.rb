@@ -17,8 +17,8 @@ RSpec.describe Engineering::CrossSections::Tube do
     it "constructs an object with the passed parameters" do
       tube = default_tube
 
-      expect(tube.outer_diameter).to eq Unit(default_options[:outer_diameter])
-      expect(tube.wall_thickness).to eq Unit(default_options[:wall_thickness])
+      expect(tube.outer_diameter).to eq Unit.new(default_options[:outer_diameter])
+      expect(tube.wall_thickness).to eq Unit.new(default_options[:wall_thickness])
     end
 
     it "converts compatible units" do

@@ -16,8 +16,7 @@ class Crane
     #TODO: Pull these from the initializer
     @running_line_purchase = 6
     @mast_pivot_to_pulley = Vector2.new(Unit.new("110 in"), Unit.new("-8 in"))
-    @mast_pivot_to_crane_pivot = Vector2.new(Unit.new("-52 in"), Unit.new("-19 in"))
-    @crane_height = Unit.new("14 ft")
+    @mast_pivot_to_crane_pivot = Vector2.new(Unit.new("-4 ft"), Unit.new("0 in"))
     @crane_base_width = Unit.new("70 in")
     @crane_crossmember_height = Unit.new("86 in")
     @initial_crane_angle = Unit.new("80 deg")
@@ -27,6 +26,8 @@ class Crane
     @mast_center_of_mass_above_foot = Unit.new("183.34 in")
     @mast_weight = Unit.new("249.3 lbs")
     @minimum_angle = Unit.new("16 deg")
+
+    @crane_height = (@mast_pivot_to_crane_pivot - @mast_pivot_to_pulley).magnitude
 
     #Chain Basket - line around curved segment at foot of mast lifts anchor chain (300 ft of 5/16") at bottom of mast travel
     #TODO: Smoother curve instead of sharp cutout (which would physically look like a spiral section)
@@ -58,7 +59,7 @@ class Crane
     angle_above_horizontal = [@minimum_angle, angle_above_horizontal].max
 
     #Mirror the calculation across the y axis to align boat's bow to the right
-    angle = Unit(Math::PI, "radians") - angle_above_horizontal
+    angle = Unit.new(Math::PI, "radians") - angle_above_horizontal
 
     static_torque = (-@pivot_to_mast_cm_initial.rotated_by(angle) * @mast_weight).x
     static_torque += @lift_assist_torque if angle_above_horizontal <= @lift_assist_torque_cutout_angle

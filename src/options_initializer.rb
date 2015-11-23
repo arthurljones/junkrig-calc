@@ -1,4 +1,5 @@
 require "active_support/concern"
+require "ruby-units"
 
 module OptionsInitializer
   extend ActiveSupport::Concern
@@ -21,7 +22,7 @@ module OptionsInitializer
           units = options[:units]
           if units && value.present?
             begin
-              value = Unit(value).to(units)
+              value = Unit.new(value).to(units)
             rescue ArgumentError => e
               raise e, "#{e.message} (#{attribute_name})", e.backtrace
             end

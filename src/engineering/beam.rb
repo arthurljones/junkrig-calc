@@ -61,6 +61,7 @@ module Engineering
       effective_length = @unsupported_length * effective_length_ratio
       euler_limit = Math::PI**2 * @material.modulus_of_elasticity * @cross_section.second_moment_of_area / effective_length**2
       compressive_limit = @material.yield_strength * @cross_section.area
+
       @buckling_load_limit = (euler_limit.inverse + compressive_limit.inverse).inverse #Rankine-Gordon
 
       base_load_limit = @material.yield_strength * @cross_section.elastic_section_modulus / @unsupported_length

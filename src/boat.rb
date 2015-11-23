@@ -40,7 +40,7 @@ class Boat
 
     screening_stability_value = maximum_beam.to("in")**2 / (ballast_ratio * draft_of_canoe_body * saltwater_displaced**(1/3)).to("in^2")
     #angle at which the boat loses upright stability
-    @stability_range = Unit(110 + (400 / (screening_stability_value - 10)), "degrees")
+    @stability_range = Unit.new(110 + (400 / (screening_stability_value - 10)), "degrees")
     #composite ratio relating the displacement to the waterline length
     @displacement_to_length = @displacement.to("long-tons").scalar / (@length_at_waterline.to("ft").scalar / 100)**3
     #buoyancy lever specified on construction, if it exists

@@ -3,7 +3,7 @@ class Constants
     def all
       unless @all
         @all = load_yaml_data_file("constants.yml")
-        @all.each { |key, val| @all[key] = Unit(val) rescue val }
+        @all.each { |key, val| @all[key] = Unit.new(val) rescue val }
       end
       @all
     end
