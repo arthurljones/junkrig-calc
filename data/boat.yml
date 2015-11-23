@@ -28,7 +28,7 @@ mast:
 
 sail:
   parallelogram_luff: 20 ft
-  batten_length: 20 ft #20 ft
+  batten_length: 22 ft #20 ft
   lower_panel_count: 5
   head_panel_count: 1
   yard_angle: 35 deg
@@ -40,6 +40,8 @@ sail:
 
 rig:
   tack_above_partners: 12 in
+  partners_center_to_sheet_anchor_x: -240 in
+  partners_center_to_sheet_anchor_y: -13.5 in
 
 crane:
   length: 15 ft

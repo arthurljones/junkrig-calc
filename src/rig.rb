@@ -25,10 +25,13 @@ class Rig
     mast_height_above_sling_point
     mast_tip_to_batten_length
     max_halyard_lead_angle
+    partners_center_to_sheet_anchor
   )
 
   options_initialize(
     tack_above_partners: { units: "in" },
+    partners_center_to_sheet_anchor_x: { units: "in"},
+    partners_center_to_sheet_anchor_y: { units: "in"},
     mast: { },
     sail: { },
     boat: { },
@@ -48,7 +51,9 @@ class Rig
       @partners_above_center_of_mass = @mast.partners_center_above_waterline + @boat.waterline_above_center_of_mass
       @mast_tip_above_center_of_mass = @mast.length + @mast.foot_above_waterline + @boat.waterline_above_center_of_mass
 
-      @clew_above_waterline = @tack_above_partners + @mast.partners_center_above_waterline + @sail.clew_rise
+      clew_above_partners_center = @tack_above_partners + @sail.clew_rise
+
+      @clew_above_waterline = clew_above_partners_center + @mast.partners_center_above_waterline
       @minimum_safe_roll_angle = Unit.new(Math.atan2(@clew_above_waterline, @sail.clew_to_mast_center), "rad")
       @center_of_area_above_partners = @tack_above_partners + @sail.center.y
       @center_of_area_above_center_of_mass = @partners_above_center_of_mass + @center_of_area_above_partners
@@ -67,6 +72,18 @@ class Rig
       @mast_tip_to_batten_length = @mast_height_above_sling_point / @sail.batten_length
       @max_halyard_lead_angle = Unit.new(Math.atan2(@sail.sling_point_to_mast_center - @mast.masthead.extreme_fiber_radius,
         @mast_height_above_sling_point), "rad")
+
+      puts x: @partners_center_to_sheet_anchor_x
+      puts y: @partners_center_to_sheet_anchor_y
+      @partners_center_to_sheet_anchor = Vector2.new(@partners_center_to_sheet_anchor_x, @partners_center_to_sheet_anchor_y)
+      partners_center_to_clew = Vector2.new(-@sail.clew_to_mast_center, clew_above_partners_center)
+      clew_to_sheet_anchor = partners_center_to_clew - partners_center_to_sheet_anchor
+      @clew_distance_to_sheet_anchor = clew_to_sheet_anchor.magnitude
+      @clew_angle_to_sheet_anchor = clew_to_sheet_anchor.angle
+
+      puts clew_to_sheet_anchor
+      puts min_sheet_distance_buffer: @clew_distance_to_sheet_anchor - @sail.inner_sheet_distance
+      puts clew_angle_to_sheet_anchor: @clew_angle_to_sheet_anchor.to("deg")
 
   end
 end
