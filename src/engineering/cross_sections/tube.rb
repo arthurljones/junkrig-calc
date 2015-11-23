@@ -2,6 +2,7 @@ require_relative "../cross_section"
 require_relative "compositable"
 require_relative "multipliable"
 require_relative "offsettable"
+require_relative "interpolatable"
 require "options_initializer"
 
 module Engineering
@@ -12,6 +13,7 @@ module Engineering
       include Compositable
       include Multipliable
       include Offsettable
+      include Interpolatable
 
       attr_reader :outer_radius, :inner_diameter, :inner_radius, :circumference
 
@@ -38,7 +40,7 @@ module Engineering
       end
 
       def structure_content(depth = 0)
-        "#{outer_diameter}OD, #{wall_thickness} wall"
+        "#{outer_diameter.scalar.to_f.round(2)}#{outer_diameter.units} OD, #{wall_thickness} wall"
       end
     end
   end

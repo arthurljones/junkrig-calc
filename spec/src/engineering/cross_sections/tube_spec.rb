@@ -1,5 +1,6 @@
 require_relative '../../../spec_helper'
 require 'engineering/cross_sections/tube'
+require 'engineering/cross_sections/semicircle'
 
 RSpec.describe Engineering::CrossSections::Tube do
   def default_options(overrides = {})
@@ -90,6 +91,25 @@ RSpec.describe Engineering::CrossSections::Tube do
   describe "#second_moment_of_area" do
     it "returns the second moment of area" do
       expect(default_tube.circumference).to be_within(delta "in").of "3.14159265 in"
+    end
+  end
+
+  describe "#interpolate" do
+    it "returns an interpolated cross section" do
+      other_tube = default_tube(:outer_diameter => "2 in", :wall_thickness => "0.375 in")
+
+      result = default_tube.interpolate(other_tube, 0.5)
+      expect(result.outer_diameter).to be_within(delta "in").of "1.5 in"
+      expect(result.wall_thickness).to be_within(delta "in").of "0.25 in"
+
+      result = default_tube.interpolate(other_tube, 0.25)
+      expect(result.outer_diameter).to be_within(delta "in").of "1.25 in"
+      expect(result.wall_thickness).to be_within(delta "in").of "0.1875 in"
+    end
+
+    it "raises an error if the other section is not the same type" do
+      other = Engineering::CrossSections::Semicircle.new(:radius => "1 in")
+      expect{ default_tube.interpolate(other, 0.5) }.to raise_error
     end
   end
 

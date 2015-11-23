@@ -10,6 +10,10 @@ module OptionsInitializer
         attr_reader attribute_name unless options[:write] == false
       end
 
+      define_singleton_method :options_initialize_attributes do
+        attributes
+      end
+
       define_method :initialize do |new_args|
         new_args = new_args.clone
         attributes.each do |attribute_name, options|
