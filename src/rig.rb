@@ -10,12 +10,16 @@ class Rig
   #MASTHEAD_TO_FOOT_MINIMUM = 0.5
 
   attr_reader *%i(
+    partners_above_center_of_mass
+    mast_tip_above_center_of_mass
     clew_above_waterline
     minimum_safe_roll_angle
     center_of_area_above_partners
     center_of_area_above_center_of_mass
     max_force_on_sail_center_of_area
     max_moment_at_partners
+    yield_moment_at_partners
+    safety_factor
     sail_area_to_displacement
     s_number
     mast_height_above_sling_point
@@ -25,20 +29,34 @@ class Rig
 
   options_initialize(
     tack_above_partners: { units: "in" },
-    mast_data: { },
-    sail_data: { },
-    boat_data: { },
+    mast: { },
+    sail: { },
+    boat: { },
   ) do |options|
-      @mast = Mast.new(@mast_data)
-      @sail = Sail::Sail.new(@sail_data)
-      @boat = Boat.new(@boat_data)
+      unless (Boat === @boat)
+        @boat = Boat.new(@boat)
+      end
+
+      unless (Mast === @mast)
+        @mast = Mast.new(@mast)
+      end
+
+      unless (Sail::Sail === @sail)
+        @sail = Sail::Sail.new(@sail)
+      end
+
+      @partners_above_center_of_mass = @mast.partners_center_above_waterline + @boat.waterline_above_center_of_mass
+      @mast_tip_above_center_of_mass = @mast.length + @mast.foot_above_waterline + @boat.waterline_above_center_of_mass
 
       @clew_above_waterline = @tack_above_partners + @mast.partners_center_above_waterline + @sail.clew_rise
       @minimum_safe_roll_angle = Unit.new(Math.atan2(@clew_above_waterline, @sail.clew_to_mast_center), "rad")
       @center_of_area_above_partners = @tack_above_partners + @sail.center.y
-      @center_of_area_above_center_of_mass = @mast.partners_above_center_of_mass + @center_of_area_above_partners
+      @center_of_area_above_center_of_mass = @partners_above_center_of_mass + @center_of_area_above_partners
       @max_force_on_sail_center_of_area = @boat.estimated_max_righting_moment / @center_of_area_above_center_of_mass
+
       @max_moment_at_partners = @max_force_on_sail_center_of_area * @center_of_area_above_partners
+      @yield_moment_at_partners = @mast.partners.elastic_section_modulus * @mast.material.yield_strength
+      @safety_factor = @yield_moment_at_partners / @max_moment_at_partners
 
       @sail_area_to_displacement = (@sail.area / (@boat.saltwater_displaced**(2/3))).to(Unit.new(1))
       dlr = @boat.displacement_to_length

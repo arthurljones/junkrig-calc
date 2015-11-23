@@ -86,7 +86,6 @@ module Sail
         luff_y = @parallelogram_luff + @head_panel_luff * position
         batten_angle = @tack_angle + angle_offset
         batten_length = @batten_length - 2 * length_offset
-        puts "luff #{@head_panel_luff} offset #{length_offset} length #{batten_length}, x #{luff_x}, y #{luff_y}, angle #{batten_angle}"
         Batten.new(batten_length, Vector2.new(luff_x, luff_y), batten_angle)
       end
 

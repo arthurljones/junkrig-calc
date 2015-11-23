@@ -29,6 +29,7 @@ class Boat
     length_at_waterline: { units: "in" },
     max_buoyancy_lever: { :required => false, units: "in" },
     foredeck_angle: { units: "deg"},
+    waterline_above_center_of_mass: { units: "in" },
   ) do |options|
     #volume of seawater displaced by the boat
     @saltwater_displaced = (@displacement / Constants.saltwater_density).to("m^3")
@@ -46,7 +47,7 @@ class Boat
     #buoyancy lever specified on construction, if it exists
     @max_buoyancy_lever = @max_buoyancy_lever || @maximum_beam / 4
     #righting moment if the boat was knocked down, but the center of buoyancy stayed the same
-    @estimated_max_righting_moment = @max_buoyancy_lever * @displacement
+    @estimated_max_righting_moment = @max_buoyancy_lever * @displacement * Unit.new("1 gee")
     #saltwater pressure outside the hull at the top of the keel
     @water_pressure_at_keel = (Constants.saltwater_density * Constants.gravity * @draft_of_canoe_body).to("psi")
     #Ted Brewer's comfort ratio. Ranges from 5 for a light daysailer to 60+ for super heavy boats. Cruisers are often mid-30s. See http://www.tedbrewer.com/yachtdesign.html

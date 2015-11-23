@@ -8,12 +8,12 @@ boat:
   length_overall: 30 ft
   length_at_waterline: 23 ft
   foredeck_angle: 3.0 deg
+  waterline_above_center_of_mass: 23 in
 
 mast:
-  waterline_above_center_of_mass: 23 in #Probably belongs in Boat
   length: 35 ft
-  foot_above_waterline: 12 in
-  partners_center_above_foot: 52 in
+  foot_above_waterline: -16 in
+  partners_center_above_foot: 68 in
   partners_length: 0 in
   pivot_above_partners_center: 0 in
   material: 6063-T6 Aluminum
@@ -27,7 +27,7 @@ mast:
     wall_thickness: 0.25 in
 
 sail:
-  parallelogram_luff: 21 ft
+  parallelogram_luff: 20 ft
   batten_length: 20 ft #20 ft
   lower_panel_count: 5
   head_panel_count: 1
