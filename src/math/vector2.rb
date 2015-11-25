@@ -111,4 +111,8 @@ class Vector2
     self.class.from_complex(complex)
   end
 
+  def interpolate(other, parameter)
+    self + (other - self) * parameter
+  end
+
 end
