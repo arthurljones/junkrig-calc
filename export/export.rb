@@ -79,7 +79,7 @@ output_format = [
     [:lower_panel_luff, "ft"],
     [:head_panel_luff, "in"],
     [:total_luff, "ft"],
-    [:total_leech, "ft"],
+    [:main_leech, "ft"],
     [:parallelogram_width, "ft"],
     [:circumference, "ft"],
     [:luff_to_batten_length, nil],

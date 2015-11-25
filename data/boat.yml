@@ -12,8 +12,8 @@ boat:
 
 mast:
   length: 35 ft
-  foot_above_waterline: -16 in
-  partners_center_above_foot: 68 in
+  foot_above_waterline: 52.25 in #-16 in
+  partners_center_above_foot: 0 in #68 in
   partners_length: 0 in
   pivot_above_partners_center: 0 in
   material: 6063-T6 Aluminum
@@ -27,8 +27,8 @@ mast:
     wall_thickness: 0.25 in
 
 sail:
-  parallelogram_luff: 20 ft
-  batten_length: 22 ft #20 ft
+  parallelogram_luff: 23 ft
+  batten_length: 20 ft #20 ft
   lower_panel_count: 5
   head_panel_count: 1
   yard_angle: 35 deg
@@ -37,6 +37,7 @@ sail:
   sling_offset_to_batten_length: 0.04
   head_panel_luff_to_batten_ratio: 0.0
   upper_luff_curve_balance: 0.75
+  slot_width: 18 in
 
 rig:
   tack_above_partners: 12 in

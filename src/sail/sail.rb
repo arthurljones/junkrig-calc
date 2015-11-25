@@ -22,7 +22,7 @@ module Sail
       clew_rise
       head_panel_luff
       total_luff
-      total_leech
+      main_leech
       tack
       clew
       yard
@@ -55,6 +55,8 @@ module Sail
       head_panel_luff_to_batten_ratio: { default: 9/(25*12) },
       upper_luff_curve_balance: { default: 0 }, #0.0 results in a vertical luff, 1.0 results in matching curve to leech
       sling_offset_to_batten_length: { default: 0.05 },
+      slot_width: { units: "in", default: "0 in" },
+      slot_in_head_panels: { default: false }
     ) do |options|
 
       @total_panels = @lower_panel_count + @head_panel_count
@@ -96,17 +98,43 @@ module Sail
       @tack_to_peak = @peak - @tack
       @aspect_ratio = (@tack_to_peak.y - @clew_rise / 2) / @parallelogram_width
 
-      @battens = lower_battens + upper_battens
-      @panels = @battens.each_cons(2).collect { |b1, b2| Panel.new(b1, b2) }
-
-      @area = @panels.sum(&:area)
-      @center = @panels.sum { |panel| panel.center * panel.area } / @area
-      @total_leech = @panels.sum(&:leech_length)
-      @circumference = @total_luff + @total_leech + @batten_length * 2
-
       @tack_to_mast_center = @sling_point.x - @sling_point_to_mast_center
       @clew_to_mast_center = @parallelogram_width - @tack_to_mast_center
       @sail_balance_forward_of_mast = @tack_to_mast_center / @parallelogram_width
+
+      @battens = lower_battens + upper_battens
+
+      slotted_panel_battens = []
+      full_panel_battens = []
+
+      if @slot_width > Unit.new("0 in")
+        if @slot_in_head_panels
+          slotted_panel_battens = @battens
+        else
+          slotted_panel_battens = lower_battens
+          full_panel_battens = [lower_battens.last] + upper_battens
+        end
+      else
+        full_panel_battens = @battens
+      end
+
+      def generate_panels(battens, options = {})
+        battens.each_cons(2).collect { |b1, b2| Panel.new(b1, b2, options) }
+      end
+
+      ap full_panel_battens
+
+      half_slot_width = @slot_width / 2
+      @main_panels = generate_panels(slotted_panel_battens, start_x: @tack_to_mast_center + half_slot_width)
+      @jib_panels  = generate_panels(slotted_panel_battens, end_x:   @tack_to_mast_center - half_slot_width)
+      @main_panels += generate_panels(full_panel_battens)
+
+      @panels = @main_panels + @jib_panels
+      @area = @panels.sum(&:area)
+      @center = @panels.sum { |panel| panel.center * panel.area } / @area
+      @main_leech = @main_panels.sum(&:leech_length)
+      @jib_leech = @jib_panels.sum(&:leech_length)
+      @circumference = @total_luff + @main_leech + @batten_length * 2
     end
 
     def reefed_area(panels_reefed)
