@@ -21,7 +21,7 @@ module OptionsInitializer
 
           #Required by default, only a literal false value means not required
           required = options[:required] != false
-          raise "#{attribute_name} is required for #{self.class.name}" if required && value.blank?
+          raise "#{attribute_name} is required for #{self.class.name}" if required && value.blank? && value != options[:default]
 
           units = options[:units]
           if units && value.present?
