@@ -5,6 +5,8 @@ module Engineering
     include OptionsInitializer
     @@materials_cache = nil
 
+    attr_reader :name
+
     options_initialize(
       :yield_strength => { :units => "psi" },
       :density => { :units => "lbs/in^3" },

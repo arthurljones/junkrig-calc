@@ -35,7 +35,11 @@ module Engineering
 
     module_function
     def create(options)
-      type = options.delete(:type)
+      #Return a duplicate if a CrossSection object is passed in
+      return options.dup if CrossSection === options
+
+      #Attempt to load a subclass from the cross_sections directory
+      type = options.delete(:type) if options.present?
       raise "No cross section type specified" unless type.present?
       klass = nil
       begin

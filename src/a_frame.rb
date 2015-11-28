@@ -14,13 +14,13 @@ class AFrame
     base_width: { units: "in" },
     top_width: { units: "in" },
     crossmember_height: { units: "in" },
-    material: { constructor: ->(mat) { Engineering::Material.get(mat) } },
-    cross_section:  { constructor: ->(opts) { Engineering::CrossSection.create(opts) } },
+    material: { class: Engineering::Material, constructor: :get},
+    cross_section: { class: Engineering::CrossSection, constructor: :create } },
   ) do |options|
     load_direction = Math::PI / 2
 
     leg_angle = Math::atan2(@height, (@base_width - @top_width)/2)
-    
+
 
     length = 1
     unsupported_length = 1

@@ -7,95 +7,67 @@ require "sail/sail"
 
 data = load_yaml_data_file("boat.yml")
 
-boat = Boat.new(data[:boat])
-mast = Mast.new(data[:mast])
-sail = Sail::Sail.new(data[:sail])
-
+rig = Rig.new(data[:rig])
+boat = rig.boat
+sail = rig.sail
 sail.draw_to_file("sail.svg")
-
-options = data[:rig]
-options[:mast] = mast
-options[:boat] = boat
-options[:sail] = sail
-rig = Rig.new(options)
 
 puts
 puts "Boat"
 output_format = [
-    [:displacement, "lbs"],
-    [:ballast, "lbs"],
-    [:draft_of_canoe_body, "in"],
-    [:maximum_beam, "in"],
-    [:minimum_freeboard, "in"],
-    [:bow_height_above_water, "in"],
-    [:length_overall, "in" ],
-    [:length_at_waterline, "in"],
-    [:max_buoyancy_lever, "in"],
-    [:foredeck_angle, "deg"],
-    [:waterline_above_center_of_mass, "in"],
-    [nil, nil],
-    [:saltwater_displaced, "ft^3"],
-    [:maximum_beam, "m"],
-    [:ballast_ratio, nil],
-    [:stability_range, "deg"],
-    [:displacement_to_length, nil],
-    [:estimated_max_righting_moment, "in*lbf"],
-    [:water_pressure_at_keel, "psi"],
-    [:comfort_ratio, nil],
-    [:hull_speed, "knots"]
+    [:displacement, {units: "lbs"}],
+    [:ballast, {units: "lbs"}],
+    [:draft_of_canoe_body, {units: "in"}],
+    [:maximum_beam, {units: "in"}],
+    [:minimum_freeboard, {units: "in"}],
+    [:bow_height_above_water, {units: "in"}],
+    [:length_overall, {units: "in"} ],
+    [:length_at_waterline, {units: "in"}],
+    [:max_buoyancy_lever, {units: "in"}],
+    [:foredeck_angle, {units: "deg"}],
+    [:waterline_above_center_of_mass, {units: "in"}],
+    [],
+    [:saltwater_displaced, {units: "ft^3"}],
+    [:maximum_beam, {units: "m"}],
+    [:ballast_ratio, {}],
+    [:stability_range, {units: "deg"}],
+    [:displacement_to_length, {}],
+    [:estimated_max_righting_moment, {units: "in*lbf"}],
+    [:water_pressure_at_keel, {units: "psi"}],
+    [:comfort_ratio, {}],
+    [:hull_speed, {units: "knots"}]
 ]
 puts ExportHelper.generate_csv(boat, output_format)
 
 puts
-puts "Mast"
-output_format = [
-    [:length, "ft"],
-    [:foot_above_waterline, "ft"],
-    [:partners_center_above_foot, "ft"],
-    [:partners_length, "ft"],
-    [:pivot_above_partners_center, "ft"],
-    [nil, nil],
-    [:above_partners, "ft"],
-    [:above_partners, "m"],
-    [:below_partners, "ft"],
-    [:pivot_above_foot, "ft"],
-    [:bury, nil],
-    [:partners_center_above_waterline, "ft"],
-    [nil, nil],
-    [:mass, "lbs"],
-    [:windage, "ft^2"],
-]
-puts ExportHelper.generate_csv(mast, output_format)
-
-puts
 puts "Sail"
 output_format = [
-    [:parallelogram_luff, "ft"],
-    [:batten_length, "ft"],
-    [:lower_panel_count, "nil"],
-    [:head_panel_count, "nil"],
-    [:yard_angle, "deg"],
-    [nil],
-    [:lower_panel_luff, "ft"],
-    [:head_panel_luff, "in"],
-    [:total_luff, "ft"],
-    [:main_leech, "ft"],
-    [:parallelogram_width, "ft"],
-    [:circumference, "ft"],
-    [:luff_to_batten_length, nil],
-    [nil],
-    [:tack_angle, "deg"],
-    [:clew_rise, "ft"],
-    [:center_above_tack, "ft", ->(obj){ obj.center.y }],
-    [:center_before_tack, "ft", ->(obj){ obj.center.x }],
-    [:peak_above_tack, "ft", ->(obj){ obj.tack_to_peak.y }],
-    [:aspect_ratio, nil],
-    [nil],
-    [:sling_point_to_mast_center, "ft"],
-    [:sling_point_above_tack, "ft", ->(obj){ obj.sling_point.y }],
-    [:tack_to_mast_center, "ft"],
-    [:clew_to_mast_center, "ft"],
-    [:sail_balance_forward_of_mast, nil],
+    [:parallelogram_luff, {units: "ft"}],
+    [:batten_length, {units: "ft"}],
+    [:lower_panel_count, {units: "nil"}],
+    [:head_panel_count, {units: "nil"}],
+    [:yard_angle, {units: "deg"}],
+    [],
+    [:lower_panel_luff, {units: "ft"}],
+    [:head_panel_luff, {units: "in"}],
+    [:total_luff, {units: "ft"}],
+    [:main_leech, {units: "ft"}],
+    [:parallelogram_width, {units: "ft"}],
+    [:circumference, {units: "ft"}],
+    [:luff_to_batten_length, {}],
+    [],
+    [:tack_angle, {units: "deg"}],
+    [:clew_rise, {units: "ft"}],
+    [:center, :y, { units: "ft", label: :center_above_tack }],
+    [:center, :x, { units: "ft", label: :center_before_tack }],
+    [:peak, :y, { units: "ft", label: :peak_above_tack }],
+    [:aspect_ratio, {}],
+    [],
+    [:sling_point_to_mast_center, {units: "ft"}],
+    [:sling_point, :y, { units: "ft", label: :sling_point_above_tack }],
+    [:tack_to_mast_center, {units: "ft"}],
+    [:clew_to_mast_center, {units: "ft"}],
+    [:sail_balance_forward_of_mast, {}],
 ]
 
 puts ExportHelper.generate_csv(sail, output_format)
@@ -111,31 +83,40 @@ end
 objects = (0..sail.total_panels).collect{|p| ReefedPanelArea.new(p, sail.reefed_area(p))}
 output_format = [
     [:reefed_panels, nil],
-    [:sail_area, "ft^2"],
-    [:sail_area, "m^2"],
+    [:sail_area, {units: "ft^2"}],
+    [:sail_area, {units: "m^2"}],
 ]
-
-puts
 puts ExportHelper.generate_csv(objects, output_format)
 
-puts
-puts "Rig"
 output_format = [
-    [:partners_above_center_of_mass, "ft"],
-    [:tack_above_partners, "ft"],
-    [:sail_area_to_displacement, nil],
-    [:s_number, nil],
-    [:clew_above_waterline, "ft"],
-    [:center_of_area_above_partners, "in"],
-    [:center_of_area_above_center_of_mass, "in"],
-    [:max_force_on_sail_center_of_area, "lbf"],
-    [:max_moment_at_partners, "in*lbf"],
-    [:yield_moment_at_partners, "in*lbf"],
-    [:safety_factor, nil],
-    [nil],
-    [:minimum_safe_roll_angle, "degrees"],
-    [:mast_height_above_sling_point, "ft"],
-    [:mast_tip_to_batten_length, nil],
-    [:max_halyard_lead_angle, "degrees"],
+    [],
+    [{label: "Mast"}],
+    [:upper_mast, :length, {units: "ft"}],
+    [:upper_mast, :length, {units: "ft", label: :above_partners}],
+    [:partners_above_waterline, {units: "ft"}],
+    [:total_mast_mass, {units: "lbs"}],
+    [:upper_mast, :windage, {units: "ft^2"}],
+    [],
+    [{label: "Rig"}],
+    [:partners_above_center_of_mass, {units: "ft"}],
+    [:tack_above_partners, {units: "ft"}],
+    [:sail_area_to_displacement, {}],
+    [:s_number, {}],
+    [:center_of_area_above_partners, {units: "in"}],
+    [:center_of_area_above_center_of_mass, {units: "in"}],
+    [:max_force_on_sail_center_of_area, {units: "lbf"}],
+    [],
+    [:max_moment_at_partners, {units: "in*lbf"}],
+    [:yield_moment_at_partners, {units: "in*lbf"}],
+    [:partners_safety_factor, {}],
+    [],
+    [:max_moment_at_sleeve, {units: "in*lbf"}],
+    [:yield_moment_at_sleeve, {units: "in*lbf"}],
+    [:sleeve_safety_factor, {}],
+    [],
+    [:minimum_safe_roll_angle, {units: "degrees"}],
+    [:mast_height_above_sling_point, {units: "ft"}],
+    [:mast_tip_to_batten_length, {}],
+    [:max_halyard_lead_angle, {units: "degrees"}],
 ]
 puts ExportHelper.generate_csv(rig, output_format)

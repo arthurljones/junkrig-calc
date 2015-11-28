@@ -1,48 +1,55 @@
-boat:
-  displacement: 8700 lbs
-  ballast: 4130 lbs
-  draft_of_canoe_body: 18 in
-  maximum_beam: 9 ft
-  minimum_freeboard: 32 in
-  bow_height_above_water: 47 in
-  length_overall: 30 ft
-  length_at_waterline: 23 ft
-  foredeck_angle: 3.0 deg
-  waterline_above_center_of_mass: 23 in
-
-mast:
-  length: 35 ft
-  foot_above_waterline: 52.25 in #-16 in
-  partners_center_above_foot: 0 in #68 in
-  partners_length: 0 in
-  pivot_above_partners_center: 0 in
-  material: 6063-T6 Aluminum
-  foot:
-    type: Tube
-    outer_diameter: 10 in
-    wall_thickness: 0.25 in
-  masthead:
-    type: Tube
-    outer_diameter: 6 in
-    wall_thickness: 0.25 in
-
-sail:
-  parallelogram_luff: 23 ft
-  batten_length: 20 ft #20 ft
-  lower_panel_count: 5
-  head_panel_count: 1
-  yard_angle: 35 deg
-  min_sheet_ratio: 2.0
-  sheet_area_width: 4 ft
-  sling_offset_to_batten_length: 0.04
-  head_panel_luff_to_batten_ratio: 0.0
-  upper_luff_curve_balance: 0.75
-  slot_width: 18 in
-
 rig:
-  tack_above_partners: 12 in
-  partners_center_to_sheet_anchor_x: -240 in
-  partners_center_to_sheet_anchor_y: -13.5 in
+  boat:
+    displacement: 8700 lbs
+    ballast: 4130 lbs
+    draft_of_canoe_body: 18 in
+    maximum_beam: 9 ft
+    minimum_freeboard: 32 in
+    bow_height_above_water: 47 in
+    length_overall: 30 ft
+    length_at_waterline: 23 ft
+    foredeck_angle: 3.0 deg
+    waterline_above_center_of_mass: 23 in
+
+  sail:
+    parallelogram_luff: 23 ft
+    batten_length: 20 ft #20 ft
+    lower_panel_count: 5
+    head_panel_count: 1
+    yard_angle: 35 deg
+    min_sheet_ratio: 2.0
+    sheet_area_width: 4 ft
+    sling_offset_to_batten_length: 0.04
+    head_panel_luff_to_batten_ratio: 0.0
+    upper_luff_curve_balance: 0.75
+    slot_width: 18 in
+
+  upper_mast:
+    material: 6063-T6 Aluminum
+    section_type: Tube
+    cross_sections:
+      0 in:
+        outer_diameter: 10 in
+        wall_thickness: 0.25 in
+      35 ft:
+        outer_diameter: 6 in #6 in
+        wall_thickness: 0.25 in
+
+  lower_mast:
+    material: Douglas Fir
+    overlap: 48 in
+    foot_ratio: 0.5
+    partners_length: 6 in
+
+  partners_above_waterline: 53 in
+  partners_above_lower_foot: 72 in
+  partners_above_upper_foot: 0 in
+
+  pivot_above_partners: 0 in
+
+  tack_above_partners: 32 in
+  partners_to_sheet_anchor_x: -240 in
+  partners_to_sheet_anchor_y: -13.5 in
 
 crane:
   length: 15 ft
