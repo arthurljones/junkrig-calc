@@ -38,8 +38,8 @@ rig:
   lower_mast:
     material: Douglas Fir
     overlap: 48 in
-    foot_ratio: 0.5
-    partners_length: 6 in
+    foot_ratio: 0.6
+    partners_length: 10 in
 
   partners_above_waterline: 53 in
   partners_above_lower_foot: 72 in

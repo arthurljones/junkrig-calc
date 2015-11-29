@@ -49,7 +49,7 @@ module SVG
     end
 
     def line_loop(points, options = {})
-      build_path do |path|
+      build_path(options) do |path|
         path.move(points.pop)
         points.each { |point| path.line(point) }
       end

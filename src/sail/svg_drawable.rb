@@ -8,15 +8,17 @@ module Sail
     extend ActiveSupport::Concern
     included do
 
-      def draw_to_svg(svg)
+      def draw_to_svg(svg, upper_mast, upper_origin, lower_mast, lower_origin)
         svg.layer("Sail") do |outer_layer|
           draw_sail(outer_layer)
           draw_sheet_zone(outer_layer)
+          draw_mast(outer_layer, upper_mast, "Upper Mast", upper_origin)
+          draw_mast(outer_layer, lower_mast, "Lower Mast", lower_origin)
           #sail.draw_measurements(outer_layer)
         end
       end
 
-      def draw_to_file(filename)
+      def draw_to_file(filename, upper_mast, upper_origin, lower_mast, lower_origin)
         bounds = image_bounds
         image_size = bounds.size.to("in")
         svg = SVG::Node.new_document(
@@ -26,7 +28,7 @@ module Sail
         )
         transform = Transform.new.scaled(Vector2.new(-1, -1)).translated(-bounds.max)
         svg.local_transform = transform
-        draw_to_svg(svg)
+        draw_to_svg(svg, upper_mast, upper_origin, lower_mast, lower_origin)
 
         File.open(filename, "wb") do |file|
           file.write(svg.node.to_xml)
@@ -53,6 +55,23 @@ module Sail
         group.layer("Area") { |l| l.text(center + Vector2.new("0 in", "-18 in"), "#{area_string}") }
       end
 
+      def draw_mast(group, mast, layer_name, origin)
+        inside_points = []
+        outside_points = []
+        mast.cross_sections.each do |position, cross_section|
+          inside_points.append(Vector2.new(cross_section.inner_radius, position) + origin)
+          outside_points.unshift(Vector2.new(cross_section.outer_radius, position) + origin)
+        end
+
+        right_points = inside_points + outside_points
+        left_points = right_points.map { |p| Vector2.new(origin.x * 2 - p.x, p.y) }
+
+        options = {:style => { :fill => "#000000", :fill_opacity => 0.5 }} #TODO
+        group.layer(layer_name) do |l|
+          l.line_loop(left_points, options)
+          l.line_loop(right_points, options)
+        end
+      end
 
       def draw_sheet_zone(group)
         pi = Unit.new(Math::PI, "rad")

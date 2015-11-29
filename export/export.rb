@@ -10,7 +10,8 @@ data = load_yaml_data_file("boat.yml")
 rig = Rig.new(data[:rig])
 boat = rig.boat
 sail = rig.sail
-sail.draw_to_file("sail.svg")
+
+rig.draw_sail
 
 puts
 puts "Boat"
