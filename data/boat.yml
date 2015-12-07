@@ -25,10 +25,10 @@ rig:
     slot_width: 18 in
 
   mast:
-    upper:
+    lower:
       material: 6063-T6 Aluminum
       section_type: Tube
-      foot: 0 in
+      foot: -70 in
       cross_sections:
         0 in:
           outer_diameter: 10 in
@@ -37,13 +37,19 @@ rig:
           outer_diameter: 6 in #6 in
           wall_thickness: 0.25 in
 
-    lower:
+    upper:
       material: Douglas Fir
-      foot: -70 in
-
-      overlap: 48 in
-      foot_ratio: 0.6
-      partners_length: 10 in
+      section_type: Tube
+      cross_sections:
+        0 in:
+          outer_diameter: 6 in
+          wall_thickness: 1.2 in
+        2 ft:
+          outer_diameter: 6 in
+          wall_thickness: 1.2 in
+        8 ft:
+          outer_diameter: 4 in
+          wall_thickness: 1.0 in
 
   partners_above_waterline: 53 in
   pivot_above_partners: 0 in

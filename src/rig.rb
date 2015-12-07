@@ -103,15 +103,17 @@ class Rig
     total_sail_height = @sail.tack_to_peak.y
     active_sail_ratio = 1 - (active_sail_height / total_sail_height)
     active_sail_area = active_sail_ratio * @sail.area
-    active_sail_center = sail_start + (total_sail_height - active_sail_height) / 2
+    active_sail_center = sail_start + total_sail_height - (total_sail_height - active_sail_height) / 2
     active_sail_lever = active_sail_center - above_partners
     sail_moment = (active_sail_area / @sail.area) * @max_force_on_sail_center_of_area * active_sail_lever
 
-    if distance_from_partners >= zero_length
-      sail_moment
-    else
-      sail_moment * (1 - distance_from_partners / @mast.foot)
+    if distance_from_partners < zero_length
+      sail_moment *= (1 - distance_from_partners / @mast.foot)
     end
+
+    linear_minimum = Unit.new("200 lbf") * (@mast.head - above_partners)
+    absolute_minimum = Unit.new("200 ft*lbf")
+    [sail_moment, linear_minimum, absolute_minimum].max
   end
 
   def draw_sail
@@ -119,59 +121,8 @@ class Rig
   end
 
   def setup_mast(options)
+    lower_mast = Engineering::VariableSpar.new(options[:lower])
     upper_mast = Engineering::VariableSpar.new(options[:upper])
-
-    def to_eighths(length)
-      Unit.new(((Unit.new(length).to("in").scalar * 8).to_i / 8).to_f, "in")
-    end
-
-    def make_tube(outer_diameter, wall_thickness)
-      Engineering::CrossSection.create(
-        type: "Tube",
-        outer_diameter: to_eighths(outer_diameter),
-        wall_thickness: to_eighths(wall_thickness)
-      )
-    end
-
-    lower_options = options[:lower]
-
-    partners_pos    = -Unit.new(lower_options[:foot])
-    partners_length = Unit.new(lower_options.delete(:partners_length))
-    overlap         = Unit.new(lower_options.delete(:overlap))
-    foot_ratio      = lower_options.delete(:foot_ratio)
-
-    partners_diameter = upper_mast.cross_section(Unit.new("0 in")).inner_diameter
-    top_diameter = to_eighths(upper_mast.cross_section(overlap).inner_diameter)
-
-    foot      = make_tube(partners_diameter * foot_ratio, "2 in")
-    partners  = make_tube(partners_diameter, partners_diameter / 2)
-    head      = make_tube(top_diameter, "2 in")
-
-    ap({
-      foot: {
-        outer: foot.outer_diameter,
-        inner: foot.inner_diameter
-      },
-      partners: {
-        outer: partners.outer_diameter,
-        inner: partners.inner_diameter
-      },
-      head: {
-        outer: head.outer_diameter,
-        inner: head.inner_diameter
-      }
-    })
-
-    lower_mast = Engineering::VariableSpar.new(
-      material: lower_options[:material],
-      section_type: upper_mast.section_type,
-      cross_sections: {
-        Unit.new("0 in")                => foot,
-        partners_pos - partners_length  => partners,
-        partners_pos                    => partners,
-        partners_pos + overlap          => head,
-      }
-    )
 
     Engineering::CompositeSpar.new(
       sections: [
@@ -182,7 +133,7 @@ class Rig
         },
         {
           spar: upper_mast,
-          foot: options[:upper][:foot],
+          foot: lower_mast.length + Unit.new(options[:lower][:foot]) - Unit.new("2 ft"),
           name: "Upper"
         },
       ]

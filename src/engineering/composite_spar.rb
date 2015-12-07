@@ -35,8 +35,8 @@ module Engineering
     end
 
     def safety_factors(units = "in", &moment)
-      start_scalar = @foot.to(units).scalar.to_i
-      end_scalar = @head.to(units).scalar.to_i
+      start_scalar = @foot.to(units).scalar.to_i + 1
+      end_scalar = @head.to(units).scalar.to_i - 1
       positions = []
       result = Hash.new{ |hash, key| hash[key] = [] }
 

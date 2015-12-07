@@ -16,6 +16,8 @@ module Engineering
       foot: { units: "in" },
       name: { }
     ) do |options|
+      puts @foot
+      puts @spar
       @head = @foot + @spar.length
     end
 
