@@ -92,11 +92,11 @@ puts ExportHelper.generate_csv(objects, output_format)
 output_format = [
     [],
     [{label: "Mast"}],
-    [:upper_mast, :length, {units: "ft"}],
-    [:upper_mast, :length, {units: "ft", label: :above_partners}],
+    [:mast, :length, {units: "ft"}],
+    [:mast, :head, {units: "ft", label: :above_partners}],
     [:partners_above_waterline, {units: "ft"}],
-    [:total_mast_mass, {units: "lbs"}],
-    [:upper_mast, :windage, {units: "ft^2"}],
+    [:mast, :mass, {units: "lbs", label: :mast_mass}],
+    [:mast, :windage, {units: "ft^2", label: :windage_todo}], #TODO!
     [],
     [{label: "Rig"}],
     [:partners_above_center_of_mass, {units: "ft"}],

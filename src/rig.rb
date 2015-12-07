@@ -1,5 +1,6 @@
 require "options_initializer"
 require "engineering/variable_spar"
+require "engineering/composite_spar"
 require "engineering/cross_sections/tube"
 require_relative "boat"
 require_relative "sail/sail"
@@ -31,8 +32,7 @@ class Rig
     mast_tip_to_batten_length
     max_halyard_lead_angle
     partners_to_sheet_anchor
-    lower_mast
-    total_mast_mass
+    mast
   ))
 
   options_initialize(
@@ -42,13 +42,11 @@ class Rig
     partners_above_upper_foot: { units: "in" },
     partners_to_sheet_anchor_x: { units: "in"},
     partners_to_sheet_anchor_y: { units: "in"},
-    upper_mast: { class: Engineering::VariableSpar },
+    mast: { write: false },
     sail: { class: Sail::Sail },
     boat: { class: Boat },
   ) do |options|
-    @lower_mast = setup_lower_mast(options[:lower_mast].merge(foot_to_partners: @partners_above_lower_foot), @upper_mast)
-    @total_mast_mass = lower_mast.mass #upper_mast.mass
-
+    @mast = setup_mast(options[:mast])
     @partners_above_center_of_mass = @partners_above_waterline + @boat.waterline_above_center_of_mass
 
     clew_above_partners = @tack_above_partners + @sail.clew_rise
@@ -59,24 +57,18 @@ class Rig
     @max_force_on_sail_center_of_area = @boat.estimated_max_righting_moment / @center_of_area_above_center_of_mass
 
     @max_moment_at_partners = @max_force_on_sail_center_of_area * @center_of_area_above_partners
-    @yield_moment_at_partners = @lower_mast.cross_section(@partners_above_lower_foot).elastic_section_modulus * @lower_mast.material.yield_strength
+    @yield_moment_at_partners = @mast.yield_moment(Unit.new("0 in")).values.first
     @partners_safety_factor = @yield_moment_at_partners / @max_moment_at_partners
-
-    sleeve_overlap = Unit.new(options[:lower_mast][:overlap])
-    @max_moment_at_sleeve = @max_force_on_sail_center_of_area * (@center_of_area_above_partners - sleeve_overlap)
-    @yield_moment_at_sleeve = @upper_mast.cross_section(sleeve_overlap).elastic_section_modulus * @upper_mast.material.yield_strength
-    @sleeve_safety_factor = @yield_moment_at_sleeve / @max_moment_at_sleeve
 
     @sail_area_to_displacement = (@sail.area / (@boat.saltwater_displaced**(2/3))).to(Unit.new(1))
     dlr = @boat.displacement_to_length
     sad = @sail_area_to_displacement
     @s_number = 3.972 * 10 ** (-dlr/526 + 0.691 * (Math::log10(sad)-1) ** 0.8)
 
-    upper_mast_foot_to_sling_point = @partners_above_upper_foot + @tack_above_partners + @sail.sling_point.y
-    @mast_height_above_sling_point = @upper_mast.length - upper_mast_foot_to_sling_point
+    @mast_height_above_sling_point = @mast.head - (@sail.sling_point.y + @tack_above_partners)
     @mast_tip_to_batten_length = @mast_height_above_sling_point / @sail.batten_length
-    upper_masthead_radius = @upper_mast.cross_sections.values.last.extreme_fiber_radius
-    halyard_horizontal_distance = @sail.sling_point_to_mast_center - upper_masthead_radius
+    masthead_radius = @mast.cross_sections(@mast.head).values.first.extreme_fiber_radius
+    halyard_horizontal_distance = @sail.sling_point_to_mast_center - masthead_radius
     @max_halyard_lead_angle = Unit.new(Math.atan2(halyard_horizontal_distance, @mast_height_above_sling_point), "rad")
 
     @partners_to_sheet_anchor = Vector2.new(@partners_to_sheet_anchor_x, @partners_to_sheet_anchor_y)
@@ -88,58 +80,45 @@ class Rig
     puts min_sheet_distance_buffer: @clew_distance_to_sheet_anchor - @sail.inner_sheet_distance
     puts clew_angle_to_sheet_anchor: @clew_angle_to_sheet_anchor.to("deg")
 
-    #calculate_safety_factors
+    sections = Hash.new{ |hash, key| hash[key] = {} }
+    safety_factors = mast.safety_factors("ft"){ |pos| mast_moment(pos) }
+    safety_factors.each do |position, section_safeties|
+      section_safeties.each do |section, safety_factor|
+        sections[section][position] = safety_factor
+      end
+    end
+
+    sections.each do |section, safeties|
+      puts safeties.keys.map(&:scalar).join(",")
+      puts safeties.values.join(",")
+    end
+  end
+
+  def mast_moment(distance_from_partners)
+    sail_start = @tack_above_partners
+    zero_length = Unit.new("0 in")
+    active_sail_height = [distance_from_partners - sail_start, zero_length].max
+    #NOTE: This approximates by assuming a rectangular sail
+    total_sail_height = @sail.tack_to_peak.y
+    active_sail_ratio = 1 - (active_sail_height / total_sail_height)
+    active_sail_area = active_sail_ratio * @sail.area
+    active_sail_center = sail_start + (total_sail_height - active_sail_height) / 2
+    sail_moment = (active_sail_area / @sail.area) * @max_force_on_sail_center_of_area * active_sail_center
+
+    if distance_from_partners >= zero_length
+      sail_moment
+    else
+      sail_moment * (1 + distance_from_partners / @mast.foot)
+    end
   end
 
   def draw_sail
-    upper_origin = Vector2.new(@sail.tack_to_mast_center, -@tack_above_partners)
-    lower_origin = Vector2.new(@sail.tack_to_mast_center, -(@tack_above_partners + @partners_above_lower_foot))
-    sail.draw_to_file("sail.svg", @upper_mast, upper_origin, @lower_mast, lower_origin)
+    sail.draw_to_file("sail.svg", @mast, Vector2.new(@sail.tack_to_mast_center, -@tack_above_partners))
   end
 
-  def calculate_safety_factors
-    below_partners = @partners_above_lower_foot
-    total_length = below_partners + @upper_mast.length
-    units = "in"
-    safeties = (0..total_length.to(units).scalar.to_i).step(1).each_with_object({}) do |position_scalar, result|
-      position = Unit.new(position_scalar, units)
+  def setup_mast(options)
+    upper_mast = Engineering::VariableSpar.new(options[:upper])
 
-      max_moment = nil
-      yield_moment = nil
-      if position > below_partners
-        max_moment, yield_moment = upper_mast_moments(position - below_partners)
-      else
-        max_moment, yield_moment = lower_mast_moments(position)
-      end
-
-      safety = (yield_moment / max_moment).to(Unit.new(1)).scalar
-      ap [position, max_moment.to("ft*lbf"), yield_moment.to("ft*lbf"), safety]
-
-      result[position] = safety if (safety < 5)
-    end
-
-    puts safeties.keys.map(&:scalar).join(",")
-    puts safeties.values.join(",")
-    #ap safeties
-  end
-
-  def lower_mast_moments(position)
-    parameter = position / @partners_above_lower_foot
-    max_moment = [@max_moment_at_partners * parameter, Unit.new("1 ft*lbf")].max
-    yield_moment = @lower_mast.cross_section(position).elastic_section_modulus * @lower_mast.material.yield_strength
-    [max_moment, yield_moment]
-  end
-
-  def upper_mast_moments(position)
-    sail_start = @tack_above_partners
-    parameter = 1 - [position - sail_start, Unit.new("0 in")].max / (@upper_mast.length - sail_start)
-    max_moment = @max_force_on_sail_center_of_area * parameter * (@upper_mast.length - position) / 2
-    max_moment = [max_moment, Unit.new("200 ft*lbf")].max
-    yield_moment = @upper_mast.cross_section(position).elastic_section_modulus * @upper_mast.material.yield_strength
-    [max_moment, yield_moment]
-  end
-
-  def setup_lower_mast(options, upper_mast)
     def to_eighths(length)
       Unit.new(((Unit.new(length).to("in").scalar * 8).to_i / 8).to_f, "in")
     end
@@ -152,14 +131,17 @@ class Rig
       )
     end
 
-    partners_pos    = Unit.new(options[:foot_to_partners])
-    partners_length = Unit.new(options[:partners_length])
-    overlap         = Unit.new(options[:overlap])
+    lower_options = options[:lower]
+
+    partners_pos    = -Unit.new(lower_options[:foot])
+    partners_length = Unit.new(lower_options.delete(:partners_length))
+    overlap         = Unit.new(lower_options.delete(:overlap))
+    foot_ratio      = lower_options.delete(:foot_ratio)
 
     partners_diameter = upper_mast.cross_section(Unit.new("0 in")).inner_diameter
-    top_diameter = to_eighths(upper_mast.cross_section(Unit.new(options[:overlap])).inner_diameter)
+    top_diameter = to_eighths(upper_mast.cross_section(overlap).inner_diameter)
 
-    foot      = make_tube(partners_diameter * options[:foot_ratio], "2 in")
+    foot      = make_tube(partners_diameter * foot_ratio, "2 in")
     partners  = make_tube(partners_diameter, to_eighths(partners_diameter / 2))
     head      = make_tube(top_diameter, "2 in")
 
@@ -178,8 +160,8 @@ class Rig
       }
     })
 
-    Engineering::VariableSpar.new(
-      material: options[:material],
+    lower_mast = Engineering::VariableSpar.new(
+      material: lower_options[:material],
       section_type: upper_mast.section_type,
       cross_sections: {
         Unit.new("0 in")                => foot,
@@ -187,6 +169,21 @@ class Rig
         partners_pos                    => partners,
         partners_pos + overlap          => head,
       }
+    )
+
+    Engineering::CompositeSpar.new(
+      sections: [
+        {
+          spar: lower_mast,
+          foot: options[:lower][:foot],
+          name: "Lower"
+        },
+        {
+          spar: upper_mast,
+          foot: options[:upper][:foot],
+          name: "Upper"
+        },
+      ]
     )
   end
 

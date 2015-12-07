@@ -55,7 +55,7 @@ class Transform
   end
 
   def translation
-    Vector2.(matrix.column(3), :units => SCALE_UNITS)
+    Vector2.new(matrix.column(3), :units => SCALE_UNITS)
   end
 
   def scale
@@ -90,7 +90,9 @@ class Transform
   end
 
   def to_xml
-    matrix.row_vectors.map{ |row| row.map { |el| el.scalar.round(5).to_f }}.to_json
+    ap "to_xml"
+    ap matrix
+    matrix.row_vectors.map{ |row| row.map { |el| puts el; el.round(5).to_f }}.to_json
   end
 
   def self.from_xml(str)

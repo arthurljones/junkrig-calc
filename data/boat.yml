@@ -24,29 +24,29 @@ rig:
     upper_luff_curve_balance: 0.75
     slot_width: 18 in
 
-  upper_mast:
-    material: 6063-T6 Aluminum
-    section_type: Tube
-    cross_sections:
-      0 in:
-        outer_diameter: 10 in
-        wall_thickness: 0.25 in
-      35 ft:
-        outer_diameter: 6 in #6 in
-        wall_thickness: 0.25 in
+  mast:
+    upper:
+      material: 6063-T6 Aluminum
+      section_type: Tube
+      foot: 0 in
+      cross_sections:
+        0 in:
+          outer_diameter: 10 in
+          wall_thickness: 0.25 in
+        35 ft:
+          outer_diameter: 6 in #6 in
+          wall_thickness: 0.25 in
 
-  lower_mast:
-    material: Douglas Fir
-    overlap: 48 in
-    foot_ratio: 0.6
-    partners_length: 10 in
+    lower:
+      material: Douglas Fir
+      foot: -70 in
+
+      overlap: 48 in
+      foot_ratio: 0.6
+      partners_length: 10 in
 
   partners_above_waterline: 53 in
-  partners_above_lower_foot: 72 in
-  partners_above_upper_foot: 0 in
-
   pivot_above_partners: 0 in
-
   tack_above_partners: 32 in
   partners_to_sheet_anchor_x: -240 in
   partners_to_sheet_anchor_y: -13.5 in

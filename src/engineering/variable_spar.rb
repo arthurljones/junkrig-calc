@@ -60,6 +60,10 @@ module Engineering
       end
     end
 
+    def yield_moment(position)
+      cross_section(position).elastic_section_modulus * @material.yield_strength
+    end
+
     def split(position)
       below = @cross_sections.select { |pos, _| pos < position }
       above = @cross_sections.select { |pos, _| pos >= position }
@@ -72,6 +76,26 @@ module Engineering
         self.class.new(options.merge(stations: below)),
         self.class.new(options.merge(stations: above))
       ]
+    end
+
+    def draw_to_svg(layer, foot_position)
+      inside_points = []
+      outside_points = []
+      @cross_sections.each do |position, cross_section|
+        inside_points.append(Vector2.new(cross_section.inner_radius, position))
+        outside_points.unshift(Vector2.new(cross_section.outer_radius, position))
+      end
+
+      right_points = inside_points + outside_points
+      left_points = right_points.map { |p| Vector2.new(-p.x, p.y) }
+
+      options = {:style => { :fill => "#000000", :fill_opacity => 0.5 }}
+      layer.layer(@name) do |l|
+        puts foot_position
+        l.local_transform = Transform.new.translated(foot_position)
+        l.line_loop(left_points, options)
+        l.line_loop(right_points, options)
+      end
     end
   end
 end
