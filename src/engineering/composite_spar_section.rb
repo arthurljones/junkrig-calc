@@ -20,8 +20,12 @@ module Engineering
     end
 
     def safety_factor(position, max_moment)
-      return nil unless contains(position)
-      (yield_moment(position) / max_moment).to(Unit.new(1)).scalar
+      if contains(position)
+        yield_moment_ = yield_moment(position)
+        result = (yield_moment_ / max_moment).to(Unit.new(1)).scalar
+        #ap position: position, max_moment: max_moment.to("ft*lbf"), yield_moment: yield_moment_.to("ft*lbf"), safety: result
+        result
+      end
     end
 
     def yield_moment(position)

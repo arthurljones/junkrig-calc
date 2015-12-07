@@ -80,35 +80,37 @@ class Rig
     puts min_sheet_distance_buffer: @clew_distance_to_sheet_anchor - @sail.inner_sheet_distance
     puts clew_angle_to_sheet_anchor: @clew_angle_to_sheet_anchor.to("deg")
 
-    sections = Hash.new{ |hash, key| hash[key] = {} }
-    safety_factors = mast.safety_factors("ft"){ |pos| mast_moment(pos) }
-    safety_factors.each do |position, section_safeties|
-      section_safeties.each do |section, safety_factor|
-        sections[section][position] = safety_factor
-      end
-    end
+    #pos : { section: safety_factor }
+    #[pos], [name, factors...], [name, factors...], ...
 
-    sections.each do |section, safeties|
-      puts safeties.keys.map(&:scalar).join(",")
-      puts safeties.values.join(",")
+    print_safety_factors
+  end
+
+  def print_safety_factors
+    safety_factors = mast.safety_factors("in"){ |pos| mast_moment(pos) }
+    puts (["Pos (in)"] + safety_factors.delete(:positions).map(&:scalar)).join(",")
+    safety_factors.each do |section, values|
+      puts ([section.name] + values).join(",")
     end
   end
 
   def mast_moment(distance_from_partners)
     sail_start = @tack_above_partners
     zero_length = Unit.new("0 in")
-    active_sail_height = [distance_from_partners - sail_start, zero_length].max
+    above_partners = [distance_from_partners, zero_length].max
+    active_sail_height = [above_partners - sail_start, zero_length].max
     #NOTE: This approximates by assuming a rectangular sail
     total_sail_height = @sail.tack_to_peak.y
     active_sail_ratio = 1 - (active_sail_height / total_sail_height)
     active_sail_area = active_sail_ratio * @sail.area
     active_sail_center = sail_start + (total_sail_height - active_sail_height) / 2
-    sail_moment = (active_sail_area / @sail.area) * @max_force_on_sail_center_of_area * active_sail_center
+    active_sail_lever = active_sail_center - above_partners
+    sail_moment = (active_sail_area / @sail.area) * @max_force_on_sail_center_of_area * active_sail_lever
 
     if distance_from_partners >= zero_length
       sail_moment
     else
-      sail_moment * (1 + distance_from_partners / @mast.foot)
+      sail_moment * (1 - distance_from_partners / @mast.foot)
     end
   end
 
@@ -142,7 +144,7 @@ class Rig
     top_diameter = to_eighths(upper_mast.cross_section(overlap).inner_diameter)
 
     foot      = make_tube(partners_diameter * foot_ratio, "2 in")
-    partners  = make_tube(partners_diameter, to_eighths(partners_diameter / 2))
+    partners  = make_tube(partners_diameter, partners_diameter / 2)
     head      = make_tube(top_diameter, "2 in")
 
     ap({

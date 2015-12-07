@@ -37,15 +37,19 @@ module Engineering
     def safety_factors(units = "in", &moment)
       start_scalar = @foot.to(units).scalar.to_i
       end_scalar = @head.to(units).scalar.to_i
-      result = Hash.new{ |hash, key| hash[key] = {} }
+      positions = []
+      result = Hash.new{ |hash, key| hash[key] = [] }
 
       (start_scalar..end_scalar).step(1).each do |position_scalar|
         position = Unit.new(position_scalar, units)
-        max_moment = moment.call(position)
+        max_moment = [moment.call(position), Unit.new("1 ft*lbf")].max
+
+        positions << position
         @sections.each do |section|
-          result[position][section] = section.safety_factor(position, max_moment)
+          result[section] << section.safety_factor(position, max_moment)
         end
       end
+      result[:positions] = positions
       result
     end
 
