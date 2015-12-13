@@ -67,11 +67,12 @@ module SVG
     end
 
     def text(anchor, value, options = {})
-      options[:style] ||= {
+      options[:style] = {
         :font_family => "Courier",
         :fill => "#000000",
         :font_size => 10,
-      }
+      }.merge(options[:style] || {})
+
       anchor = (absolute_transform * anchor).to("in").unitless
       options[:x] = anchor.x
       options[:y] = anchor.y

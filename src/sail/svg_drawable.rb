@@ -9,11 +9,15 @@ module Sail
     included do
 
       def draw_to_svg(svg, mast, tack_to_partners)
-        svg.layer("Sail") do |outer_layer|
-          draw_sail(outer_layer)
-          draw_sheet_zone(outer_layer)
-          outer_layer.layer("Mast") { |layer| mast.draw_to_svg(layer, tack_to_partners) }
-          #sail.draw_measurements(outer_layer)
+        svg.layer("Mast & Sail") do |outer_layer|
+          outer_layer.layer("Sail") do |sail_layer|
+            draw_sail(sail_layer)
+            draw_sheet_zone(sail_layer)
+            #sail.draw_measurements(sail_layer)
+          end
+          outer_layer.layer("Mast") do |mast_layer|
+            mast.draw_to_svg(mast_layer, tack_to_partners)
+          end
         end
       end
 

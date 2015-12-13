@@ -77,13 +77,13 @@ class Rig
     @clew_distance_to_sheet_anchor = clew_to_sheet_anchor.magnitude
     @clew_angle_to_sheet_anchor = clew_to_sheet_anchor.angle
 
-    puts min_sheet_distance_buffer: @clew_distance_to_sheet_anchor - @sail.inner_sheet_distance
-    puts clew_angle_to_sheet_anchor: @clew_angle_to_sheet_anchor.to("deg")
+    #puts min_sheet_distance_buffer: @clew_distance_to_sheet_anchor - @sail.inner_sheet_distance
+    #puts clew_angle_to_sheet_anchor: @clew_angle_to_sheet_anchor.to("deg")
 
     #pos : { section: safety_factor }
     #[pos], [name, factors...], [name, factors...], ...
 
-    print_safety_factors
+    #print_safety_factors
   end
 
   def print_safety_factors

@@ -78,7 +78,7 @@ module Engineering
       ]
     end
 
-    def draw_to_svg(layer, foot_position)
+    def draw_to_svg(layer, foot_position, name)
       inside_points = []
       outside_points = []
       @cross_sections.each do |position, cross_section|
@@ -90,8 +90,7 @@ module Engineering
       left_points = right_points.map { |p| Vector2.new(-p.x, p.y) }
 
       options = {:style => { :fill => "#000000", :fill_opacity => 0.5 }}
-      layer.layer(@name) do |l|
-        puts foot_position
+      layer.layer(name) do |l|
         l.local_transform = Transform.new.translated(foot_position)
         l.line_loop(left_points, options)
         l.line_loop(right_points, options)

@@ -17,16 +17,7 @@ class Vector2
       raise "Args must be two numbers, or an array or vector with two values"
     end
 
-    args = args.map do |arg|
-      case arg
-      when Unit
-        arg
-      else
-        Unit.new(arg)
-      end
-    end
-
-    @vector = Vector.elements(args)
+    @vector = Vector.elements(args.map { |arg| Unit.new(arg) })
   end
 
   def self.from_angle(angle, mag = Unit.new(1), *args)

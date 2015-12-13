@@ -71,6 +71,18 @@ module Engineering
 
     def draw_to_svg(layer, partners_position)
       @sections.each { |section| section.draw_to_svg(layer, partners_position) }
+      [@foot, @head].each do |extent|
+        cross_section = cross_sections(extent).values.first
+        offset = Vector2.new(cross_section.outer_radius, "0 in")
+        center = partners_position + Vector2.new("0 in", extent)
+        layer.line_loop([center - offset, center + offset])
+      end
+      layer.layer("Center of Mass") do |l|
+        cm_position = partners_position + Vector2.new("0 in", @center_of_mass)
+        l.circle(cm_position, Unit.new(2, "in"), style: { fill: "#000000" })
+        text = "#{@mass.to("lbs").scalar.ceil}lbs"
+        l.text(cm_position + Vector2.new("-3in", "-2 in"), text, style: { font_size: 6 })
+      end
     end
 
   end

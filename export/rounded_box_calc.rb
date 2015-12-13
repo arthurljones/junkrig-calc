@@ -18,8 +18,6 @@ input = {
     :weak_composite => [1.75, 5.5, -1, 0, 0, 0],
 }
 
-#puts "," + input.keys.join(",")
-
 objects = input.map do |name, raw_input|
     options = {}
     columns.each_with_index do |column, index|

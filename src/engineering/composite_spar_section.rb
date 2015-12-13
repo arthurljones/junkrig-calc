@@ -16,8 +16,6 @@ module Engineering
       foot: { units: "in" },
       name: { }
     ) do |options|
-      puts @foot
-      puts @spar
       @head = @foot + @spar.length
     end
 
@@ -43,7 +41,7 @@ module Engineering
     end
 
     def draw_to_svg(layer, partners_position)
-      @spar.draw_to_svg(layer, partners_position + Vector2.new("0 in", @foot))
+      @spar.draw_to_svg(layer, partners_position + Vector2.new("0 in", @foot), @name)
     end
   end
 end

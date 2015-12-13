@@ -92,7 +92,7 @@ class Transform
   def to_xml
     ap "to_xml"
     ap matrix
-    matrix.row_vectors.map{ |row| row.map { |el| puts el; el.round(5).to_f }}.to_json
+    matrix.row_vectors.map{ |row| row.map { |el| el.round(5).to_f }}.to_json
   end
 
   def self.from_xml(str)

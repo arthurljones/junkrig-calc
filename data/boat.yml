@@ -42,18 +42,18 @@ rig:
       section_type: Tube
       cross_sections:
         0 in:
-          outer_diameter: 6 in
+          outer_diameter: 5.5 in
           wall_thickness: 1.2 in
         2 ft:
-          outer_diameter: 6 in
+          outer_diameter: 5.5 in
           wall_thickness: 1.2 in
-        8 ft:
+        5 ft:
           outer_diameter: 4 in
           wall_thickness: 1.0 in
 
   partners_above_waterline: 53 in
   pivot_above_partners: 0 in
-  tack_above_partners: 32 in
+  tack_above_partners: 18 in
   partners_to_sheet_anchor_x: -240 in
   partners_to_sheet_anchor_y: -13.5 in
 
