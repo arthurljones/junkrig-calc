@@ -13,5 +13,10 @@ module Sheet
       @force_to_position = Unit.new("0 in/lbf")
       original_initialize
     end
+
+    def fixed?
+      true
+    end
+
   end
 end

@@ -5,8 +5,6 @@ require "math/vector2"
 #Increase tension proportional to line constraint
 #Eventually add line stretch as a function of tension and line composition
 
-#Force in fixed direction vs force toward point
-
 module Sheet
   module Point
     extend ActiveSupport::Concern
@@ -18,10 +16,12 @@ module Sheet
 
       attr_reader(*%i(
         force
+        prev_force
       ))
 
       def initialize
         @force ||= Vector2.new("0 lbf", "0 lbf")
+        @prev_force ||= Vector2.new("0 lbf", "0 lbf")
         @position ||= Vector2.new("0 in", "0 in")
         @force_to_position ||= Unit.new("0.1 in/lbf")
 
@@ -30,6 +30,10 @@ module Sheet
 
       def apply_force(force)
         @force += force
+      end
+
+      def fixed?
+        false
       end
 
       def resolve
@@ -41,7 +45,10 @@ module Sheet
         end
 
         @position += movement
+        @prev_force = @force
         @force = Vector2.new("0 lbf", "0 lbf")
+
+        distance <= Unit.new("0.001 in")
       end
     end
   end
