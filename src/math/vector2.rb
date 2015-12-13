@@ -67,6 +67,10 @@ class Vector2
     Vector2.new(x * other.x, y * other.y)
   end
 
+  def inspect
+    to_s
+  end
+
   def to_s(units = nil)
     units ||= x.units unless x.units.empty?
     [x, y].map {|val| "#{val.to(units).scalar.to_f.round(3)}#{units}"}.join(" ")
