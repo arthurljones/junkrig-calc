@@ -14,6 +14,8 @@ module OptionsInitializer
         attributes
       end
 
+      alias_method(:original_initialize, :initialize)
+
       define_method :initialize do |new_args|
         new_args ||= {}
         new_args = new_args.clone
