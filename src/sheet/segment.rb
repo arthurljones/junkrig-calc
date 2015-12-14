@@ -16,7 +16,7 @@ module Sheet
       @tension = Unit.new("0 lbf")
       @elongation = 0.167 #Elongation to breaking stress
       @tensile_strength = Unit.new("2650 lbf")
-      @max_tension_change = Unit.new("1000 lbf")
+      @max_tension_change = Unit.new("10 lbf")
     end
 
     def apply
@@ -30,11 +30,11 @@ module Sheet
         tension_vectors[p1] += delta / -dist
       end
 
-      #max_length = @length * (1 + @elongation * @tension / @tensile_strength)
+      max_length = @length * (1 + @elongation * @tension / @tensile_strength)
 
-      puts measured_length: measured_length, length: @length
+      strain = measured_length - max_length
 
-      if measured_length >= @length
+      if strain >= 0
         prev_tension = @tension
 
         tension_vectors.each do |point, tension_vector|
@@ -42,28 +42,22 @@ module Sheet
           direction = tension_vector / purchase
           tension_change = -point.prev_force.dot(direction) / purchase
           tension_change = Unit.new("0 lbf") if point.fixed?
-          #puts point: point, tension_change: tension_change
           @tension += tension_change
         end
 
-        theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
+        #theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
 
-        orig_tension = @tension
+        @tension += strain * Unit.new("0.2 lbf/in")
         @tension = [@tension, prev_tension + @max_tension_change].min
 
-        #puts tension: tension
-
         tension_vectors.each do |point, tension_vector|
-          #puts point: point, tension_vector: tension_vector, force: tension_vector * @tension
-          point.apply_force(tension_vector * @tension)
+           point.apply_force(tension_vector * @tension)
         end
       else
         @tension = Unit.new("0 lbf") #-= Unit.new("10 lbf")
       end
 
       @tension = [@tension, Unit.new("0 lbf")].max
-
-      puts tension: tension, theoretical_tension: theoretical_tension, orig: orig_tension
     end
   end
 end

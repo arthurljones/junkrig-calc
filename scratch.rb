@@ -27,14 +27,17 @@ def iterate(points, lines, max_iterations, max_stable_iterations)
   end
 end
 
+span_length = Unit.new("10 in")
+
+
 anchor = Sheet::AnchorPoint.new(position: ["0 in", "0 in"])
 batten0 = Sheet::AnchorPoint.new(position: ["0 in", "20 in"])
 batten1 = Sheet::AnchorPoint.new(position: ["0 in", "20 in"])
 block = Sheet::FreePoint.new(position: ["5 in", "15 in"])
 bitter_end = Sheet::FreePoint.new(position: ["0 in", "-5 in"])
 
-span = Sheet::Segment.new(length: "20 in", points: [batten0, block, batten1])
-sheet = Sheet::Segment.new(length: "50 in", points: [block, anchor, bitter_end])
+span = Sheet::Segment.new(length: span_length * 2, points: [batten0, block, batten1])
+sheet = Sheet::Segment.new(length: span_length * 5, points: [block, anchor, bitter_end])
 
 points = [anchor, batten0, batten1, block, bitter_end]
 lines = [span, sheet]
@@ -60,6 +63,7 @@ ap({
   batten1: batten1,
   block: block,
   bitter_end: bitter_end,
+  min_distance: (block.position - batten0.position).magnitude / span_length
 })
 
 puts positions.map{|p| p.x.to("in").scalar}.join(",")

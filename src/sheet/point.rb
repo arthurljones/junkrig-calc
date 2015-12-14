@@ -40,7 +40,9 @@ module Sheet
       #Returns true if point moved by more than a small threshold, or false otherwise
       def resolve
         movement = @force * @force_to_position
-        distance = movement.magnitude
+        initial_distance = movement.magnitude
+        clamped_distance = [Unit.new("10 in"), initial_distance].min
+        movement = movement * (clamped_distance / initial_distance) if initial_distance.scalar > 0
 
         #Dampen force and movement if we're switching directions to reduce ringing
         if movement.dot(@prev_movement) < 0
@@ -53,7 +55,8 @@ module Sheet
         @prev_force = @force
         @force = Vector2.new("0 lbf", "0 lbf")
 
-        distance > Unit.new("0.001 in")
+        moved = clamped_distance > Unit.new("0.1 in")
+        moved
       end
     end
   end
