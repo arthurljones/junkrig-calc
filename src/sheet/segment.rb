@@ -48,9 +48,8 @@ module Sheet
 
         theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
 
-        @tension = [@tension, Unit.new("0 lbf")].max
+        orig_tension = @tension
         @tension = [@tension, prev_tension + @max_tension_change].min
-        puts tension: tension, theoretical_tension: theoretical_tension
 
         #puts tension: tension
 
@@ -59,8 +58,12 @@ module Sheet
           point.apply_force(tension_vector * @tension)
         end
       else
-        @tension = Unit.new("0 lbf")
+        @tension = Unit.new("0 lbf") #-= Unit.new("10 lbf")
       end
+
+      @tension = [@tension, Unit.new("0 lbf")].max
+
+      puts tension: tension, theoretical_tension: theoretical_tension, orig: orig_tension
     end
   end
 end

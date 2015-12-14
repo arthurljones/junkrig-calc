@@ -4,18 +4,15 @@ require "sheet/anchor_point"
 require "sheet/free_point"
 require "sheet/segment"
 
-fixed = Sheet::AnchorPoint.new(position: ["1 in", "0 in"])
-free = Sheet::FreePoint.new(position: ["0 in", "0 in"])
-
-line = Sheet::Segment.new(length: "20 in", points: [fixed, free, fixed, free, fixed])
 
 def iterate(points, lines, max_iterations, max_stable_iterations)
   stable_iterations = 0
 
   (1..max_iterations).each do |iteration|
+    lines.each(&:apply)
+
     yield(iteration, stable_iterations) if block_given?
 
-    lines.each(&:apply)
     stable = points.map(&:resolve).none?
 
     if stable
@@ -30,10 +27,43 @@ def iterate(points, lines, max_iterations, max_stable_iterations)
   end
 end
 
-iterate([fixed, free], [line], 200, 3) do |iteration, stable|
-  free.apply_force(Vector2.new("0 lbf", "-40 lbf"))
-  ap iteration: iteration, stable: stable, position: free.position, tension: line.tension, force: free.force
+anchor = Sheet::AnchorPoint.new(position: ["0 in", "0 in"])
+batten0 = Sheet::AnchorPoint.new(position: ["0 in", "20 in"])
+batten1 = Sheet::AnchorPoint.new(position: ["0 in", "20 in"])
+block = Sheet::FreePoint.new(position: ["5 in", "15 in"])
+bitter_end = Sheet::FreePoint.new(position: ["0 in", "-5 in"])
+
+span = Sheet::Segment.new(length: "20 in", points: [batten0, block, batten1])
+sheet = Sheet::Segment.new(length: "50 in", points: [block, anchor, bitter_end])
+
+points = [anchor, batten0, batten1, block, bitter_end]
+lines = [span, sheet]
+
+positions = []
+
+iterate(points, lines, 100, 3) do |iteration, stable|
+  bitter_end.apply_force(Vector2.new("-50 lbf", "0 lbf"))
+  positions << block.position
+  ap({
+    iteration: iteration,
+    stable: stable,
+    position: block.position,
+    sheet_tension: sheet.tension,
+    span_tension: span.tension,
+    force: block.force
+  })
 end
+
+ap({
+  anchor: anchor,
+  batten0: batten0,
+  batten1: batten1,
+  block: block,
+  bitter_end: bitter_end,
+})
+
+puts positions.map{|p| p.x.to("in").scalar}.join(",")
+puts positions.map{|p| p.y.to("in").scalar}.join(",")
 
 elongation_at_break = 0.167 #Elongation to breaking stress
 tensile_strength = Unit.new("2650 lbf")
