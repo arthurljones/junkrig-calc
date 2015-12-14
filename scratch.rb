@@ -9,30 +9,39 @@ free = Sheet::FreePoint.new(position: ["0 in", "0 in"])
 
 line = Sheet::Segment.new(length: "20 in", points: [fixed, free, fixed, free, fixed])
 
-points = [fixed, free]
-max_stable_iterations = 3
+def iterate(points, lines, max_iterations, max_stable_iterations)
+  stable_iterations = 0
 
-stable_iterations = 0
-(1..20).each do |iter|
-  line.apply
+  (1..max_iterations).each do |iteration|
+    yield(iteration, stable_iterations) if block_given?
 
-  free.apply_force(Vector2.new("0 lbf", "-40 lbf"))
+    lines.each(&:apply)
+    stable = points.map(&:resolve).none?
 
-  ap iteration: iter, stable: stable_iterations, position: free.position, tension: line.tension, force: free.force
-
-  stable = true
-  points.each do |point|
-    stable = false unless point.resolve
-  end
-
-  if stable
-    stable_iterations += 1
-    if stable_iterations >= max_stable_iterations
-      puts "Done after #{stable_iterations} stable iterations"
-      break
+    if stable
+      stable_iterations += 1
+      if stable_iterations >= max_stable_iterations
+        puts "Done after #{stable_iterations} stable iterations"
+        break
+      end
+    else
+      stable_iterations = 0
     end
-  else
-    stable_iterations = 0
   end
-
 end
+
+iterate([fixed, free], [line], 200, 3) do |iteration, stable|
+  free.apply_force(Vector2.new("0 lbf", "-40 lbf"))
+  ap iteration: iteration, stable: stable, position: free.position, tension: line.tension, force: free.force
+end
+
+elongation_at_break = 0.167 #Elongation to breaking stress
+tensile_strength = Unit.new("2650 lbf")
+modulus_of_elasticity = Unit.new("2 GPa")
+rope_diameter = Unit.new(3/8, "in")
+solid = Math::PI * (rope_diameter / 2) ** 2
+strand_radius = rope_diameter / (2 * 2.154) #Circle packing ratio from https://en.wikipedia.org/wiki/Circle_packing_in_a_circle
+theoretical = 3 * Math::PI * strand_radius ** 2
+
+cross_section = (tensile_strength / (elongation_at_break * modulus_of_elasticity)).to("in^2")
+puts area: cross_section, solid: solid, theoretical: theoretical, ratio: cross_section/solid

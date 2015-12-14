@@ -14,9 +14,9 @@ module Sheet
       points: { }
     ) do |options|
       @tension = Unit.new("0 lbf")
-      @length_to_force = Unit.new("100 lbf/in")
-      @elongation = 0.167 #Elongation to breaking strain
+      @elongation = 0.167 #Elongation to breaking stress
       @tensile_strength = Unit.new("2650 lbf")
+      @max_tension_change = Unit.new("1000 lbf")
     end
 
     def apply
@@ -34,7 +34,9 @@ module Sheet
 
       puts measured_length: measured_length, length: @length
 
-      if measured_length > @length
+      if measured_length >= @length
+        prev_tension = @tension
+
         tension_vectors.each do |point, tension_vector|
           purchase = tension_vector.norm
           direction = tension_vector / purchase
@@ -44,13 +46,20 @@ module Sheet
           @tension += tension_change
         end
 
+        theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
+
         @tension = [@tension, Unit.new("0 lbf")].max
+        @tension = [@tension, prev_tension + @max_tension_change].min
+        puts tension: tension, theoretical_tension: theoretical_tension
+
         #puts tension: tension
 
         tension_vectors.each do |point, tension_vector|
           #puts point: point, tension_vector: tension_vector, force: tension_vector * @tension
           point.apply_force(tension_vector * @tension)
         end
+      else
+        @tension = Unit.new("0 lbf")
       end
     end
   end

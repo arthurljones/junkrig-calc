@@ -36,6 +36,7 @@ module Sheet
         false
       end
 
+      #Returns true if point moved by more than a small threshold, or false otherwise
       def resolve
         movement = @force * @force_to_position
         initial_distance = movement.magnitude
@@ -48,7 +49,7 @@ module Sheet
         @prev_force = @force
         @force = Vector2.new("0 lbf", "0 lbf")
 
-        distance <= Unit.new("0.001 in")
+        distance > Unit.new("0.001 in")
       end
     end
   end
