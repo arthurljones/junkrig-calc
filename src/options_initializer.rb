@@ -21,6 +21,7 @@ module OptionsInitializer
         new_args = new_args.clone
         attributes.each do |attribute_name, options|
           default = options[:default]
+          default = default.call if Proc === default
           klass = options[:class]
 
           value = new_args[attribute_name] || default

@@ -1,4 +1,5 @@
 require "math/vector2"
+require 'securerandom'
 
 #Line constraint - total length of line through points/anchors
 #Move points proportional to summed force vector
@@ -12,6 +13,7 @@ module Sheet
       attr_accessor(*%i(
         position
         force_to_position
+        name
       ))
 
       attr_reader(*%i(
@@ -20,6 +22,7 @@ module Sheet
       ))
 
       def initialize
+        @name ||= SecureRandom.uuid
         @force ||= Vector2.new("0 lbf", "0 lbf")
         @prev_force ||= Vector2.new("0 lbf", "0 lbf")
         @position ||= Vector2.new("0 in", "0 in")

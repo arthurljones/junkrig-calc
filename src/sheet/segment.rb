@@ -1,5 +1,6 @@
 require "options_initializer"
 require "math/vector2"
+require 'securerandom'
 
 module Sheet
   class Segment
@@ -11,7 +12,8 @@ module Sheet
 
     options_initialize(
       length: { units: "in" },
-      points: { }
+      points: { },
+      name: { class: String, default: -> { SecureRandom.uuid } }
     ) do |options|
       @tension = Unit.new("0 lbf")
       @elongation = 0.167 #Elongation to breaking stress
@@ -41,7 +43,11 @@ module Sheet
           purchase = tension_vector.norm
           direction = tension_vector / purchase
           tension_change = -point.prev_force.dot(direction) / purchase
-          tension_change = Unit.new("0 lbf") if point.fixed?
+          if point.fixed?
+            tension_change = Unit.new("0 lbf")
+          else
+            puts segment: @name, point: point.name, tension_change: tension_change
+          end
           @tension += tension_change
         end
 
@@ -54,7 +60,7 @@ module Sheet
            point.apply_force(tension_vector * @tension)
         end
       else
-        @tension = Unit.new("0 lbf") #-= Unit.new("10 lbf")
+        @tension = Unit.new("0 lbf") #-= Unit.new("1 lbf") #
       end
 
       @tension = [@tension, Unit.new("0 lbf")].max

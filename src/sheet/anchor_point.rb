@@ -9,6 +9,7 @@ module Sheet
 
     options_initialize(
       position: { class: Vector2 },
+      name: { required: false }
     ) do |options|
       @force_to_position = Unit.new("0 in/lbf")
       original_initialize

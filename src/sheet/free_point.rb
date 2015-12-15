@@ -9,6 +9,7 @@ module Sheet
 
     options_initialize(
       position: { class: Vector2 },
+      name: { required: false }
     ) do |options|
       original_initialize
     end
