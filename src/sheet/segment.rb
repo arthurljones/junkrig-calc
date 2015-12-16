@@ -6,19 +6,16 @@ module Sheet
   class Segment
     include OptionsInitializer
 
-    attr_reader(*%i(
-      tension
-    ))
-
     options_initialize(
       length: { units: "in" },
       points: { },
-      name: { class: String, default: -> { SecureRandom.uuid } }
+      name: { class: String, default: -> { SecureRandom.uuid } },
+      tension: { units: "lbf", default: Unit.new("0 lbf") },
+      elongation: { default: 0.167 }, #Elongation to breaking stress
+      tensile_strength: { units: "lbf", default: Unit.new("2650 lbf") },
+      max_tension_change: { units: "lbf", default: Unit.new("10 lbf") },
     ) do |options|
-      @tension = Unit.new("0 lbf")
-      @elongation = 0.167 #Elongation to breaking stress
-      @tensile_strength = Unit.new("2650 lbf")
-      @max_tension_change = Unit.new("10 lbf")
+
     end
 
     def apply
@@ -36,34 +33,45 @@ module Sheet
 
       strain = measured_length - max_length
 
-      if strain >= 0
-        prev_tension = @tension
+      ap "Strain on #{@name}: #{strain}"
 
-        tension_vectors.each do |point, tension_vector|
-          purchase = tension_vector.norm
-          direction = tension_vector / purchase
-          tension_change = -point.prev_force.dot(direction) / purchase
-          if point.fixed?
-            tension_change = Unit.new("0 lbf")
-          else
-            puts segment: @name, point: point.name, tension_change: tension_change
-          end
-          @tension += tension_change
+      if strain < 0
+        ap "#{@name} slack"
+        @tension -= (strain / max_length).abs * Unit.new("10 lbf")
+      end
+
+      prev_tension = @tension
+
+      tension_vectors.each do |point, tension_vector|
+        purchase = tension_vector.norm
+        direction = tension_vector / purchase
+        tension_change = -point.prev_force.dot(direction) / purchase
+        if point.fixed?
+          tension_change = Unit.new("0 lbf")
+        else
+          #puts segment: @name, point: point.name, tension_change: tension_change
         end
+        @tension += tension_change
+      end
 
-        #theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
+      #theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
 
-        @tension += strain * Unit.new("0.2 lbf/in")
-        @tension = [@tension, prev_tension + @max_tension_change].min
+      @tension += strain * Unit.new("0.2 lbf/in")
+      @tension = [@tension, prev_tension + @max_tension_change].min
 
-        tension_vectors.each do |point, tension_vector|
-           point.apply_force(tension_vector * @tension)
-        end
-      else
-        @tension = Unit.new("0 lbf") #-= Unit.new("1 lbf") #
+      tension_vectors.each do |point, tension_vector|
+         point.apply_force(tension_vector * @tension)
       end
 
       @tension = [@tension, Unit.new("0 lbf")].max
+    end
+
+    def inspect
+      to_s
+    end
+
+    def to_s
+      "#{self.class.name.demodulize} #{@name}: Tension: #{tension}"
     end
   end
 end

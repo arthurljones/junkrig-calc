@@ -4,10 +4,6 @@ require "sheet/anchor_point"
 require "sheet/free_point"
 require "sheet/segment"
 
-#TODO: Move all points proportionally to their amount of force and to the over-length of the line constraints.
-# The concept is that points should never move so far as to release all the tension on a line.
-# This requires a separate accounting of force and motion
-
 def iterate(points, lines, max_iterations, max_stable_iterations)
   stable_iterations = 0
 
@@ -41,7 +37,7 @@ lower_block = Sheet::FreePoint.new(name: "lower_block", position: ["2 in", clew_
 bitter_end = Sheet::FreePoint.new(name: "bitter_end", position: ["0 in", "-5 in"])
 
 upper_span = Sheet::Segment.new(name: "upper_span", length: span_length, points: [batten1, upper_block])
-lower_span = Sheet::Segment.new(name: "lower_span", length: span_length * 2, points: [batten0, lower_block, upper_block, lower_block])
+lower_span = Sheet::Segment.new(name: "lower_span", length: span_length * 1.4, points: [batten0, lower_block, upper_block, lower_block])
 sheet = Sheet::Segment.new(name: "sheet", length: clew_height + span_length, points: [lower_block, anchor, bitter_end])
 
 points = [anchor, batten0, batten1, upper_block, lower_block, bitter_end]
@@ -52,29 +48,26 @@ upper_tensions = []
 lower_tensions = []
 sheet_tensions = []
 
-iterate(points, lines, 40, 3) do |iteration, stable|
+iterate(points, lines, 60, 3) do |iteration, stable|
   bitter_end.apply_force(Vector2.new("-50 lbf", "0 lbf"))
   positions << lower_block.position
-  ap({
+  output = {
     iteration: iteration,
     stable: stable,
     lower_block_position: lower_block.position,
     lower_block_force: lower_block.force,
     tensions: lines.each_with_object({}) { |line, result| result[line.name] = line.tension }
-  })
+  }
+  #ap output
+  ap "Step #{iteration}"
   upper_tensions << upper_span.tension
   lower_tensions << lower_span.tension
   sheet_tensions << sheet.tension
 end
 
-ap({
-  anchor: anchor,
-  batten0: batten0,
-  batten1: batten1,
-  block: lower_block,
-  bitter_end: bitter_end,
-  min_distance: (lower_block.position - batten0.position).magnitude / span_length
-})
+ap(points)
+ap(lines)
+ap min_distance: (lower_block.position - batten0.position).magnitude / span_length
 
 puts positions.map{|p| p.x.to("in").scalar}.join(",")
 puts positions.map{|p| p.y.to("in").scalar}.join(",")

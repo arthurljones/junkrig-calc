@@ -61,6 +61,14 @@ module Sheet
         moved = clamped_distance > Unit.new("0.1 in")
         moved
       end
+
+      def inspect
+        to_s
+      end
+
+      def to_s
+        "#{self.class.name.demodulize} #{@name}: Position: #{position}"
+      end
     end
   end
 end
