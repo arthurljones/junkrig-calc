@@ -8,10 +8,11 @@ def iterate(points, lines, max_iterations, max_stable_iterations)
   stable_iterations = 0
 
   (1..max_iterations).each do |iteration|
-    lines.each(&:apply)
+    ap "===== Step #{iteration}"
 
     yield(iteration, stable_iterations) if block_given?
 
+    lines.each(&:apply)
     stable = points.map(&:resolve).none?
 
     if stable
@@ -43,14 +44,16 @@ sheet = Sheet::Segment.new(name: "sheet", length: clew_height + span_length, poi
 points = [anchor, batten0, batten1, upper_block, lower_block, bitter_end]
 lines = [upper_span, lower_span, sheet]
 
-positions = []
+upper_positions = []
+lower_positions = []
 upper_tensions = []
 lower_tensions = []
 sheet_tensions = []
 
 iterate(points, lines, 60, 3) do |iteration, stable|
   bitter_end.apply_force(Vector2.new("-50 lbf", "0 lbf"))
-  positions << lower_block.position
+  upper_positions << upper_block.position
+  lower_positions << lower_block.position
   output = {
     iteration: iteration,
     stable: stable,
@@ -59,7 +62,8 @@ iterate(points, lines, 60, 3) do |iteration, stable|
     tensions: lines.each_with_object({}) { |line, result| result[line.name] = line.tension }
   }
   #ap output
-  ap "Step #{iteration}"
+  #ap(points)
+  #ap(lines)
   upper_tensions << upper_span.tension
   lower_tensions << lower_span.tension
   sheet_tensions << sheet.tension
@@ -69,8 +73,10 @@ ap(points)
 ap(lines)
 ap min_distance: (lower_block.position - batten0.position).magnitude / span_length
 
-puts positions.map{|p| p.x.to("in").scalar}.join(",")
-puts positions.map{|p| p.y.to("in").scalar}.join(",")
+puts upper_positions.map{|p| p.x.to("in").scalar}.join(",")
+puts upper_positions.map{|p| p.y.to("in").scalar}.join(",")
+puts lower_positions.map{|p| p.x.to("in").scalar}.join(",")
+puts lower_positions.map{|p| p.y.to("in").scalar}.join(",")
 puts upper_tensions.map{|p| p.to("lbf").scalar}.join(",")
 puts lower_tensions.map{|p| p.to("lbf").scalar}.join(",")
 puts sheet_tensions.map{|p| p.to("lbf").scalar}.join(",")

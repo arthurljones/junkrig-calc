@@ -49,8 +49,9 @@ module Sheet
 
         #Dampen force and movement if we're switching directions to reduce ringing
         if movement.dot(@prev_movement) < 0
+          puts "#{name} ringing"
           movement /= 2
-          @force /= 2
+          #@force /= 2
         end
 
         @prev_movement = movement
@@ -67,7 +68,7 @@ module Sheet
       end
 
       def to_s
-        "#{self.class.name.demodulize} #{@name}: Position: #{position}"
+        "#{self.class.name.demodulize} #{@name}: Position: #{position}, Force: #{prev_force}, Delta: #{@prev_movement}"
       end
     end
   end

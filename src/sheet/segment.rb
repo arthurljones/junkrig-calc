@@ -15,7 +15,7 @@ module Sheet
       tensile_strength: { units: "lbf", default: Unit.new("2650 lbf") },
       max_tension_change: { units: "lbf", default: Unit.new("10 lbf") },
     ) do |options|
-
+      @prev_tension = @tension
     end
 
     def apply
@@ -40,7 +40,7 @@ module Sheet
         @tension -= (strain / max_length).abs * Unit.new("10 lbf")
       end
 
-      prev_tension = @tension
+      @prev_tension = @tension
 
       tension_vectors.each do |point, tension_vector|
         purchase = tension_vector.norm
@@ -49,15 +49,16 @@ module Sheet
         if point.fixed?
           tension_change = Unit.new("0 lbf")
         else
-          #puts segment: @name, point: point.name, tension_change: tension_change
+          puts segment: @name, point: point.name, tension_change: tension_change
         end
         @tension += tension_change
       end
 
       #theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
 
+      puts desired_tension: @tension
       @tension += strain * Unit.new("0.2 lbf/in")
-      @tension = [@tension, prev_tension + @max_tension_change].min
+      @tension = [@tension, @prev_tension + @max_tension_change].min
 
       tension_vectors.each do |point, tension_vector|
          point.apply_force(tension_vector * @tension)
@@ -71,7 +72,7 @@ module Sheet
     end
 
     def to_s
-      "#{self.class.name.demodulize} #{@name}: Tension: #{tension}"
+      "#{self.class.name.demodulize} #{@name}: Tension: #{@tension}, Delta: #{@tension - @prev_tension}"
     end
   end
 end
