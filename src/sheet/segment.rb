@@ -13,9 +13,16 @@ module Sheet
       tension: { units: "lbf", default: Unit.new("0 lbf") },
       elongation: { default: 0.167 }, #Elongation to breaking stress
       tensile_strength: { units: "lbf", default: Unit.new("2650 lbf") },
-      max_tension_change: { units: "lbf", default: Unit.new("10 lbf") },
+      max_tension_change: { units: "lbf", default: Unit.new("100 lbf") }, #5
     ) do |options|
-      @prev_tension = @tension
+      @prev_error = Unit.new("0 lbf")
+      @error_derivator = Unit.new("0 lbf")
+      @error_derivator_weight = 1/5
+      @error_integrator = Unit.new("0 lbf")
+
+      @proportional_coefficient = 0.5
+      @integral_coefficient = 0
+      @derivative_coefficient = 0
     end
 
     def apply
@@ -35,30 +42,38 @@ module Sheet
 
       ap "Strain on #{@name}: #{strain}"
 
+      total_error = Unit.new("0 lbf")
+
       if strain < 0
         ap "#{@name} slack"
-        @tension -= (strain / max_length).abs * Unit.new("10 lbf")
+        total_error = @tension
       end
-
-      @prev_tension = @tension
 
       tension_vectors.each do |point, tension_vector|
+        next if point.fixed?
+
         purchase = tension_vector.norm
         direction = tension_vector / purchase
-        tension_change = -point.prev_force.dot(direction) / purchase
-        if point.fixed?
-          tension_change = Unit.new("0 lbf")
-        else
-          puts segment: @name, point: point.name, tension_change: tension_change
-        end
-        @tension += tension_change
+        error = point.prev_force.dot(direction) / purchase
+
+        total_error += error
+        puts segment: @name, point: point.name, error: error
       end
 
-      #theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
+      error_slope = total_error - @prev_error
+      @prev_error = total_error
+      @error_derivator = @error_derivator * (1 - @error_derivator_weight) + error_slope * @error_derivator_weight
+      @error_integrator += total_error
 
-      puts desired_tension: @tension
-      @tension += strain * Unit.new("0.2 lbf/in")
-      @tension = [@tension, @prev_tension + @max_tension_change].min
+      proportional = total_error * @proportional_coefficient
+      integral = @error_integrator * @integral_coefficient
+      derivative = @error_derivator * @derivative_coefficient
+
+      correction = -(proportional + integral + derivative)
+      puts error: total_error, p: proportional, i: integral, d:derivative, c: correction
+      @tension += correction
+
+      #theoretical_tension = (@tensile_strength * (measured_length - @length)) / (@elongation * @length)
 
       tension_vectors.each do |point, tension_vector|
          point.apply_force(tension_vector * @tension)
@@ -72,7 +87,7 @@ module Sheet
     end
 
     def to_s
-      "#{self.class.name.demodulize} #{@name}: Tension: #{@tension}, Delta: #{@tension - @prev_tension}"
+      "#{self.class.name.demodulize} #{@name}: Tension: #{@tension}"
     end
   end
 end
