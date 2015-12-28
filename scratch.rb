@@ -12,8 +12,8 @@ def iterate(points, lines, max_iterations, max_stable_iterations)
 
     yield(iteration, stable_iterations) if block_given?
 
-    lines.each(&:apply)
-    stable = points.map(&:resolve).none?
+      lines.each(&:apply)
+      stable = points.map(&:resolve).none?
 
     if stable
       stable_iterations += 1
@@ -50,23 +50,27 @@ upper_tensions = []
 lower_tensions = []
 sheet_tensions = []
 
-iterate(points, lines, 60, 3) do |iteration, stable|
-  bitter_end.apply_force(Vector2.new("-50 lbf", "0 lbf"))
-  upper_positions << upper_block.position
-  lower_positions << lower_block.position
-  output = {
-    iteration: iteration,
-    stable: stable,
-    lower_block_position: lower_block.position,
-    lower_block_force: lower_block.force,
-    tensions: lines.each_with_object({}) { |line, result| result[line.name] = line.tension }
-  }
-  #ap output
-  #ap(points)
-  #ap(lines)
-  upper_tensions << upper_span.tension
-  lower_tensions << lower_span.tension
-  sheet_tensions << sheet.tension
+begin
+  iterate(points, lines, 60, 3) do |iteration, stable|
+    bitter_end.apply_force(Vector2.new("-50 lbf", "0 lbf"))
+    upper_positions << upper_block.position
+    lower_positions << lower_block.position
+    output = {
+      iteration: iteration,
+      stable: stable,
+      lower_block_position: lower_block.position,
+      lower_block_force: lower_block.force,
+      tensions: lines.each_with_object({}) { |line, result| result[line.name] = line.tension }
+    }
+    #ap output
+    #ap(points)
+    #ap(lines)
+    upper_tensions << upper_span.tension
+    lower_tensions << lower_span.tension
+    sheet_tensions << sheet.tension
+  end
+rescue RuntimeError => error
+  puts "Simulation failed! #{error.message}".red
 end
 
 ap(points)

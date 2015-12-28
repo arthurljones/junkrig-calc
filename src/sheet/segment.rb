@@ -21,7 +21,7 @@ module Sheet
       @error_integrator = Unit.new("0 lbf")
 
       @proportional_coefficient = 0.5
-      @integral_coefficient = 0
+      @integral_coefficient = 0.3#0
       @derivative_coefficient = 0
     end
 
@@ -46,8 +46,9 @@ module Sheet
 
       if strain < 0
         ap "#{@name} slack"
-        total_error = @tension
       end
+
+      total_error = -strain * Unit.new("0.05 lbf/in")
 
       tension_vectors.each do |point, tension_vector|
         next if point.fixed?
@@ -80,6 +81,10 @@ module Sheet
       end
 
       @tension = [@tension, Unit.new("0 lbf")].max
+
+      if @tension > @tensile_strength
+        raise RuntimeError.new("Maximum rope tension exceeded (#{@tension} > #{@tensile_strength})")
+      end
     end
 
     def inspect
