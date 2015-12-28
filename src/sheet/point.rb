@@ -26,9 +26,7 @@ module Sheet
         @force ||= Vector2.new("0 lbf", "0 lbf")
         @prev_force ||= Vector2.new("0 lbf", "0 lbf")
         @position ||= Vector2.new("0 in", "0 in")
-        @prev_movement ||= Vector2.new("0 in", "0 in")
-        @force_to_position ||= Unit.new("0.1 in/lbf")
-
+        @prev_position ||= @position
         super
       end
 
@@ -42,25 +40,28 @@ module Sheet
 
       #Returns true if point moved by more than a small threshold, or false otherwise
       def resolve
-        movement = @force * @force_to_position
-        initial_distance = movement.magnitude
-        clamped_distance = [Unit.new("10 in"), initial_distance].min
-        movement = movement * (clamped_distance / initial_distance) if initial_distance.scalar > 0
-
-        #Dampen force and movement if we're switching directions to reduce ringing
-        if movement.dot(@prev_movement) < 0
-          puts "#{name} ringing"
-          movement /= 2
-          #@force /= 2
+        force_mag = force.norm
+        #puts force_mag: force_mag
+        if force_mag < Unit.new("0.1 lbf")
+          return false
         end
 
-        @prev_movement = movement
+        prev_prev_position = @prev_position
+        @prev_position = @position
+        prev_movement = @prev_position - prev_prev_position
+        movement = (@force / force_mag) * Unit.new("0.05 in")
+
+        #Dampen movement if we're switching directions to reduce ringing
+        if movement.dot(prev_movement) < 0
+          #puts "#{name} ringing"
+          movement /= 2
+        end
+
         @position += movement
         @prev_force = @force
         @force = Vector2.new("0 lbf", "0 lbf")
 
-        moved = clamped_distance > Unit.new("0.1 in")
-        moved
+        return true
       end
 
       def inspect
@@ -68,7 +69,7 @@ module Sheet
       end
 
       def to_s
-        "#{self.class.name.demodulize} #{@name}: Position: #{position}, Force: #{prev_force}, Delta: #{@prev_movement}"
+        "#{self.class.name.demodulize} #{@name}: Position: #{position}, Force: #{prev_force}, Delta: #{@position - @prev_position}"
       end
     end
   end
